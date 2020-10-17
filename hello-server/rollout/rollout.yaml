@@ -8,7 +8,7 @@ spec:
     canary:
       steps:
       - setWeight: 20
-      - pause: {}
+      - pause: {duraton: 500}
       - setWeight: 40
       - pause: {duration: 10}
       - setWeight: 60
@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: helloservice-rollout
-        image: aloisreitbauer/hello-server:v0.1.1
+        image: aloisreitbauer/hello-server:v0.1.2
         ports:
         - name: http
           containerPort: 9000
