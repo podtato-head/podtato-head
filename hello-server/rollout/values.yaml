@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: aloisreitbauer/hello-service
+  repository: aloisreitbauer/hello-server
   tag: 0.1.0
   pullPolicy: IfNotPresent
 
