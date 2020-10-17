@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: helloservice-rollout
+  namespace: demospace
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {}
+      - setWeight: 40
+      - pause: {duration: 10}
+      - setWeight: 60
+      - pause: {duration: 10}
+      - setWeight: 80
+      - pause: {duration: 10}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: helloservice-rollout
+  template:
+    metadata:
+      labels:
+        app: helloservice-rollout
+    spec:
+      containers:
+      - name: helloservice-rollout
+        image: aloisreitbauer/hello-server:v0.1.0
+        ports:
+        - name: http
+          containerPort: 9000
+          protocol: TCP
