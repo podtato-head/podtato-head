@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: {{ template "helloservice-demo" . }}
+      app: {{ template "helloservice-demo.name" . }}
       release: {{ .Release.Name }}
   strategy:
     blueGreen:
