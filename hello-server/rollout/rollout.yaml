@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: helloservice-rollout
-        image: aloisreitbauer/hello-server:v0.1.0
+        image: aloisreitbauer/hello-server:v0.1.1
         ports:
         - name: http
           containerPort: 9000
