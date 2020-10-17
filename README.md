@@ -10,7 +10,12 @@ what you are getting:
 
 * A single file go server that says "Hello world"
 * A multi-stage build docker file to build a container
-* A manifest ot create a Kubernets service and deployment. 
+* A manifest ot create a Kubernetes service and deployment. 
+* A helm chart for the service and the deployment.
+* Three container images showing different versions
+    * aloisreitbauer/hello-server:v0.1.0
+    * aloisreitbauer/hello-server:v0.1.1
+    * aloisreitbauer/hello-server:v0.1.2 
 
 ## Scenarios and Use Cases you can test with this repository
 
