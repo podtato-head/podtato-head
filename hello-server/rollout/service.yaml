@@ -6,7 +6,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: helloservice
+    app: helloservice-rollout
   ports:
   - name: http
     port: 9000
