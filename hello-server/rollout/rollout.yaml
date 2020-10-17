@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: helloservice-rollout
-  namespace: demospace
 spec:
   replicas: 5
   strategy:
