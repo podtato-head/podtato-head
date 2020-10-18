@@ -8,15 +8,13 @@ import (
 // create a handler struct
 type HttpHandler struct{}
 
-// implement `ServeHTTP` method on `HttpHandler` struct
-func (h HttpHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	// implement `ServeHTTP` method on `HttpHandler` struct
+	func (h HttpHandler) ServeHTTP(res http.ResponseWriter, req *http.Request){ 
 
-	// create response binary data
-	data := []byte("Hello World! - Version 0.1.0") // slice of bytes
-
-	// write `data` to response
-	res.Write(data)
-}
+		fmt.Fprintf(res, "<html><head><title>Hello server</title></head><body>")
+		fmt.Fprintf(res, "<h1>Hello World! - Version 0.1.0</h1>")
+		fmt.Fprintf(res, "</body</html>")
+	}
 
 func main() {
 
