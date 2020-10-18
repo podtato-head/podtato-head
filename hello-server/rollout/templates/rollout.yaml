@@ -15,18 +15,19 @@ spec:
       app: {{ template "helloservice-demo.name" . }}
       release: {{ .Release.Name }}
   strategy:
+     carnary:
     #blueGreen:
       # activeService: {{ template "helloservice-demo.fullname" . }}
       # previewService: {{ template "helloservice-demo.fullname" . }}-preview
-      steps:
-      - setWeight: 20
-      - pause: {duration: 10}
-      - setWeight: 40
-      - pause: {duration: 10}
-      - setWeight: 60
-      - pause: {duration: 10}
-      - setWeight: 80
-      - pause: {duration: 10}      
+       steps:
+       - setWeight: 20
+       - pause: {duration: 10}
+       - setWeight: 40
+       - pause: {duration: 10}
+       - setWeight: 60
+       - pause: {duration: 10}
+       - setWeight: 80
+       - pause: {duration: 10}      
   template:
     metadata:
       labels:
