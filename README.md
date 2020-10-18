@@ -1,4 +1,4 @@
-# Project _pod_ tato Head - A demo project for showcasing cloud-native application delivery use cases
+# Project _pod_ tato Head - A demo project for showcasing cloud-native application delivery use cases using different tools for various use cases
 
 ![podtatohead](/images/podtatoHead.png)
 
