@@ -24,11 +24,12 @@ currently supported:
 
 * Direct deployment via a manifest
 * Direct deployment via a Helm chart
-* GitOps based deployment using ArgoCd
+* GitOps-based deployment using ArgoCd
+* Blue/Green releases via Argo Rollouts
 
 Use cases supported going foward:
 
 * GitOps based deployment using Flux
-* Blue/Green releases via Argo Rollouts
+* Operator bsed deployment
 * CNAB air gapped deployment
-* _<feel free to create issues for use cases you are interested in>_
+* _feel free to create issues for use cases you are interested in_
