@@ -30,6 +30,6 @@ currently supported:
 Use cases supported going foward:
 
 * GitOps based deployment using Flux
-* Operator bsed deployment
+* Operator-based deployment
 * CNAB air gapped deployment
 * _feel free to create issues for use cases you are interested in_
