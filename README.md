@@ -1,4 +1,4 @@
-# Project Matryoshka - A demo project for showcasing cloud-native application delivery use cases
+# Project Podtato Head - A demo project for showcasing cloud-native application delivery use cases
 
 This project is it's very early stages, so please - be kind.
 
@@ -17,7 +17,7 @@ what you are getting:
     * aloisreitbauer/hello-server:v0.1.1
     * aloisreitbauer/hello-server:v0.1.2 
 
-## Scenarios and Use Cases you can test with this repository
+## Scenarios and Use Cases you can test with this repository 
 
 This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
