@@ -15,7 +15,7 @@ spec:
       app: {{ template "helloservice-demo.name" . }}
       release: {{ .Release.Name }}
   strategy:
-     carnary:
+     canary:
     #blueGreen:
       # activeService: {{ template "helloservice-demo.fullname" . }}
       # previewService: {{ template "helloservice-demo.fullname" . }}-preview
