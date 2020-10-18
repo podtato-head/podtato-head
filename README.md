@@ -1,4 +1,3 @@
-
 # Project _pod_ tato Head - A demo project for showcasing cloud-native application delivery use cases
 
 
@@ -7,8 +6,7 @@ This project is it's very early stages, so please - be kind.
 ## What you are getting
 
 This project consists of the smallest possible application to demo cloud native
-application delivery. It - for sure - will grow over time. Right now this is
-what you are getting:
+application delivery. It - for sure - will grow over time. Right now you get the following components:
 
 * A single file go server that says "Hello world"
 * A multi-stage build docker file to build a container
