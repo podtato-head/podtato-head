@@ -24,13 +24,13 @@ This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
 
 * [Direct deployment via a manifest](/docs/plainManifest.md)
-* Direct deployment via a Helm chart
-* GitOps-based deployment using ArgoCd
-* Canary releases via Argo Rollouts
-* [Helm-based operator deployment](/docs/helmOperator.md) (_work in progress_)
+* [Direct deployment via a Helm chart](/docs/helmChart.md)
+* [GitOps-based deployment using ArgoCd](/docs/gitOpsArgoCD.md)
+* [Canary releases via Argo Rollouts](/docs/rollouts.md)
+* [Helm-based operator deployment](/docs/helmOperator.md) 
+* [CNAB with Porter air-gapped deployment](/docs/cnabWithPorter.md) (_work in progress_)
 
 Use cases supported going foward:
 
 * GitOps based deployment using Flux
-* CNAB air-gapped deployment
 * _feel free to create issues for use cases you are interested in_
