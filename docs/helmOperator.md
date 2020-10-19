@@ -31,7 +31,15 @@ put everything in values into the CRD. You can find an example in ```./config/sa
 
 ```kubectl apply -f ./config/samples/helloservice-demo_v1alpha1_helloserver.yaml```
 
-### 
+### Seeing things in action
+
+
+### Cleaning up 
+
+```
+kubectl delete -f ./config/samples/helloservice-demo_v1alpha1_helloserver.yaml
+make undeploy
+```
 
 ## References
 
