@@ -1,2 +1,2 @@
-# Delivering the example with a canary release uisng Argo CD
+# Delivering the example with a canary release using ArgoCD
 
