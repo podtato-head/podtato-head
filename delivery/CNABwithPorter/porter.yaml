@@ -12,7 +12,14 @@ tag: aloisreitbauer/helloservice-porter:latest
 # See https://porter.sh/custom-dockerfile/
 dockerfile: Dockerfile.tmpl
 
+credentials:
+- name: kubeconfig
+  path: /root/.kube/config
+- name: google-service-account
+  path: /root/google-service-account.json  
+
 mixins:
+  - exec
   - kubernetes:
       clientVersion: v1.15.5
 
