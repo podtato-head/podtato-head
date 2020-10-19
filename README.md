@@ -27,10 +27,10 @@ currently supported:
 * Direct deployment via a Helm chart
 * GitOps-based deployment using ArgoCd
 * Canary releases via Argo Rollouts
-* Helm-based operator deployment (_work in progress_)
+* [Helm-based operator deployment](/docs/helmOperator.md) (_work in progress_)
 
 Use cases supported going foward:
 
 * GitOps based deployment using Flux
-* CNAB air gapped deployment
+* CNAB air-gapped deployment
 * _feel free to create issues for use cases you are interested in_
