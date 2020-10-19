@@ -8,6 +8,8 @@ Follow the instructions in the [Porter Installation](https://porter.sh/install/)
 
 ```porter create```
 
+
+
 ## Adding manifest files
 
 ```COPY ./manifests /cnab/app/manifests```
@@ -20,9 +22,7 @@ Follow the instructions in the [Porter Installation](https://porter.sh/install/)
 
 ## Publishing the image
 
-```tag: myregistry/porter-hello:v0.1.0```
-
-```porter publish```
+```porter publish --tag aloisreitbauer/helloservice-porter:latest```
 
 
 ## Installing the bundle
