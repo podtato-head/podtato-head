@@ -2,7 +2,7 @@
 
 ![podtatohead](/images/podtatoHead.png)
 
-This project is it's very early stages, so please - be kind.
+This project is in it's very early stages, so please - be kind.
 
 ## What you are getting
 
