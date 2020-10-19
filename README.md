@@ -23,7 +23,7 @@ application delivery. It - for sure - will grow over time. Right now you get the
 This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
 
-* Direct deployment via a manifest
+* [Direct deployment via a manifest](/docs/plainManifest.md)
 * Direct deployment via a Helm chart
 * GitOps-based deployment using ArgoCd
 * Canary releases via Argo Rollouts
