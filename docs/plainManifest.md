@@ -1,4 +1,4 @@
-# Running the example using a plain manifest
+# Delivering the example using a plain manifest
 
 Simply run 
 
