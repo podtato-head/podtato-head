@@ -1,0 +1,15 @@
+stages:
+  - name: "dev"
+    approval_strategy:
+      pass: "manual"
+      warning: "manual"
+  - name: "staging"
+    approval_strategy:
+      pass: "manual"
+      warning: "manual"
+    deployment_strategy: "blue_green_service"
+  - name: "production"
+    approval_strategy:
+      pass: "manual"
+      warning: "manual"
+    deployment_strategy: "blue_green_service" q q
