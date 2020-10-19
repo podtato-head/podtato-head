@@ -16,6 +16,7 @@ spec:
       containers:
       - name: server
         image: aloisreitbauer/hello-server:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 9000
         env:
