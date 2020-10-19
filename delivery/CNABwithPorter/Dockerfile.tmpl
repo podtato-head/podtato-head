@@ -19,4 +19,4 @@ RUN apt-get update && apt-get install -y ca-certificates
 
 # Use the BUNDLE_DIR build argument to copy files into the bundle
 COPY . $BUNDLE_DIR
-COPY ./manifests /cnab/app/manifests
+COPY ./manifests /cnab/app/manifests/hello-server

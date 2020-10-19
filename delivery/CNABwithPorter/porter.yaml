@@ -10,7 +10,7 @@ tag: aloisreitbauer/helloservice-porter:latest
 
 # If you want to customize the Dockerfile in use, uncomment the line below and update the referenced file. 
 # See https://porter.sh/custom-dockerfile/
-#dockerfile: Dockerfile.tmpl
+dockerfile: Dockerfile.tmpl
 
 mixins:
   - kubernetes:
@@ -20,7 +20,7 @@ install:
   - kubernetes:
       description: "Install the hello server"
       manifests:
-        - /cnab/app/manifests
+        - /cnab/app/manifests/hello-server
       wait: true
 
 upgrade:
@@ -30,7 +30,7 @@ uninstall:
   - kubernetes:
       description: "Uninstall the hello server"  
       manifests:
-        - /cnab/app/manifests
+        - /cnab/app/manifests/hello-server
       wait: true    
 
 
