@@ -8,6 +8,10 @@ Follow the instructions in the [Porter Installation](https://porter.sh/install/)
 
 ```porter create```
 
+## Adding manifest files
+
+```COPY ./manifests /cnab/app/manifests```
+
 
 ## Building the project
 

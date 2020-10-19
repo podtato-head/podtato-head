@@ -13,7 +13,8 @@ tag: aloisreitbauer/helloservice-porter:latest
 #dockerfile: Dockerfile.tmpl
 
 mixins:
-  - kubernetes
+  - kubernetes:
+      clientVersion: v1.15.5
 
 install:
   - kubernetes:
