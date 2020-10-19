@@ -19,7 +19,7 @@ install:
   - kubernetes:
       description: "Install the hello server"
       manifests:
-        /cnab/app/manifests
+        - /cnab/app/manifests
       wait: true
 
 upgrade:
@@ -29,7 +29,7 @@ uninstall:
   - kubernetes:
       description: "Uninstall the hello server"  
       manifests:
-        /cnab/app/manifests
+        - /cnab/app/manifests
       wait: true    
 
 
