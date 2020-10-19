@@ -1,0 +1,2 @@
+image: aloisreitbauer/hello-server:v0.1.2
+replicaCount: 1
