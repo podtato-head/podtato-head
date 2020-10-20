@@ -20,7 +20,7 @@
 
 ### Deploy Service (new-artifact)
 ```
-./initProject.sh deploy-service
+./initProject.sh first-deploy-service
 ````
 
 ### Upgrade Service (new-artifact)
