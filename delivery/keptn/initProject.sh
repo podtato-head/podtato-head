@@ -1,4 +1,4 @@
-upgr#!/usr/bin/env bash
+#!/usr/bin/env bash
 
 PROJECT="pod-tato-head"
 IMAGE="aloisreitbauer/hello-server"
@@ -7,6 +7,7 @@ VERSION="$2"
 case "$1" in
   "create-project")
     echo "Creating keptn project $PROJECT"
+    echo keptn create project pod-tato-head --shipyard=./shipyard.yaml   
     keptn create project pod-tato-head --shipyard=./shipyard.yaml
     ;;
   "onboard-service")
@@ -19,6 +20,7 @@ case "$1" in
     ;;
   "deploy-service")
     echo "Deploying keptn service helloservice in project ${PROJECT}"
+    echo keptn send event new-artifact --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v"${VERSION}"
     keptn send event new-artifact --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v"${VERSION}"
     ;;    
   "upgrade-service")
