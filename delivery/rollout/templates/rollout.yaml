@@ -21,7 +21,7 @@ spec:
       # previewService: {{ template "helloservice-demo.fullname" . }}-preview
        steps:
        - setWeight: 20
-       - pause: {duration: 10}
+       - pause: {}
        - setWeight: 40
        - pause: {duration: 10}
        - setWeight: 60
