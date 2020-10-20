@@ -28,6 +28,7 @@ currently supported:
 * [GitOps-based deployment using ArgoCd](/docs/gitOpsArgoCD.md)
 * [Canary releases via Argo Rollouts](/docs/rollouts.md)
 * [Helm-based operator deployment](/docs/helmOperator.md) 
+* [Multi-Stage delivery with Keptn](/docs/keptnDelivery.md)
 * [CNAB with Porter air-gapped deployment](/docs/cnabWithPorter.md) (_work in progress_)
 
 Use cases supported going foward:
