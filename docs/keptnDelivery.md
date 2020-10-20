@@ -10,20 +10,20 @@
 
 ### Create Project
 ```
-./initProject create-project
+./initProject.sh create-project
 ````
 
 ### Onboard Service
 ```
-./initProject onboard-service
+./initProject.sh onboard-service
 ````
 
 ### Deploy Service (new-artifact)
 ```
-./initProject deploy-service
+./initProject.sh deploy-service
 ````
 
 ### Upgrade Service (new-artifact)
 ```
-./initProject upgrade-service
+./initProject.sh upgrade-service
 ````
