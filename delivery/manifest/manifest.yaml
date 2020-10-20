@@ -30,7 +30,6 @@ metadata:
   name: helloservice
   namespace: demospace
 spec:
-  type: ClusterIP
   selector:
     app: helloservice
   ports:
