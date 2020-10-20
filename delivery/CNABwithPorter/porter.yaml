@@ -15,10 +15,11 @@ dockerfile: Dockerfile.tmpl
 credentials:
 - name: kubeconfig
   path: /root/.kube/config
-- name: google-service-account
-  path: /root/google-service-account.json  
+#- name: google-service-account
+#  path: /root/google-service-account.json  
 
 mixins:
+ # - gcloud
   - exec
   - kubernetes:
       clientVersion: v1.15.5
