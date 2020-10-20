@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: aloisreitbauer/hello-server:v.1.0.0
+        image: aloisreitbauer/hello-server:v.0.1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 9000
@@ -39,3 +39,5 @@ spec:
     protocol: TCP
     targetPort: 9000
   type: LoadBalancer
+
+
