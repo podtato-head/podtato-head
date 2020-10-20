@@ -12,4 +12,4 @@ stages:
     approval_strategy:
       pass: "manual"
       warning: "manual"
-    deployment_strategy: "blue_green_service" q q
+    deployment_strategy: "blue_green_service"
