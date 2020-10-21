@@ -31,6 +31,7 @@ RUN cp /build/helloserver .
 FROM scratch
 
 COPY --from=builder /dist/helloserver /
+COPY ./static  /static
 
 # Export necessary port
 EXPOSE 9000
