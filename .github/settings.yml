@@ -2,7 +2,7 @@ repository:
   # See https://developer.github.com/v3/repos/#edit for all available settings.
 
   # The name of the repository. Changing this will rename the repository
-  name: cncf-sig-app-delivery-demo
+  name: sig-app-delivery-demo
 
   # A short description of the repository that will show up on GitHub
   description: 📨🚚 CNCF App Delivery SIG Demo
