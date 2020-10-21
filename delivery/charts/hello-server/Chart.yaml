@@ -1,0 +1,21 @@
+apiVersion: v2
+name: hello-server
+description: A Helm chart to deploy to deploy the podtato head demo application
+
+# A semantic version for the chart rather than the application. This is
+# required to follow Semantic Versioning (https://semver.org/)
+version: 0.1.0
+
+# This is the version number of the application (hello-server). You can release
+# versions of a chart independently of the application versions. This IS NOT
+# required to follow Semantic Versioning and can use any version number.
+appVersion: v0.1.2
+
+# Annotations in charts allow you to pass data to Helm, charts, and other tools
+# using key/value pairs.
+annotations:
+  # This annotation tells Artifact Hub where to find images. It uses this
+  # information to perform security scans and present reports to searchers.
+  artifacthub.io/images: |
+    - name: hello-server
+      image: aloisreitbauer/hello-server:v0.1.2
