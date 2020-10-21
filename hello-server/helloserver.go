@@ -14,7 +14,7 @@ type HTTPHandler struct{}
 // implement `ServeHTTP` method on `HttpHandler` struct
 func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
-	fmt.Fprintf(res, "<html><head><title>Hello server</title></head><body>")
+	fmt.Fprintf(res, "<html><head><title>Hello server</title><link rel=\"stylesheet\" href=\"./static/styles.css\" href=</head><body>")
 	fmt.Fprintf(res, "<h1>Hello World! - Version %s </h1>", version)
 	fmt.Fprintf(res, "</body</html>")
 }
