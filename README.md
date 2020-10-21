@@ -25,6 +25,7 @@ currently supported:
 
 * [Direct deployment via a manifest](/docs/plainManifest.md)
 * [Direct deployment via a Helm chart](/docs/helmChart.md)
+* [GitOps-based deployment using Flux](/docs/flux.md)
 * [GitOps-based deployment using ArgoCd](/docs/gitOpsArgoCD.md)
 * [Canary releases via Argo Rollouts](/docs/rollouts.md)
 * [Helm-based operator deployment](/docs/helmOperator.md) 
@@ -33,5 +34,5 @@ currently supported:
 
 Use cases supported going foward:
 
-* GitOps based deployment using Flux
+
 * _feel free to create issues for use cases you are interested in_
