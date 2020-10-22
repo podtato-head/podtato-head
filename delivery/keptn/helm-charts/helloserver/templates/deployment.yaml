@@ -16,6 +16,7 @@ spec:
       containers:
       - name: server
         image: {{ .Values.image}}
+        imagePullPolicy: Always
         ports:
         - containerPort: 9000
         env:

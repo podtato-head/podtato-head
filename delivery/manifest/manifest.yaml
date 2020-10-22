@@ -28,7 +28,7 @@ spec:
         env:
         - name: PORT
           value: "9000"
-          
+                    
 ---
 apiVersion: v1
 kind: Service
