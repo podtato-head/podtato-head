@@ -1,0 +1,9 @@
+apiVersion: helloservice-demo.helloservice/v1alpha1
+kind: Helloserver
+metadata:
+  name: helloserver-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/helloserver/values.yaml
+  imageName: aloisreitbauer/hello-server:v0.1.1
+  
+  

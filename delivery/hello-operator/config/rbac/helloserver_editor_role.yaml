@@ -1,0 +1,24 @@
+# permissions for end users to edit helloservers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: helloserver-editor-role
+rules:
+- apiGroups:
+  - helloservice-demo.helloservice
+  resources:
+  - helloservers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - helloservice-demo.helloservice
+  resources:
+  - helloservers/status
+  verbs:
+  - get
