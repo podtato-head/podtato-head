@@ -1,0 +1,1 @@
+kubectl get Service helloservice -n demospace -ojsonpath='{.status.loadBalancer.ingress[0].ip}':9000
