@@ -7,8 +7,10 @@
 
 Get the current deployment using
 
+```
 kubectl get Deployment flux -n flux -o yaml > deployment.yaml
 
+```
 Make the following changes
 
 ```
