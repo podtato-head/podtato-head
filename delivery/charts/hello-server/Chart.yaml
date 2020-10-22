@@ -18,4 +18,4 @@ annotations:
   # information to perform security scans and present reports to searchers.
   artifacthub.io/images: |
     - name: hello-server
-      image: aloisreitbauer/hello-server:v0.1.2
+      image: aloisreitbauer/hello-server:v0.1.0
