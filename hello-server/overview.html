@@ -2,9 +2,16 @@
   <head>
     <title>Hello server</title>
     <link rel="stylesheet" href="./static/styles.css"/>
+    <link rel="stylesheet" href="./static/custom.css"/>   
   </head>
-  <body>
-    <h1>Hello from podtato head - Version {{.Version}} </h1>
+  <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">  
+        <main role="main" class="inner cover" style="margin-top: 200px;">
+            <img src="./static/podTatoHead.png" />   
+            <h1 class="cover-heading">Hello from <i>pod</i> tato head</h1>
+            <p> Version {{.Version}} </p>
+        </main>    
+    </div>
   </body>
 </html>
 
