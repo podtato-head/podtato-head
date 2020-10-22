@@ -12,10 +12,10 @@ chart first checkout the source code, open a terminal, and move to the delivery
 sub-directory. Then run
 
 ```
-helm install hs helm-server
+helm install hs hello-server
 ```
 
-This will install the _helm-server_ chart under the name `hs`.
+This will install the _hello-server_ chart under the name `hs`.
 
 The installation can be customized by changing the following paramaters:
 
