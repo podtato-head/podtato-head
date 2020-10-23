@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: aloisreitbauer/hello-server:v0.1.1
+        image: aloisreitbauer/hello-server:v0.1.2
         imagePullPolicy: Always
         ports:
         - containerPort: 9000
