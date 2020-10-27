@@ -36,7 +36,7 @@ Use cases supported going foward:
 * mulitple services in different version
 * stateful workloads
 * external dependencies
-* * _feel free to create issues for use cases you are interested in_
+* _feel free to create issues for use cases you are interested in_
 
 ## Contributing
 
