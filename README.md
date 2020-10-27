@@ -33,7 +33,12 @@ currently supported:
 * [CNAB with Porter air-gapped deployment](/docs/cnabWithPorter.md) (_work in progress_)
 
 Use cases supported going foward:
+* mulitple services in different version
+* stateful workloads
+* external dependencies
+* * _feel free to create issues for use cases you are interested in_
 
+## Contributing
 
-* _feel free to create issues for use cases you are interested in_
+If you are interested in contribution to podtato head please read [contributing.md](contributing.md)
 
