@@ -1,3 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demospace
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +27,6 @@ spec:
         env:
         - name: PORT
           value: "9000"
-          
 ---
 apiVersion: v1
 kind: Service
