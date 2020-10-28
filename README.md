@@ -23,17 +23,17 @@ application delivery. It - for sure - will grow over time. Right now you get the
 This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
 
-* [Direct deployment via a manifest](/docs/plainManifest.md)
-* [Direct deployment via a Helm chart](/docs/helmChart.md)
-* [GitOps-based deployment using Flux](/docs/flux.md)
-* [GitOps-based deployment using ArgoCd](/docs/gitOpsArgoCD.md)
-* [Canary releases via Argo Rollouts](/docs/rollouts.md)
-* [Helm-based operator deployment](/docs/helmOperator.md) 
-* [Multi-Stage delivery with Keptn](/docs/keptnDelivery.md)
-* [CNAB with Porter air-gapped deployment](/docs/cnabWithPorter.md) (_work in progress_)
+* [Direct deployment via a manifest](/delivery/manifest/README.md)
+* [Direct deployment via a Helm chart](/delivery/charts/README.md)
+* [GitOps-based deployment using Flux](/delivery/flux/README.md)
+* [GitOps-based deployment using ArgoCd](/delivery/ArgoCD/README.md)
+* [Canary releases via Argo Rollouts](/delivery/rollout/README.md)
+* [Helm-based operator deployment](/delivery/hello-operator/README.md) 
+* [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
+* [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md) 
 
 Use cases supported going foward:
-* mulitple services in different version
+* multiple services in different version
 * stateful workloads
 * external dependencies
 * _feel free to create issues for use cases you are interested in_
