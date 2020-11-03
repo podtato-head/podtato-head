@@ -4,6 +4,7 @@ metadata:
   name: helloservice
   namespace: {{ .Release.Namespace }} 
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: helloservice
