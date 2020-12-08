@@ -23,7 +23,7 @@ This example modifies files within the repository, so you will need your own
 fork. The original podtato head repository can be found
 [here](https://github.com/cncf/podtato-head)
 
-# Setting up the project
+# Setting up the application in ArgoCD 
 
 ## Access the ArgoCD UI
 
@@ -31,8 +31,15 @@ If everything went fine so far you should now see the ArgoCD UI.
 
 ![ArgoUI](images/argo1.png)
 
+Now either click on ```New App``` at the top or ```Create Application``` in the
+middle of the screen. This will open a screen like this. We will walk through
+the configuration in the next part. 
 
-## Creating a new project
+![New application in Argo](images/argoNewProject.png)
+
+## Creating a new application
+
+
 
 
 # Deploying application versions
