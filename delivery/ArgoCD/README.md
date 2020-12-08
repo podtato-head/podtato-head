@@ -27,6 +27,9 @@ fork. The original podtato head repository can be found
 
 ## Access the ArgoCD UI
 
+If everything went fine so far you should now see the ArgoCD UI. 
+
+![ArgoUI](images/argo1.png)
 
 
 ## Creating a new project
