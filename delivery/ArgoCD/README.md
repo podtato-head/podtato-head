@@ -39,15 +39,76 @@ the configuration in the next part.
 
 ## Creating a new application
 
+Now we have to define the proper parameters for your application. 
 
 
+### Define application data
+
+For the application we define ```podtatohead``` as the project name and leave
+the project to ```default```.  We also check ```autogenerate namespace``` to
+have ArgoCD take care of namespace management. 
+
+![General application settings](images/argoGeneral.png)
+
+### Setting the Github repo 
+
+Use the Github repo you forked before and ensure you set the path to ```
+delivery/charts/hello-server```. This will use the Helm of the tutorial
+
+![Define GitHub Repo to use](images/argoGithub.png)
+
+
+### Define destination cluster
+
+In the example we use the local cluster as our destination and
+```podtato-argocd``` as the namespace to deploy to. As we checked ```autocreate
+namespace``` above ArgoCD will create the namespace for us. 
+
+![Define destination cluster](images/argoDestination.png)
+
+### Helm Values file
+
+ArgoCD will automatically detect the Helm values files. We do not need to change
+anything here and just can leave it as it. 
+
+![Helm Values](images/argoHelm.png)
+
+### Create application
+
+Now hit create application and it should be visible in the project overview. If
+you cannot see the application ensure that the filters are set properly. The
+application will show up yellow as it has not been synced yet. 
+
+![Argo Application Overview](images/argoApps.png)
 
 # Deploying application versions
 
-
 ## Syncing the project
+
+In order to sync and deploy the application click ```sync```. 
+
+![syncing the application](images/argoSynchronize.png)
+
+This will now
+create all application ressources in the cluster. Once syncing is finished you
+will see all application components as healthy.
+
+
+![Show deployed application in ArgoCD](images/argoDeployment.png)
 
 ## Updating the project to a new version
 
+Updating the project required to update the ```values``` file in the
+```/delivery/charts/hello-server/``` folder fo your Git
+repository. Change the ```tag``` value to ```v0.1.1```.
 
+The application will now show up as ```out of sync```. Simply hit ```sync``` and
+the application should update
 
+![Application out of sync](images/argoOutOfSync.png)
+
+### Validate update 
+
+Access the podtato demo application again and you should see the new version.
+
+![updated version](images/podTatoUpdate.png)
