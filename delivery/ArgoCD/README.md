@@ -28,3 +28,16 @@ fork. The original podtato head repository can be found
 ## Access the ArgoCD UI
 
 
+
+## Creating a new project
+
+
+# Deploying application versions
+
+
+## Syncing the project
+
+## Updating the project to a new version
+
+
+
