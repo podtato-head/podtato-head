@@ -24,7 +24,7 @@ This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
 
 * [Direct deployment via a manifest](/delivery/manifest/README.md)
-* [Direct deployment via a Helm chart](/delivery/charts/README.md)
+* [Direct deployment via a Helm chart](/delivery/charts/hello-server/README.md)
 * [GitOps-based deployment using Flux](/delivery/flux/README.md)
 * [GitOps-based deployment using ArgoCd](/delivery/ArgoCD/README.md)
 * [Canary releases via Argo Rollouts](/delivery/rollout/README.md)
