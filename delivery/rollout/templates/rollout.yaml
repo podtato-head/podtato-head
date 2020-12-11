@@ -4,7 +4,7 @@ metadata:
   name: {{ template "helloservice-demo.fullname" . }}
   labels:
     app: {{ template "helloservice-demo.name" . }}
-    chart: {{ template "helloservice-demo.chart" . }}ku
+    chart: {{ template "helloservice-demo.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
