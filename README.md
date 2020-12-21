@@ -9,7 +9,7 @@ This project is in it's very early stages, so please - be kind.
 This project consists of the smallest possible application to demo cloud native
 application delivery. It - for sure - will grow over time. Right now you get the following components:
 
-* A single file go server that says "Hello world"
+* A single file go server that displays a "Pod-Tato-Head" image with the version
 * A multi-stage build docker file to build a container
 * A manifest ot create a Kubernetes service and deployment.
 * A helm chart for the service and the deployment.
@@ -25,7 +25,8 @@ This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
 
 * [Direct deployment via a manifest](/delivery/manifest/README.md)
-* [Direct deployment via a Helm chart](/delivery/charts/hello-server/README.md)
+* [Direct deployment via a Helm chart](/delivery/charts/README.md)
+* [Direct deployment via a Kapp](/delivery/kapp/README.md)
 * [GitOps-based deployment using Flux](/delivery/flux/README.md)
 * [GitOps-based deployment using ArgoCd](/delivery/ArgoCD/README.md)
 * [Canary releases via Argo Rollouts](/delivery/rollout/README.md)
