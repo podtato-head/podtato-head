@@ -32,6 +32,7 @@ currently supported:
 * [Helm-based operator deployment](/delivery/hello-operator/README.md)
 * [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
 * [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md)
+* [GitOps-based deployment using KubeVella](/delivery/KuubeVela/README.md)
 
 Use cases supported going foward:
 
