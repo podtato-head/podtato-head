@@ -2,7 +2,11 @@ FROM debian:stretch
 
 ARG BUNDLE_DIR
 
-RUN apt-get update && apt-get install -y ca-certificates
+RUN apt-get update && apt-get install -y ca-certificates curl
+
+# Install yq
+RUN curl -sLo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 && \
+    chmod +x /usr/local/bin/yq
 
 # This is a template Dockerfile for the bundle's invocation image
 # You can customize it to use different base images, install tools and copy configuration files.
@@ -19,4 +23,3 @@ RUN apt-get update && apt-get install -y ca-certificates
 
 # Use the BUNDLE_DIR build argument to copy files into the bundle
 COPY . $BUNDLE_DIR
-COPY ./manifests /cnab/app/manifests/hello-server

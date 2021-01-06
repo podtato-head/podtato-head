@@ -7,8 +7,8 @@ VERSION="$2"
 case "$1" in
   "create-project")
     echo "Creating keptn project $PROJECT"
-    echo keptn create project pod-tato-head --shipyard=./shipyard.yaml   
-    keptn create project pod-tato-head --shipyard=./shipyard.yaml
+    echo keptn create project "${PROJECT}" --shipyard=./shipyard.yaml   
+    keptn create project "${PROJECT}" --shipyard=./shipyard.yaml
     ;;
   "onboard-service")
     echo "Onboarding keptn service helloservice in project ${PROJECT}"

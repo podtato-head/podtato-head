@@ -1,16 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-install() {
-  echo Hello World
-}
-
-upgrade() {
-  echo World 2.0
-}
-
-uninstall() {
-  echo Goodbye World
+relocate() {
+  NEWIMAGE=$1
+  yq write -d 1 -i manifests/manifest.yaml 'spec.template.spec.containers.(name==server).image' $NEWIMAGE
 }
 
 # Call the requested function and pass the arguments as-is

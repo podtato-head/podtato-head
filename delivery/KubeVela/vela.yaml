@@ -1,0 +1,9 @@
+name: helloservice
+
+services:
+  server:
+    image: aloisreitbauer/hello-server:v0.1.1
+    port: 9000
+    route:
+      domain: example.com
+

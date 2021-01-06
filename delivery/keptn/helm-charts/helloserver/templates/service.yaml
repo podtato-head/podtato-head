@@ -4,7 +4,6 @@ metadata:
   name: helloservice
   namespace: {{ .Release.Namespace }} 
 spec:
-  type: ClusterIP
   selector:
     app: helloservice
   ports:

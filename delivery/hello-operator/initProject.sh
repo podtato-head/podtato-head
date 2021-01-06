@@ -1,1 +1,1 @@
-operator-sdk init --plugins=helm --domain=helloservice --group=helloservice-demo --version=v1alpha1 --helm-chart ../charts/
+operator-sdk new hello-operator --type=helm --helm-chart ../charts/hello-server

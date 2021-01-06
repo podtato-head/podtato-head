@@ -2,3 +2,4 @@
 # Put files here that you don't want copied into your bundle's invocation image
 .gitignore
 Dockerfile.tmpl
+*.tgz

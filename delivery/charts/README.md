@@ -45,6 +45,36 @@ The installation can be customized by changing the following paramaters:
 | `service.type`                  | Kubernetes Service type                                         | `ClusterIP`                  |
 | `service.port`                  | The port the service will use                                   | `9000`                       |
 
+## Updating the version
+
+To update the application version, you can choose one of the following methods :
+
+- update the `image.tag` value in `values.yaml` (set the value to `v0.1.1`) and run `helm upgrade hs hello-server`
+- run `helm upgrade hs hello-server --set image.tag=v0.1.1`
+
+A new revision is then installed.
+
+## Rollback to a previous version
+
+To rollback to a previous revision, run :
+
+```
+# Check revision history
+helm history hs
+
+# Rollback to the revision 1
+helm rollback hs 1
+
+# Check the revision
+helm status hs
+```
+
+## Uninstall the chart
+
+```
+helm uninstall hs
+```
+
 ## Notes
 
 1. The chart was started by using the command `helm create` and then modified from there
