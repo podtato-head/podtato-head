@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REPOSITORY="ghcr.io/podtato-head"
+REPOSITORY="aloisreitbauer"
 
 TAG="0.1.0"
 
