@@ -1,0 +1,11 @@
+# patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloservice
+spec:
+  template:
+    spec:
+      containers:
+      - name: server
+        image: aloisreitbauer/helloservice:v0.1.1

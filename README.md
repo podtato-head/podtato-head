@@ -24,6 +24,7 @@ currently supported:
 
 * [Direct deployment via a manifest](/delivery/manifest/README.md)
 * [Direct deployment via a Helm chart](/delivery/charts/README.md)
+* [Direct deployment via a Kustomize](/delivery/kustomize/README.md)
 * [Direct deployment via a Kapp](/delivery/kapp/README.md)
 * [GitOps-based deployment using Flux](/delivery/flux/README.md)
 * [GitOps-based deployment using ArgoCd](/delivery/ArgoCD/README.md)

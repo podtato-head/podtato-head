@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Local resource
+resources:
+- deployment.yaml
+- service.yaml
+
+# Remote resource
+# resources:
+#   - https://raw.githubusercontent.com/cncf/podtato-head/main/delivery/manifest/manifest.yaml
