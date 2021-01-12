@@ -2,8 +2,6 @@
 
 ![podtatohead](/images/podtatoHead.png)
 
-This project is in it's very early stages, so please - be kind.
-
 ## What you are getting
 
 This project consists of the smallest possible application to demo cloud native
