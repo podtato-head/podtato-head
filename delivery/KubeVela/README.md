@@ -1,6 +1,6 @@
 # Use KubeVela to deploy the application
 
-## Prerequisite:
+## Prerequisites:
 
 * Kubernetes cluster with ingress installed.
 * Make sure you have finished and verified the installation following this [guide](https://kubevela.io/#/en/install).
@@ -9,23 +9,27 @@
 
 * Install KubeVela on your Kubernetes cluster:
 
-`vela install`
+  `vela install`
 
 * Deploy the application:
-Create the namespace:   
-`vela env init demo --namespace demospace`   
-Deploy the `helloservice`:   
-`vela up`   
+
+  * Create the namespace:
+
+    `vela env init demo --namespace demospace`
+
+  * Deploy the `helloservice`:
+
+    `vela up`
 
 * Check the status of your application
-  
-`vela status helloservice`
+
+    `vela status helloservice`
 
 ```bash
 About:
 
-  Name:      	helloservice                        
-  Namespace: 	demo                                
+  Name:      	helloservice
+  Namespace: 	demo
   Created at:	2020-12-10 13:46:18.266925 -0800 PST
   Updated at:	2020-12-10 13:46:18.266925 -0800 PST
 
@@ -33,7 +37,7 @@ Services:
 
   - Name: server
     Type: webservice
-    HEALTHY Ready:1/1 
+    HEALTHY Ready:1/1
     Traits:
       - ✅ route: 	Visiting URL: http://example.com	IP: 47.89.253.147
 
