@@ -44,6 +44,7 @@ gimlet manifest template \
 
 Gimlet provides helpers to write Kubernetes yamls to the GitOps repository along a set of conventions that unlock advanced features.
 
+```
 cd delivery/gimlet/
 gimlet manifest template -f staging.yaml | \
   gimlet gitops write -f - \
@@ -51,3 +52,4 @@ gimlet manifest template -f staging.yaml | \
     --app podtato-head \
     --gitops-repo-path <<path-to-a-working-copy-of-the-gitops-repo>> \
     -m "Releasing Bugfix 345"
+```
