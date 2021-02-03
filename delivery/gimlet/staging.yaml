@@ -1,0 +1,8 @@
+app: podtato-head
+env: staging
+namespace: staging
+chart:
+  name: ../charts/hello-server
+  version: 0.1.0
+values:
+  replicaCount: 1
