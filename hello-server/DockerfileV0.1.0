@@ -1,6 +1,8 @@
 
 FROM golang:alpine AS builder
 
+LABEL org.opencontainers.image.source https://github.com/cncf-podtato-head
+
 # Set necessary environment variables needed for our image
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
