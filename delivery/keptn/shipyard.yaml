@@ -1,15 +1,12 @@
 stages:
-  - name: "dev"
-    approval_strategy:
-      pass: "automatic"
-      warning: "automatic"
-  - name: "staging"
+  - name: "hardening"
     approval_strategy:
       pass: "automatic"
       warning: "automatic"
     deployment_strategy: "blue_green_service"
+    test_strategy: "performance"
   - name: "production"
     approval_strategy:
-      pass: "manual"
+      pass: "automatic"
       warning: "manual"
     deployment_strategy: "blue_green_service"
