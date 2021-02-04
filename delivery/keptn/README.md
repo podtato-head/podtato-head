@@ -10,8 +10,8 @@ For your convenience, commands are listed below :
 Install Istio :
 
 ```
-curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.5 sh -
-./istio-1.6.5/bin/istioctl install
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.8.2 sh -
+./istio-1.8.2/bin/istioctl install
 ```
 
 Install Keptn CLI :
@@ -50,20 +50,66 @@ You can now login into Keptn portal.
 
 ```
 ./initProject.sh create-project
-````
+```
 
 ### Onboard Service
 ```
 ./initProject.sh onboard-service
-````
+```
 
 ### Deploy Service (new-artifact)
 ```
 ./initProject.sh first-deploy-service
-````
+```
 
 ### Upgrade Service (new-artifact)
 
 ```
 ./initProject.sh upgrade-service
-````
+```
+
+### Install Prometheus service
+
+Installing Keptn Prometheus service:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/prometheus-service/release-0.3.6/deploy/service.yaml
+```
+
+Set up the Prometheus Alerting Manager rules:
+
+```bash
+keptn configure monitoring prometheus --project=pod-tato-head --service=helloservice
+```
+
+### Install Prometheus sli service
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/prometheus-sli-service/release-0.2.2/deploy/service.yaml
+```
+
+### Adding quality gates
+
+Adding SLIs and SLOs:
+
+```bash
+./initProject.sh add-quality-gates
+```
+
+Adding JMeter load tests:
+
+```bash
+./initProject.sh add-jmeter-tests
+```
+
+Deploy service to check quality-gates:
+
+```bash
+./initProject.sh deploy-service
+```
+
+Deploy a slow-build that should fail the quality-gates test:
+
+```bash
+./initProject.sh slow-build
+```
