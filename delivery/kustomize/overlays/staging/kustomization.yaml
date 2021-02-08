@@ -17,7 +17,7 @@ patches:
 # Note : Note: commonLabels should only be set for immutable labels, since they will be applied to Selectors.
 # For non-immutable label, use transformers instead
 commonLabels:
-  variant: prod
+  variant: staging
 
 # Annotations added to all resources
 commonAnnotations:
