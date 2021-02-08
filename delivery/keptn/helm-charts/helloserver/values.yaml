@@ -1,2 +1,2 @@
-image: aloisreitbauer/hello-server:v0.1.2
+image: ghcr.io/podtato-head/hello-server:v0.1.2
 replicaCount: 1

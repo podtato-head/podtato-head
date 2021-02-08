@@ -25,6 +25,20 @@ case "$1" in
     ;;    
   "upgrade-service")
     echo "Upgrading keptn service helloservice in project ${PROJECT}"
+    keptn send event new-artifact --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v0.1.0
+    ;;
+  "slow-build")
+    echo "Deploying slow build version of helloservice in project ${PROJECT}"
     keptn send event new-artifact --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v0.1.2
+    ;;
+  "add-quality-gates")
+    echo "Adding keptn quality-gates to project ${PROJECT}"
+    keptn add-resource --project=pod-tato-head --stage=hardening --service=helloservice --resource=prometheus/sli.yaml --resourceUri=prometheus/sli.yaml
+    keptn add-resource --project=pod-tato-head --stage=hardening --service=helloservice --resource=slo.yaml --resourceUri=slo.yaml
+    ;;
+  "add-jmeter-tests")
+    echo "Adding jmeter load tests to project ${PROJECT}"
+    keptn add-resource --project=pod-tato-head --stage=hardening --service=helloservice --resource=jmeter/load.jmx --resourceUri=jmeter/load.jmx
+    keptn add-resource --project=pod-tato-head --stage=hardening --service=helloservice --resource=jmeter/jmeter.conf.yaml --resourceUri=jmeter/jmeter.conf.yaml
     ;;
 esac

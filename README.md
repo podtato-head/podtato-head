@@ -9,13 +9,13 @@ application delivery. It - for sure - will grow over time. Right now you get the
 
 * A single file go server that displays a "Pod-Tato-Head" image with the version
 * A multi-stage build docker file to build a container
-* A manifest ot create a Kubernetes service and deployment.
+* A manifest to create a Kubernetes service and deployment.
 * A helm chart for the service and the deployment.
 * Three container images showing different versions
 
-  * aloisreitbauer/hello-server:v0.1.0
-  * aloisreitbauer/hello-server:v0.1.1
-  * aloisreitbauer/hello-server:v0.1.2
+  * ghcr.io/podtato-head/hello-server:v0.1.0
+  * ghcr.io/podtato-head/hello-server:v0.1.1
+  * ghcr.io/podtato-head/hello-server:v0.1.2
 
 ## Scenarios and Use Cases you can test with this repository
 
@@ -33,6 +33,7 @@ currently supported:
 * [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
 * [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md)
 * [GitOps-based deployment using KubeVela](/delivery/KubeVela/README.md)
+* [GitOps-based deployment using Gimlet CLI](/delivery/gimlet/README.md)
 
 Use cases supported going foward:
 
