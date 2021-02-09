@@ -1,1 +1,0 @@
-# Delivering the example using GitOps and ArgoCD

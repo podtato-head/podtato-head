@@ -4,6 +4,7 @@ metadata:
   name: helloservice
   namespace: {{ .Release.Namespace }} 
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: helloservice
@@ -16,6 +17,7 @@ spec:
       containers:
       - name: server
         image: {{ .Values.image}}
+        imagePullPolicy: Always
         ports:
         - containerPort: 9000
         env:
