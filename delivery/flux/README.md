@@ -63,6 +63,22 @@ Create a GitRepository manifest `helloservice` pointing to [podtato-head][4] rep
 --export > ./helloservice-source.yaml
 ```
 
+The above command generates the following manifest:
+
+```yaml
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: helloservice
+  namespace: flux-system
+spec:
+  interval: 30s
+  ref:
+    branch: main
+  url: https://github.com/cncf/podtato-head
+```
+
 Commit and push the manifest to the `podtato-test` repository:
 
 ```
@@ -82,6 +98,25 @@ $ flux create kustomization helloservice \
 --validation=client \
 --interval=5m \
 --export > ./helloservice-kustomization.yaml
+```
+
+The above command generates the following manifest:
+
+```yaml
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: helloservice
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./delivery/manifest
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: helloservice
+  validation: client
 ```
 
 Commit and push the Kustomization manifest to the repository:
