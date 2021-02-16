@@ -2,7 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
+	"strconv"
+	"time"
+
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 
@@ -16,11 +21,19 @@ var overviewTemplate *template.Template
 // create a new counter vector
 var getCallCounter = prometheus.NewCounterVec(
 	prometheus.CounterOpts{
-		Name: "http_request_get_total_count", // metric name
+		Name: "http_requests_total", // metric name
 		Help: "Number of get requests.",
 	},
 	[]string{"status"}, // labels
 )
+
+var buckets = []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
+
+var responseTimeHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
+	Name:      "http_server_request_duration_seconds",
+	Help:      "Histogram of response time for handler in seconds",
+	Buckets: buckets,
+}, []string{"route", "method", "status_code"})
 
 type Overview struct {
 	Version string
@@ -29,9 +42,30 @@ type Overview struct {
 // create a handler struct
 type HTTPHandler struct{}
 
+type statusRecorder struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (rec *statusRecorder) WriteHeader(statusCode int) {
+	rec.statusCode = statusCode
+	rec.ResponseWriter.WriteHeader(statusCode)
+}
+
+func getRoutePattern(r *http.Request) string {
+	reqContext := mux.CurrentRoute(r)
+	if pattern, _ := reqContext.GetPathTemplate(); pattern != "" {
+		return pattern
+	}
+
+	fmt.Println(reqContext.GetPathRegexp())
+
+	return "undefined"
+}
+
+
 // implement `ServeHTTP` method on `HttpHandler` struct
 func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-
 	var status string
 	defer func() {
 		// increment the counter on defer func
@@ -43,38 +77,64 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	}
 	overviewTemplate = template.Must(template.ParseFiles("./overview.html"))
 	err := overviewTemplate.Execute(res, overviewData)
+
+	// Slow build
+	if serviceVersion == "0.1.2" {
+		time.Sleep(2 * time.Second)
+	}
+
 	if err != nil {
 		status = "error"
 	}
 	status = "success"
 }
 
+func prometheusMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		rec := statusRecorder{w, 200}
+
+		next.ServeHTTP(&rec, r)
+
+		duration := time.Since(start)
+		statusCode := strconv.Itoa(rec.statusCode)
+		route := getRoutePattern(r)
+		fmt.Println(duration.Seconds())
+		responseTimeHistogram.WithLabelValues(route, r.Method, statusCode).Observe(duration.Seconds())
+	})
+}
+
 func init() {
-	prometheus.MustRegister(getCallCounter)
+	prometheus.Register(getCallCounter)
+	prometheus.Register(responseTimeHistogram)
 }
 
 func main() {
-
 	// expecting version as first parameter
 	serviceVersion = os.Args[1]
 
 	// load website template
-	// overviewTemplate = template.Must(template.ParseFiles("./overview.html"))
+	overviewTemplate = template.Must(template.ParseFiles("./overview.html"))
 
 	// create a new handler
 	handler := HTTPHandler{}
 
-	// service static files
-	fileServer := http.FileServer(http.Dir("./static"))
+	router := mux.NewRouter()
+	router.Use(prometheusMiddleware)
 
-	http.Handle("/", handler)
-	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
+	router.Path("/").Handler(handler)
+	router.Path("/")
+
+	staticDir := "/static/"
+
+	// Serving static files
+	router.
+		PathPrefix(staticDir).
+		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir("."+staticDir))))
+
+	router.Path("/prometheus").Handler(promhttp.Handler())
+
 	fmt.Println("Serving requests on port 9000")
-
-	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":9000", nil)
-
-	// listen and serve
-	http.ListenAndServe(":9000", nil)
-
+	err := http.ListenAndServe(":9000", router)
+	log.Fatal(err)
 }
