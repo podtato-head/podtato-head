@@ -132,7 +132,7 @@ func main() {
 		PathPrefix(staticDir).
 		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir("."+staticDir))))
 
-	router.Path("/prometheus").Handler(promhttp.Handler())
+	router.Path("/metrics").Handler(promhttp.Handler())
 
 	fmt.Println("Serving requests on port 9000")
 	err := http.ListenAndServe(":9000", router)
