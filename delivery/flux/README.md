@@ -94,7 +94,7 @@ We will create a Flux Kustomization manifest for helloservice. This configures F
 $ flux create kustomization helloservice \
 --source=helloservice \
 --path="./delivery/manifest" \
---prune-true \
+--prune=true \
 --validation=client \
 --interval=5m \
 --export > ./helloservice-kustomization.yaml
