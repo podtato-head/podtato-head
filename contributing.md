@@ -32,4 +32,4 @@ If you have a new use cases in mind (e.g. adding an additonal service, ....) ple
 
 ## General discussion 
 
-For general discussions please join the CNCF SIG App Delivery [Slack channel](https://cloud-native.slack.com/archives/CL3SL0CP5) 
+For general discussions please join the CNCF podtato-head [Slack channel](https://cloud-native.slack.com/archives/C01NYM1S4LX) 
