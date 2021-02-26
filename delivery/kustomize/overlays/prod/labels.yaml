@@ -1,0 +1,10 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: labels
+labels:
+  env: prod
+  instance: helloservice
+fieldSpecs:
+  - path: metadata/labels
+    create: true

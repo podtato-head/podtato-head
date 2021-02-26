@@ -1,0 +1,11 @@
+# patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloservice
+spec:
+  template:
+    spec:
+      containers:
+      - name: server
+        image: ghcr.io/podtato-head/hello-server:v0.1.1
