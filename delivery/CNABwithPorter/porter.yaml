@@ -6,7 +6,7 @@
 name: podtatoserver
 version: 0.1.0
 description: "A porter file for the hello server"
-tag: aloisreitbauer/helloservice-porter
+tag: ghcr.io/podtato-head/helloservice-porter
 
 # See https://porter.sh/custom-dockerfile/
 dockerfile: Dockerfile.tmpl
@@ -33,7 +33,7 @@ images:
   server: # v0.1.2
     description: "The hello web server"
     imageType: "docker"
-    repository: "aloisreitbauer/podtatoserver"
+    repository: "ghcr.io/podtato-head/podtatoserver"
     digest: "sha256:3fe55b2bc6c9a31a2acdd7ee5c64cb076a267c11443d9bb12c1467272bf9af07"
 
 install:

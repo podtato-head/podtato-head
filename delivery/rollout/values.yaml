@@ -5,7 +5,7 @@
 replicaCount: 5
 
 image:
-  repository: aloisreitbauer/podtatoserver
+  repository: ghcr.io/podtato-head/podtatoserver
   tag: v0.1.0
   pullPolicy: Always
 

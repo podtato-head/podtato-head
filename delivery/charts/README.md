@@ -22,7 +22,7 @@ The installation can be customized by changing the following paramaters:
 | Parameter                       | Description                                                     | Default                      |
 | ------------------------------- | ----------------------------------------------------------------| -----------------------------|
 | `replicaCount`                  | Number of replicas of the container                             | `1`                          |
-| `image.repository`              | Podtato Head Container image name                               | `aloisreitbauer/podtatoserver`|
+| `image.repository`              | Podtato Head Container image name                               | `ghcr.io/podtato-head/podtatoserver`|
 | `image.tag`                     | Podtato Head image tag                                          | `v0.1.2`                     |
 | `image.pullPolicy`              | Podtato Head Container pull policy                              | `IfNotPresent`               |
 | `imagePullSecrets`              | Podtato Head Pod pull secret                                    | ``                           |

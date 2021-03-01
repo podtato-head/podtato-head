@@ -18,4 +18,4 @@ annotations:
   # information to perform security scans and present reports to searchers.
   artifacthub.io/images: |
     - name: podtatoserver
-      image: aloisreitbauer/podtatoserver:v0.1.0
+      image: ghcr.io/podtato-head/podtatoserver:v0.1.0
