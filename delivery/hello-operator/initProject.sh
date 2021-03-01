@@ -1,1 +1,1 @@
-operator-sdk new hello-operator --type=helm --helm-chart ../charts/hello-server
+operator-sdk new hello-operator --type=helm --helm-chart ../charts/podtatoserver

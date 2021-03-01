@@ -12,17 +12,17 @@ chart first checkout the source code, open a terminal, and move to the delivery
 sub-directory. Then run
 
 ```
-helm install hs hello-server
+helm install hs podtatoserver
 ```
 
-This will install the _hello-server_ chart under the name `hs`.
+This will install the _podtatoserver_ chart under the name `hs`.
 
 The installation can be customized by changing the following paramaters:
 
 | Parameter                       | Description                                                     | Default                      |
 | ------------------------------- | ----------------------------------------------------------------| -----------------------------|
 | `replicaCount`                  | Number of replicas of the container                             | `1`                          |
-| `image.repository`              | Podtato Head Container image name                               | `aloisreitbauer/hello-server`|
+| `image.repository`              | Podtato Head Container image name                               | `aloisreitbauer/podtatoserver`|
 | `image.tag`                     | Podtato Head image tag                                          | `v0.1.2`                     |
 | `image.pullPolicy`              | Podtato Head Container pull policy                              | `IfNotPresent`               |
 | `imagePullSecrets`              | Podtato Head Pod pull secret                                    | ``                           |
@@ -49,8 +49,8 @@ The installation can be customized by changing the following paramaters:
 
 To update the application version, you can choose one of the following methods :
 
-- update the `image.tag` value in `values.yaml` (set the value to `v0.1.1`) and run `helm upgrade hs hello-server`
-- run `helm upgrade hs hello-server --set image.tag=v0.1.1`
+- update the `image.tag` value in `values.yaml` (set the value to `v0.1.1`) and run `helm upgrade hs podtatoserver`
+- run `helm upgrade hs podtatoserver --set image.tag=v0.1.1`
 
 A new revision is then installed.
 

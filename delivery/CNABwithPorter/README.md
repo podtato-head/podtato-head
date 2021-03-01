@@ -46,8 +46,8 @@
 
     ```console
     $ porter credentials generate kube --tag theotherside/helloservice-porter:v0.1.0
-    Generating new credential kube from bundle hello-server
-    ==> 1 credentials required for bundle hello-server
+    Generating new credential kube from bundle podtatoserver
+    ==> 1 credentials required for bundle podtatoserver
     ? How would you like to set credential "kubeconfig"
     file path
     ? Enter the path that will be used to set credential "kubeconfig"

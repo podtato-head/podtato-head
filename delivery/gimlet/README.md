@@ -25,7 +25,7 @@ app: podtato-head
 env: staging
 namespace: staging
 chart:
-  name: ../charts/hello-server
+  name: ../charts/podtatoserver
   version: 0.1.0
 values:
   replicaCount: 1

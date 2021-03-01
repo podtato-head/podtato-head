@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "hello-server.fullname" . }}
+  name: {{ include "podtatoserver.fullname" . }}
   labels:
-    {{- include "hello-server.labels" . | nindent 4 }}
+    {{- include "podtatoserver.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "hello-server.fullname" . }}
+    name: {{ include "podtatoserver.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
