@@ -33,7 +33,7 @@ put everything in values into the CRD. You can find an example in ```./config/sa
 
 ```make docker-build docker-push IMG=aloisreitbauer/helloperator:latest```
 
-### Installing the 'Helloserver' Custom Resource Definition (CRD)
+### Installing the 'podtatoserver' Custom Resource Definition (CRD)
 
 ```make install```
 
@@ -41,16 +41,16 @@ put everything in values into the CRD. You can find an example in ```./config/sa
 
 ```make deploy IMG=aloisreitbauer/helloperator:latest```
 
-### Installing the 'Helloserver' Custom Resource (CR)
+### Installing the 'podtatoserver' Custom Resource (CR)
 
-```kubectl apply -f ./config/samples/helloservice-demo_v1alpha1_helloserver.yaml```
+```kubectl apply -f ./config/samples/helloservice-demo_v1alpha1_podtatoserver.yaml```
 
 ### Seeing things in action
 
 ### Cleaning up
 
 ```
-kubectl delete -f ./config/samples/helloservice-demo_v1alpha1_helloserver.yaml
+kubectl delete -f ./config/samples/helloservice-demo_v1alpha1_podtatoserver.yaml
 make undeploy
 ```
 

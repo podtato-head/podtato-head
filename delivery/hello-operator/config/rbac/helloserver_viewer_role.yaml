@@ -1,13 +1,13 @@
-# permissions for end users to view helloservers.
+# permissions for end users to view podtatoservers.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: helloserver-viewer-role
+  name: podtatoserver-viewer-role
 rules:
 - apiGroups:
   - helloservice-demo.helloservice
   resources:
-  - helloservers
+  - podtatoservers
   verbs:
   - get
   - list
@@ -15,6 +15,6 @@ rules:
 - apiGroups:
   - helloservice-demo.helloservice
   resources:
-  - helloservers/status
+  - podtatoservers/status
   verbs:
   - get
