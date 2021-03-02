@@ -23,7 +23,7 @@ This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
 
 * [Direct deployment via a manifest](/delivery/manifest/README.md)
-* [Direct deployment via a Helm chart](/delivery/charts/podtatoserver/README.md)
+* [Direct deployment via a Helm chart](/delivery/charts/README.md)
 * [Direct deployment via Kustomize](/delivery/kustomize/README.md)
 * [Direct deployment via Kapp](/delivery/kapp/README.md)
 * [GitOps-based deployment using Flux](/delivery/flux/README.md)
