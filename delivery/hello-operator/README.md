@@ -31,26 +31,26 @@ put everything in values into the CRD. You can find an example in ```./config/sa
 
 ### Building the operator image
 
-```make docker-build docker-push IMG=aloisreitbauer/helloperator:latest```
+```make docker-build docker-push IMG=ghcr.io/podtato-head/helloperator:latest```
 
-### Installing the 'Helloserver' Custom Resource Definition (CRD)
+### Installing the 'podtatoserver' Custom Resource Definition (CRD)
 
 ```make install```
 
 ### Installing the operator
 
-```make deploy IMG=aloisreitbauer/helloperator:latest```
+```make deploy IMG=ghcr.io/podtato-head/helloperator:latest```
 
-### Installing the 'Helloserver' Custom Resource (CR)
+### Installing the 'podtatoserver' Custom Resource (CR)
 
-```kubectl apply -f ./config/samples/helloservice-demo_v1alpha1_helloserver.yaml```
+```kubectl apply -f ./config/samples/helloservice-demo_v1alpha1_podtatoserver.yaml```
 
 ### Seeing things in action
 
 ### Cleaning up
 
 ```
-kubectl delete -f ./config/samples/helloservice-demo_v1alpha1_helloserver.yaml
+kubectl delete -f ./config/samples/helloservice-demo_v1alpha1_podtatoserver.yaml
 make undeploy
 ```
 

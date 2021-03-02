@@ -1,6 +1,6 @@
 # Use the 'create api' subcommand to add watches to this file.
 - group: helloservice-demo.helloservice
   version: v1alpha1
-  kind: Helloserver
-  chart: helm-charts/helloserver
+  kind: podtatoserver
+  chart: helm-charts/podtatoserver
 # +kubebuilder:scaffold:watch

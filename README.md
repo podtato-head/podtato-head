@@ -13,9 +13,9 @@ application delivery. It - for sure - will grow over time. Right now you get the
 * A helm chart for the service and the deployment.
 * Three container images showing different versions
 
-  * ghcr.io/podtato-head/hello-server:v0.1.0
-  * ghcr.io/podtato-head/hello-server:v0.1.1
-  * ghcr.io/podtato-head/hello-server:v0.1.2
+  * ghcr.io/podtato-head/podtato-server:v0.1.0
+  * ghcr.io/podtato-head/podtato-server:v0.1.1
+  * ghcr.io/podtato-head/podtato-server:v0.1.2
 
 ## Scenarios and Use Cases you can test with this repository
 
@@ -23,7 +23,7 @@ This list is supposed to grow over time. Here is the list of use cases, that are
 currently supported:
 
 * [Direct deployment via a manifest](/delivery/manifest/README.md)
-* [Direct deployment via a Helm chart](/delivery/charts/README.md)
+* [Direct deployment via a Helm chart](/delivery/charts/podtatoserver/README.md)
 * [Direct deployment via Kustomize](/delivery/kustomize/README.md)
 * [Direct deployment via Kapp](/delivery/kapp/README.md)
 * [GitOps-based deployment using Flux](/delivery/flux/README.md)

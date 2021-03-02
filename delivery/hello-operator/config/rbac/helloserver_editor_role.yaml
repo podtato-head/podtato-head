@@ -1,13 +1,13 @@
-# permissions for end users to edit helloservers.
+# permissions for end users to edit podtatoservers.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: helloserver-editor-role
+  name: podtatoserver-editor-role
 rules:
 - apiGroups:
   - helloservice-demo.helloservice
   resources:
-  - helloservers
+  - podtatoservers
   verbs:
   - create
   - delete
@@ -19,6 +19,6 @@ rules:
 - apiGroups:
   - helloservice-demo.helloservice
   resources:
-  - helloservers/status
+  - podtatoservers/status
   verbs:
   - get

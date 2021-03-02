@@ -29,13 +29,13 @@ rules:
   - create
 
 ##
-## Rules for helloservice-demo.helloservice/v1alpha1, Kind: Helloserver
+## Rules for helloservice-demo.helloservice/v1alpha1, Kind: podtatoserver
 ##
 - apiGroups:
   - helloservice-demo.helloservice
   resources:
-  - helloservers
-  - helloservers/status
+  - podtatoservers
+  - podtatoservers/status
   verbs:
   - create
   - delete

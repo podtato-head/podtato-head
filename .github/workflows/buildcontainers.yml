@@ -34,5 +34,5 @@ jobs:
       # Run script to build all container images
       - name: Create container images
         run: |
-          cd hello-server
+          cd podtatoserver
           ./buildPush.sh

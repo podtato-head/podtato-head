@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT="pod-tato-head"
-IMAGE="aloisreitbauer/hello-server"
+IMAGE="ghcr.io/podtato-head/podtatoserver"
 VERSION="$2"
 
 case "$1" in
@@ -12,7 +12,7 @@ case "$1" in
     ;;
   "onboard-service")
     echo "Onboarding keptn service helloservice in project ${PROJECT}"
-    keptn onboard service helloservice --project="${PROJECT}" --chart=helm-charts/helloserver
+    keptn onboard service helloservice --project="${PROJECT}" --chart=helm-charts/podtatoserver
     ;;
   "first-deploy-service")
     echo "Deploying keptn service helloservice in project ${PROJECT}"

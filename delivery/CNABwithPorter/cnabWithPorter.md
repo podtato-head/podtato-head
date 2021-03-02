@@ -72,7 +72,7 @@ porter install
 Use the `--tag` to install a published bundle:
 
 ```
-porter install helloservice-demo --tag aloisreitbauer/helloservice-porter:v0.1.0
+porter install helloservice-demo --tag ghcr.io/podtato-head/helloservice-porter:v0.1.0
 ```
 
 ## Uninstalling the bundle
