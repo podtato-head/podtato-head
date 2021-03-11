@@ -29,7 +29,7 @@ currently supported:
 * [GitOps-based deployment using Flux](/delivery/flux/README.md)
 * [GitOps-based deployment using ArgoCd](/delivery/ArgoCD/README.md)
 * [Canary releases via Argo Rollouts](/delivery/rollout/README.md)
-* [Helm-based operator deployment](/delivery/hello-operator/README.md)
+* [Helm-based operator deployment](/delivery/podtato-operator/README.md)
 * [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
 * [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md)
 * [GitOps-based deployment using KubeVella](/delivery/KubeVela/README.md)
