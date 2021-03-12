@@ -6,6 +6,6 @@ You can add yourself or your project by filing a PR againt this file.
 
 | Who are you ? | How do use the podtato head? | Links/contact ... |
 |  --- | --- | ---|
-|   |    |
+| Schwarz IT  | Reference project for internal trainings and as a blueprint   | [Schwarz Group](https://en.wikipedia.org/wiki/Schwarz_Gruppe)
 
 
