@@ -6,7 +6,7 @@ spec:
   stages:
     - name: "hardening"
       sequences:
-        - name: "artifact-delivery"
+        - name: "delivery"
           tasks:
             - name: "deployment"
               properties:
@@ -18,9 +18,9 @@ spec:
             - name: "release"
     - name: "production"
       sequences:
-        - name: "artifact-delivery"
-          triggers:
-            - "hardening.artifact-delivery.finished"
+        - name: "delivery"
+          triggeredOn:
+            - event: "hardening.delivery.finished"
           tasks:
             - name: "deployment"
               properties:
