@@ -75,7 +75,7 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	overviewData := Overview{
 		Version: serviceVersion,
 	}
-	overviewTemplate = template.Must(template.ParseFiles("./overview.html"))
+	overviewTemplate = template.Must(template.ParseFiles("./podtato-new.html"))
 	err := overviewTemplate.Execute(res, overviewData)
 
 	// Slow build
@@ -114,7 +114,7 @@ func main() {
 	serviceVersion = os.Args[1]
 
 	// load website template
-	overviewTemplate = template.Must(template.ParseFiles("./overview.html"))
+	overviewTemplate = template.Must(template.ParseFiles("./podtato-new.html"))
 
 	// create a new handler
 	handler := HTTPHandler{}
