@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/mux"
 
 	"html/template"
 	"log"
@@ -15,7 +16,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+//
 var serviceVersion string
+var podtatoId string
+
+// HTML page template
 var overviewTemplate *template.Template
 
 // create a new counter vector
@@ -30,13 +35,14 @@ var getCallCounter = prometheus.NewCounterVec(
 var buckets = []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
 
 var responseTimeHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
-	Name:      "http_server_request_duration_seconds",
-	Help:      "Histogram of response time for handler in seconds",
+	Name:    "http_server_request_duration_seconds",
+	Help:    "Histogram of response time for handler in seconds",
 	Buckets: buckets,
 }, []string{"route", "method", "status_code"})
 
 type Overview struct {
 	Version string
+	PartId  string
 }
 
 // create a handler struct
@@ -63,7 +69,6 @@ func getRoutePattern(r *http.Request) string {
 	return "undefined"
 }
 
-
 // implement `ServeHTTP` method on `HttpHandler` struct
 func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var status string
@@ -74,8 +79,9 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	overviewData := Overview{
 		Version: serviceVersion,
+		PartId:  podtatoId,
 	}
-	overviewTemplate = template.Must(template.ParseFiles("./overview.html"))
+	overviewTemplate = template.Must(template.ParseFiles("./podtato-new.html"))
 	err := overviewTemplate.Execute(res, overviewData)
 
 	// Slow build
@@ -113,8 +119,19 @@ func main() {
 	// expecting version as first parameter
 	serviceVersion = os.Args[1]
 
+	switch serviceVersion {
+	case "0.1.0":
+		podtatoId = "01"
+	case "0.1.1":
+		podtatoId = "02"
+	case "0.1.2":
+		podtatoId = "03"
+	case "0.1.3":
+		podtatoId = "04"
+	}
+
 	// load website template
-	overviewTemplate = template.Must(template.ParseFiles("./overview.html"))
+	//overviewTemplate = template.Must(template.ParseFiles("./podtato-new.html"))
 
 	// create a new handler
 	handler := HTTPHandler{}
