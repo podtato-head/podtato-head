@@ -1,4 +1,3 @@
-
 FROM golang:alpine AS builder
 
 # Set necessary environment variables needed for our image
@@ -32,7 +31,7 @@ FROM scratch
 
 COPY --from=builder /dist/podtatoserver /
 COPY ./static  /static
-COPY ./overview.html  /overview.html
+COPY ./podtato-new.html  /podtato-new.html
 
 # Export necessary port
 EXPOSE 9000
