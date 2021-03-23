@@ -1,7 +1,4 @@
-
 FROM golang:alpine AS builder
-
-LABEL org.opencontainers.image.source https://github.com/cncf-podtato-head
 
 # Set necessary environment variables needed for our image
 ENV GO111MODULE=on \
@@ -34,7 +31,7 @@ FROM scratch
 
 COPY --from=builder /dist/podtatoserver /
 COPY ./static  /static
-COPY ./overview.html  /overview.html
+COPY ./podtato-new.html  /podtato-new.html
 
 # Export necessary port
 EXPOSE 9000
