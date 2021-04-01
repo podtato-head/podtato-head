@@ -8,8 +8,8 @@
 ## Installing the Chart
 
 The chart is currently available via Git in a local directory. To install the
-chart first checkout the source code, open a terminal, and move to the delivery
-sub-directory. Then run
+chart first checkout the source code, open a terminal, and move to the delivery/charts
+sub-directory. Then run:
 
 ```
 helm install hs podtatoserver

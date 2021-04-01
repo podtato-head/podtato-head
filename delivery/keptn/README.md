@@ -7,27 +7,27 @@
 
 For your convenience, commands are listed below :
 
-Install Istio :
+Install Istio:
 
 ```
 curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.8.2 sh -
 ./istio-1.8.2/bin/istioctl install
 ```
 
-Install Keptn CLI :
+Install Keptn CLI:
 
 ```
 curl -sL https://get.keptn.sh | sudo -E bash
 keptn version
 ```
 
-Install Keptn in your cluster :
+Install Keptn in your cluster:
 
 ```
 keptn install --endpoint-service-type=ClusterIP --use-case=continuous-delivery
 ```
 
-Access Keptn UI :
+Access Keptn UI:
 
 ```
 # Port-forward keptn service
