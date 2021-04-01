@@ -37,4 +37,4 @@ COPY ./podtato-new.html  /podtato-new.html
 EXPOSE 9000
 
 # Command to run when starting the container
-CMD ["/podtatoserver", "0.1.0"]
+CMD ["/podtatoserver", "--version", "0.1.0", "--podtatoId", "01" ]

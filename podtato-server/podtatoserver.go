@@ -1,19 +1,18 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"html/template"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 //
@@ -117,22 +116,13 @@ func init() {
 
 func main() {
 	// expecting version as first parameter
-	serviceVersion = os.Args[1]
-
-	switch serviceVersion {
-	case "0.1.0":
-		podtatoId = "01"
-	case "0.1.1":
-		podtatoId = "02"
-	case "0.1.2":
-		podtatoId = "03"
-	case "0.1.3":
-		podtatoId = "04"
-	}
+	flag.StringVar(&serviceVersion,"version","","Service version e.g. 0.1.0")
+	flag.StringVar(&podtatoId, "podtatoId", "", "Input componentID e.g. 01")
+	flag.Parse()
 
 	// load website template
 	//overviewTemplate = template.Must(template.ParseFiles("./podtato-new.html"))
-
+	log.Printf("Service version %s and podtatoId %s", serviceVersion, podtatoId)
 	// create a new handler
 	handler := HTTPHandler{}
 
