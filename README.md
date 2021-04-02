@@ -7,7 +7,7 @@
 This project consists of the smallest possible application to demo cloud native
 application delivery. It - for sure - will grow over time. Right now you get the following components:
 
-* A single file go server that says "Hello world"
+* A single file go server that displays different versions of the podtato-head depending on the version
 * A multi-stage build docker file to build a container
 * A manifest to create a Kubernetes service and deployment.
 * A helm chart for the service and the deployment.
