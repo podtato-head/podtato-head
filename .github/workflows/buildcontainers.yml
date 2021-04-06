@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ main, fix/dockerbuild ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -34,5 +34,4 @@ jobs:
       # Run script to build all container images
       - name: Create container images
         run: |
-          cd podtato-server
-          ./scripts/buildPush.sh
+          cd podtato-server && ./scripts/buildPush.sh
