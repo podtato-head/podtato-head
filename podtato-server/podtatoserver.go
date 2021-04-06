@@ -38,10 +38,7 @@ var responseTimeHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 	Buckets: buckets,
 }, []string{"route", "method", "status_code"})
 
-type Overview struct {
-	Version string
-	PartId  string
-}
+
 
 // create a handler struct
 type HTTPHandler struct{}
@@ -75,13 +72,12 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		getCallCounter.WithLabelValues(status).Inc()
 	}()
 
-	overviewData := Overview{
-		Version: podtatoConfiguration.ServiceVersion,
-		PartId:  podtatoConfiguration.ComponentID,
-	}
 	overviewTemplate = template.Must(template.ParseFiles("./static/podtato-new.html"))
-	err := overviewTemplate.Execute(res, overviewData)
+	err := overviewTemplate.Execute(res, podtatoConfiguration)
 
+	if err != nil {
+		log.Print(err.Error())
+	}
 	// Slow build
 	if podtatoConfiguration.ServiceVersion == "0.1.2" {
 		time.Sleep(2 * time.Second)
