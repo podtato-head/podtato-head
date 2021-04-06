@@ -1,24 +1,22 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"github.com/cncf/podtato-head/podtato-server/pkg"
 	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"html/template"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-//
-var serviceVersion string
-var podtatoId string
+var podtatoConfiguration *pkg.PodtatoConfig
 
 // HTML page template
 var overviewTemplate *template.Template
@@ -40,10 +38,7 @@ var responseTimeHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 	Buckets: buckets,
 }, []string{"route", "method", "status_code"})
 
-type Overview struct {
-	Version string
-	PartId  string
-}
+
 
 // create a handler struct
 type HTTPHandler struct{}
@@ -77,15 +72,14 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		getCallCounter.WithLabelValues(status).Inc()
 	}()
 
-	overviewData := Overview{
-		Version: serviceVersion,
-		PartId:  podtatoId,
-	}
-	overviewTemplate = template.Must(template.ParseFiles("./podtato-new.html"))
-	err := overviewTemplate.Execute(res, overviewData)
+	overviewTemplate = template.Must(template.ParseFiles("./static/podtato-new.html"))
+	err := overviewTemplate.Execute(res, podtatoConfiguration)
 
+	if err != nil {
+		log.Print(err.Error())
+	}
 	// Slow build
-	if serviceVersion == "0.1.2" {
+	if podtatoConfiguration.ServiceVersion == "0.1.2" {
 		time.Sleep(2 * time.Second)
 	}
 
@@ -117,22 +111,14 @@ func init() {
 
 func main() {
 	// expecting version as first parameter
-	serviceVersion = os.Args[1]
+	serviceVersion := flag.String("version","","Service version e.g. 0.1.0")
+	flag.Parse()
 
-	switch serviceVersion {
-	case "0.1.0":
-		podtatoId = "01"
-	case "0.1.1":
-		podtatoId = "02"
-	case "0.1.2":
-		podtatoId = "03"
-	case "0.1.3":
-		podtatoId = "04"
+	var err error
+	podtatoConfiguration,err = pkg.GetAssembledPodtatoConfiguration(*serviceVersion)
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	// load website template
-	//overviewTemplate = template.Must(template.ParseFiles("./podtato-new.html"))
-
 	// create a new handler
 	handler := HTTPHandler{}
 
@@ -152,6 +138,6 @@ func main() {
 	router.Path("/metrics").Handler(promhttp.Handler())
 
 	fmt.Println("Serving requests on port 9000")
-	err := http.ListenAndServe(":9000", router)
+	err = http.ListenAndServe(":9000", router)
 	log.Fatal(err)
 }
