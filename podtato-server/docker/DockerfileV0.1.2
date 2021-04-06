@@ -30,8 +30,8 @@ RUN cp /build/podtatoserver .
 FROM scratch
 
 COPY --from=builder /dist/podtatoserver /
-COPY ../static  /static
-COPY ../static/podtato-new.html  /podtato-new.html
+COPY static  /static
+COPY static/podtato-new.html  /podtato-new.html
 
 # Export necessary port
 EXPOSE 9000
