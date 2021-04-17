@@ -1,9 +1,7 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"github.com/cncf/podtato-head/podtato-server/pkg"
 	"strconv"
 	"time"
 
@@ -11,15 +9,11 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"html/template"
 	"log"
 	"net/http"
 )
 
-var podtatoConfiguration *pkg.PodtatoConfig
 
-// HTML page template
-var overviewTemplate *template.Template
 
 // create a new counter vector
 var getCallCounter = prometheus.NewCounterVec(
@@ -38,10 +32,6 @@ var responseTimeHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 	Buckets: buckets,
 }, []string{"route", "method", "status_code"})
 
-
-
-// create a handler struct
-type HTTPHandler struct{}
 
 type statusRecorder struct {
 	http.ResponseWriter
@@ -64,30 +54,6 @@ func getRoutePattern(r *http.Request) string {
 	return "undefined"
 }
 
-// implement `ServeHTTP` method on `HttpHandler` struct
-func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-	var status string
-	defer func() {
-		// increment the counter on defer func
-		getCallCounter.WithLabelValues(status).Inc()
-	}()
-
-	overviewTemplate = template.Must(template.ParseFiles("./static/podtato-new.html"))
-	err := overviewTemplate.Execute(res, podtatoConfiguration)
-
-	if err != nil {
-		log.Print(err.Error())
-	}
-	// Slow build
-	if podtatoConfiguration.ServiceVersion == "0.1.2" {
-		time.Sleep(2 * time.Second)
-	}
-
-	if err != nil {
-		status = "error"
-	}
-	status = "success"
-}
 
 func prometheusMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -110,34 +76,20 @@ func init() {
 }
 
 func main() {
-	// expecting version as first parameter
-	serviceVersion := flag.String("version","","Service version e.g. 0.1.0")
-	flag.Parse()
-
-	var err error
-	podtatoConfiguration,err = pkg.GetAssembledPodtatoConfiguration(*serviceVersion)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// create a new handler
-	handler := HTTPHandler{}
-
 	router := mux.NewRouter()
 	router.Use(prometheusMiddleware)
 
-	router.Path("/").Handler(handler)
-	router.Path("/")
 
-	staticDir := "/static/"
+	staticDir := "/static/images/"
 
 	// Serving static files
 	router.
-		PathPrefix(staticDir).
-		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir("."+staticDir))))
+		PathPrefix("/images/").
+		Handler(http.StripPrefix("/images/", http.FileServer(http.Dir("."+staticDir))))
 
 	router.Path("/metrics").Handler(promhttp.Handler())
 
 	fmt.Println("Serving requests on port 9000")
-	err = http.ListenAndServe(":9000", router)
+	err := http.ListenAndServe(":9000", router)
 	log.Fatal(err)
 }

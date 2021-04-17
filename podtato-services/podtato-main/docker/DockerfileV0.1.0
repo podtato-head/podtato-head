@@ -18,7 +18,7 @@ WORKDIR /build
 COPY . .
 
 # Build the application
-RUN go build -o podtatoserver ./podtatoserver.go
+RUN go build -o podtatoserver ./server.go
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
@@ -27,7 +27,7 @@ WORKDIR /dist
 RUN cp /build/podtatoserver .
 
 # Build a small image
-FROM scratch
+FROM alpine
 
 COPY --from=builder /dist/podtatoserver /
 COPY /static  /static
@@ -37,4 +37,4 @@ COPY /static/podtato-new.html  /podtato-new.html
 EXPOSE 9000
 
 # Command to run when starting the container
-CMD ["/podtatoserver", "--version", "0.1.2" ]
+CMD ["/podtatoserver", "--version", "0.1.0" ]

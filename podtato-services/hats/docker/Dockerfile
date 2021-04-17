@@ -18,7 +18,7 @@ WORKDIR /build
 COPY . .
 
 # Build the application
-RUN go build -o podtatoserver ./podtatoserver.go
+RUN go build -o podtatoserver .
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
@@ -31,10 +31,9 @@ FROM scratch
 
 COPY --from=builder /dist/podtatoserver /
 COPY /static  /static
-COPY /static/podtato-new.html  /podtato-new.html
 
 # Export necessary port
 EXPOSE 9000
 
 # Command to run when starting the container
-CMD ["/podtatoserver", "--version", "0.1.1"]
+CMD ["/podtatoserver" ]
