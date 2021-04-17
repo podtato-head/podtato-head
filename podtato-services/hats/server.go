@@ -13,8 +13,6 @@ import (
 	"net/http"
 )
 
-
-
 // create a new counter vector
 var getCallCounter = prometheus.NewCounterVec(
 	prometheus.CounterOpts{
@@ -31,7 +29,6 @@ var responseTimeHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 	Help:    "Histogram of response time for handler in seconds",
 	Buckets: buckets,
 }, []string{"route", "method", "status_code"})
-
 
 type statusRecorder struct {
 	http.ResponseWriter
@@ -53,7 +50,6 @@ func getRoutePattern(r *http.Request) string {
 
 	return "undefined"
 }
-
 
 func prometheusMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +74,6 @@ func init() {
 func main() {
 	router := mux.NewRouter()
 	router.Use(prometheusMiddleware)
-
 
 	staticDir := "/static/images/"
 

@@ -16,17 +16,16 @@ var serviceMap = map[string]string{
 
 func ProviderHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	callPodtatoService(w, vars["service"],vars["img"])
+	callPodtatoService(w, vars["service"], vars["img"])
 }
 
-
-func callPodtatoService(w http.ResponseWriter, part, image string){
-	if _,ok:=serviceMap[part];!ok{
+func callPodtatoService(w http.ResponseWriter, part, image string) {
+	if _, ok := serviceMap[part]; !ok {
 		http.Error(w, "invalid part", http.StatusNotFound)
 		return
 	}
 
-	resp, err := http.Get("http://"+serviceMap[part]+"/images/"+image)
+	resp, err := http.Get("http://" + serviceMap[part] + "/images/" + image)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -40,7 +39,7 @@ func callPodtatoService(w http.ResponseWriter, part, image string){
 		return
 	}
 
-	w.Header().Set("Content-Type","image/svg+xml")
+	w.Header().Set("Content-Type", "image/svg+xml")
 	w.WriteHeader(resp.StatusCode)
 	w.Write(body)
 }
