@@ -1,9 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/cncf/podtato-head/podtato-services/podtato-main/pkg"
+	"os"
 	"strconv"
 	"time"
 
@@ -16,7 +16,7 @@ import (
 	"net/http"
 )
 
-var podtatoConfiguration *pkg.PodtatoConfig
+var serviceVersion string
 
 // HTML page template
 var overviewTemplate *template.Template
@@ -71,13 +71,13 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	}()
 
 	overviewTemplate = template.Must(template.ParseFiles("./static/podtato-new.html"))
-	err := overviewTemplate.Execute(res, podtatoConfiguration)
+	err := overviewTemplate.Execute(res, serviceVersion)
 
 	if err != nil {
 		log.Print(err.Error())
 	}
 	// Slow build
-	if podtatoConfiguration.ServiceVersion == "0.1.2" {
+	if serviceVersion == "0.1.2" {
 		time.Sleep(2 * time.Second)
 	}
 
@@ -109,14 +109,8 @@ func init() {
 
 func main() {
 	// expecting version as first parameter
-	serviceVersion := flag.String("version", "", "Service version e.g. 0.1.0")
-	flag.Parse()
+	serviceVersion = os.Getenv("VERSION")
 
-	var err error
-	podtatoConfiguration, err = pkg.GetAssembledPodtatoConfiguration(*serviceVersion)
-	if err != nil {
-		log.Fatal(err)
-	}
 	// create a new handler
 	handler := HTTPHandler{}
 
@@ -138,6 +132,6 @@ func main() {
 	router.Path("/metrics").Handler(promhttp.Handler())
 
 	fmt.Println("Serving requests on port 9000")
-	err = http.ListenAndServe(":9000", router)
+	err := http.ListenAndServe(":9000", router)
 	log.Fatal(err)
 }

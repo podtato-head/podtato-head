@@ -31,16 +31,7 @@ _build_check_docker:
 		fi;
 
 .PHONY: all
-all: build-push-main build-push-parts
+all: build-push
 
-build-push-main:
-	@echo "------------------"
-	@echo "--> building and pushing podtato-head body image"
-	@echo "------------------"
+build-push:
 	REPOSITORY=$(REPONAME) bash build/main.sh
-
-build-push-parts:
-	@echo "------------------"
-	@echo "--> building and pushing podtato-head parts image"
-	@echo "------------------"
-	REPOSITORY=$(REPONAME) TAG="latest" bash build/parts.sh

@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gdsoumya/podtato-main:v0.1.1
+        image: gdsoumya/podtato-main:v0.1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 9000
@@ -63,7 +63,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image: gdsoumya/podtato-hats:latest
+          image: gdsoumya/podtato-hats:v0.1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -105,7 +105,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image: gdsoumya/podtato-left-leg:latest
+          image: gdsoumya/podtato-left-leg:v0.1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -147,7 +147,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image: gdsoumya/podtato-left-arm:latest
+          image: gdsoumya/podtato-left-arm:v0.1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -189,7 +189,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image: gdsoumya/podtato-right-leg:latest
+          image: gdsoumya/podtato-right-leg:v0.1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -231,7 +231,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image: gdsoumya/podtato-right-arm:latest
+          image: gdsoumya/podtato-right-arm:v0.1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 9000

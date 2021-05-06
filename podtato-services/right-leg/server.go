@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/cncf/podtato-head/podtato-services/right-leg/pkg"
+	"os"
 	"strconv"
 	"time"
 
@@ -72,16 +74,16 @@ func init() {
 }
 
 func main() {
+	serviceVersion := os.Getenv("VERSION")
 
 	router := mux.NewRouter()
 	router.Use(prometheusMiddleware)
 
 	staticDir := "/static/images/"
+	versionedHandler := pkg.NewVersionedHandler(serviceVersion, staticDir)
 
-	// Serving static files
-	router.
-		PathPrefix("/images/").
-		Handler(http.StripPrefix("/images/", http.FileServer(http.Dir("."+staticDir))))
+	// Serving image
+	router.Path("/images/{hat}").HandlerFunc(versionedHandler.Handler)
 
 	router.Path("/metrics").Handler(promhttp.Handler())
 

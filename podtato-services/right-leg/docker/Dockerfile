@@ -32,8 +32,11 @@ FROM scratch
 COPY --from=builder /dist/podtatoserver /
 COPY /static  /static
 
+ARG VERSION
+ENV VERSION=${VERSION}
+
 # Export necessary port
 EXPOSE 9000
 
 # Command to run when starting the container
-CMD ["/podtatoserver" ]
+CMD ["/podtatoserver"]

@@ -27,14 +27,17 @@ WORKDIR /dist
 RUN cp /build/podtatoserver .
 
 # Build a small image
-FROM alpine
+FROM scratch
 
 COPY --from=builder /dist/podtatoserver /
 COPY /static  /static
 COPY /static/podtato-new.html  /podtato-new.html
 
+ARG VERSION
+ENV VERSION=${VERSION}
+
 # Export necessary port
 EXPOSE 9000
 
 # Command to run when starting the container
-CMD ["/podtatoserver", "--version", "0.1.2" ]
+CMD ["/podtatoserver"]
