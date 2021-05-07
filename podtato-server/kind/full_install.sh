@@ -10,6 +10,6 @@ helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
 helm install traefik traefik/traefik -f traefik_values.yaml
 
-echo "Exposing traefik dasboard"
+echo "Exposing traefik dashboard"
 
 kubectl apply -f ./traefik_dashboard.yaml
