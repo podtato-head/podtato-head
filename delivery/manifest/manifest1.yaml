@@ -1,0 +1,256 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demospace-spoof
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podtato-main
+  namespace: demospace-spoof
+spec:
+  selector:
+    matchLabels:
+      app: podtato-main
+  template:
+    metadata:
+      labels:
+        app: podtato-main
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: server
+        image: gdsoumya/podtato-main:v0.1.3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9000
+        env:
+        - name: PORT
+          value: "9000"
+                    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podtato-main
+  namespace: demospace-spoof
+spec:
+  selector:
+    app: podtato-main
+  ports:
+  - name: http
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podtato-hats
+  namespace: demospace-spoof
+spec:
+  selector:
+    matchLabels:
+      app: podtato-hats
+  template:
+    metadata:
+      labels:
+        app: podtato-hats
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: server
+          image: gdsoumya/podtato-hats:v0.1.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+            - name: PORT
+              value: "9000"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podtato-hats
+  namespace: demospace-spoof
+spec:
+  selector:
+    app: podtato-hats
+  ports:
+    - name: http
+      port: 9001
+      protocol: TCP
+      targetPort: 9000
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podtato-left-leg
+  namespace: demospace-spoof
+spec:
+  selector:
+    matchLabels:
+      app: podtato-left-leg
+  template:
+    metadata:
+      labels:
+        app: podtato-left-leg
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: server
+          image: gdsoumya/podtato-left-leg:v0.1.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+            - name: PORT
+              value: "9000"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podtato-left-leg
+  namespace: demospace-spoof
+spec:
+  selector:
+    app: podtato-left-leg
+  ports:
+    - name: http
+      port: 9002
+      protocol: TCP
+      targetPort: 9000
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podtato-left-arm
+  namespace: demospace-spoof
+spec:
+  selector:
+    matchLabels:
+      app: podtato-left-arm
+  template:
+    metadata:
+      labels:
+        app: podtato-left-arm
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: server
+          image: gdsoumya/podtato-left-arm:v0.1.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+            - name: PORT
+              value: "9000"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podtato-left-arm
+  namespace: demospace-spoof
+spec:
+  selector:
+    app: podtato-left-arm
+  ports:
+    - name: http
+      port: 9003
+      protocol: TCP
+      targetPort: 9000
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podtato-right-leg
+  namespace: demospace-spoof
+spec:
+  selector:
+    matchLabels:
+      app: podtato-right-leg
+  template:
+    metadata:
+      labels:
+        app: podtato-right-leg
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: server
+          image: gdsoumya/podtato-right-leg:v0.1.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+            - name: PORT
+              value: "9000"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podtato-right-leg
+  namespace: demospace-spoof
+spec:
+  selector:
+    app: podtato-right-leg
+  ports:
+    - name: http
+      port: 9004
+      protocol: TCP
+      targetPort: 9000
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podtato-right-arm
+  namespace: demospace-spoof
+spec:
+  selector:
+    matchLabels:
+      app: podtato-right-arm
+  template:
+    metadata:
+      labels:
+        app: podtato-right-arm
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: server
+          image: gdsoumya/podtato-right-arm:v0.1.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+            - name: PORT
+              value: "9000"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podtato-right-arm
+  namespace: demospace-spoof
+spec:
+  selector:
+    app: podtato-right-arm
+  ports:
+    - name: http
+      port: 9005
+      protocol: TCP
+      targetPort: 9000
+  type: ClusterIP

@@ -34,4 +34,7 @@ _build_check_docker:
 all: build-push
 
 build-push:
+	REPOSITORY=$(REPONAME) PUSH=yes bash build/main.sh
+
+build-only:
 	REPOSITORY=$(REPONAME) bash build/main.sh
