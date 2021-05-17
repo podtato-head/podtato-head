@@ -24,15 +24,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       - name: Build
-        run: |
-          cd podtato-server
-          docker buildx build --tag podtatoserver:v0.1.0 --cache-from type=local,src=/tmp/.buildx-cache \
-          --cache-to type=local,dest=/tmp/.buildx-cache-new --file ./docker/DockerfileV0.1.0 .
-          docker buildx build --tag podtatoserver:v0.1.1 --cache-from type=local,src=/tmp/.buildx-cache \
-          --cache-to type=local,dest=/tmp/.buildx-cache-new --file ./docker/DockerfileV0.1.1 .
-          docker buildx build --tag podtatoserver:v0.1.2 --cache-from type=local,src=/tmp/.buildx-cache \
-          --cache-to type=local,dest=/tmp/.buildx-cache-new --file ./docker/DockerfileV0.1.2 .
-      - name: Move cache
-        run: |
-            rm -rf /tmp/.buildx-cache
-            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+        run: make build-only
