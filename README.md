@@ -32,7 +32,7 @@ currently supported:
 * [Helm-based operator deployment](/delivery/podtato-operator/README.md)
 * [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
 * [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md)
-* [GitOps-based deployment using KubeVella](/delivery/KubeVela/README.md)
+* [GitOps-based deployment using KubeVela](/delivery/KubeVela/README.md)
 * [GitOps-based deployment using Gimlet CLI](/delivery/gimlet/README.md)
 
 Use cases supported going foward:
