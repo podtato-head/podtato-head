@@ -6,6 +6,9 @@ Following activities are planned for future implementation of the PodTatoHead De
 
 The application will be split up into multiple components to depict a microservice architecture. Based on this, more sophisticated deployment scenarios can be represented. A possible approach for this is already implemented in the "microservice"-branch of the podtato-head repository.
 
+**Building more complex scenarios**
+In the future, the application will also contain stateful workloads, which makes the demonstration of more complex scenario possible.
+
 **Automated testing of the provided samples**
 
 This should ensure that the provided deployment mechanisms work but also provide real-world examples for their automation.
