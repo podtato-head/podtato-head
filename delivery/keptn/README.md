@@ -57,12 +57,12 @@ You can now login into Keptn portal.
 ./initProject.sh onboard-service
 ```
 
-### Deploy Service (new-artifact)
+### Deploy Service
 ```
 ./initProject.sh first-deploy-service
 ```
 
-### Upgrade Service (new-artifact)
+### Upgrade Service
 
 ```
 ./initProject.sh upgrade-service
