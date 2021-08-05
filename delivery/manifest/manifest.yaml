@@ -35,6 +35,8 @@ kind: Service
 metadata:
   name: helloservice
   namespace: demospace
+  labels: 
+    app: helloservice
 spec:
   selector:
     app: helloservice
