@@ -21,7 +21,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: checkout main branch
+        uses: actions/checkout@v2
       
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
@@ -36,3 +37,22 @@ jobs:
         run: |
           cd podtato-server
           ./scripts/buildPush.sh
+
+  build-microservices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout microservices branch
+        uses: actions/checkout@v2
+        with:
+          ref: microservices
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}  
+        
+      # Run script to build all container images
+      - name: Create container images
+        run: make all
