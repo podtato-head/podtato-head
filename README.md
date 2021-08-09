@@ -49,6 +49,7 @@ If you do not have a K8S cluster at your disposal, you can quickly get a local o
 
 _NOTE_: If you use a cluster with no access to external LoadBalancer (like a `kind` cluster), you may have to replace `type: LoadBalancer` by `type: ClusterIP` (or `type: NodePort`) in all `service.yaml` manifests :
 
+
 ```
 find delivery -type f -name "*.yaml" -print0 | xargs -0 sed -i 's/type: LoadBalancer/type: ClusterIP/g'
 ```
