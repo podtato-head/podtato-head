@@ -158,3 +158,16 @@ jobs:
           ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
           vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
           severity: '${{ env.TRIVY_SEVERITY }}'
+
+  test_manifest_deployment:
+    name: Test manifest-based deployment
+    # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
+    # built afterwards (in other jobs that depend on this one).
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test
+        run: |
+          kubectl get pods
