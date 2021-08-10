@@ -17,12 +17,6 @@ on:
 
 env:
   CONTAINER_REGISTRY: ghcr.io
-  CONTAINER_PODTATO_MAIN: podtato-head/podtato-main
-  CONTAINER_LEFT_LEG: podtato-head/podtato-left-leg
-  CONTAINER_RIGHT_LEG: podtato-head/podtato-right-leg
-  CONTAINER_LEFT_ARM: podtato-head/podtato-left-arm
-  CONTAINER_RIGHT_ARM: podtato-head/podtato-right-arm
-  CONTAINER_HATS: podtato-head/podtato-hats
   TRIVY_IGNORE_UNFIXED: true
   TRIVY_VULN_TYPE: 'os,library'
   TRIVY_SEVERITY: 'CRITICAL,HIGH'
@@ -113,7 +107,7 @@ jobs:
     needs: [prepare_ci_run]
     strategy:
       matrix:
-        component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "podtato-main" ]
+        component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "main" ]
         version: [ "v1", "v2", "v3", "v4" ]
     runs-on: ubuntu-20.04
     env:
@@ -152,13 +146,13 @@ jobs:
           file: podtato-services/${{ matrix.component }}/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/podtato-head/${{ matrix.component }}:${{ matrix.version}}-latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/podtato-head/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/podtato-head/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}'
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
