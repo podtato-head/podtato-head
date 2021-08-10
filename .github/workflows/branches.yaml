@@ -304,7 +304,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:${{ env.VERSION }}'
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_HATS }}:${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
