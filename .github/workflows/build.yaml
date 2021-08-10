@@ -161,7 +161,7 @@ jobs:
 
   test_manifest_deployment:
     name: Test manifest-based deployment
-    needs: [container_build]
+    needs: [prepare_ci_run, container_build]
     # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
     # built afterwards (in other jobs that depend on this one).
 
@@ -180,4 +180,4 @@ jobs:
         run: |
           sed "s/latest-dev/${{ env.VERSION }}/g" delivery/manifest/manifest.yaml | kubectl apply -f -
           kubectl get deploy -A -n demospace -owide
-          kubectl wait --for=condition=ready --timeout=120s pod --all -n demospace
+          kubectl wait --for=condition=ready pod --timeout=30s -l app -n demospace
