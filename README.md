@@ -33,7 +33,7 @@ currently supported:
 * [Helm-based operator deployment](/delivery/podtato-operator/README.md)
 * [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
 * [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md)
-* [GitOps-based deployment using KubeVella](/delivery/KubeVela/README.md)
+* [GitOps-based deployment using KubeVela](/delivery/KubeVela/README.md)
 * [GitOps-based deployment using Gimlet CLI](/delivery/gimlet/README.md)
 
 Use cases supported going foward:
@@ -49,6 +49,7 @@ You can use any K8S cluster to run this project.
 If you do not have a K8S cluster at your disposal, you can quickly get a local one with [kind](https://kind.sigs.k8s.io/docs/user/quick-start/).
 
 _NOTE_: If you use a cluster with no access to external LoadBalancer (like a `kind` cluster), you may have to replace `type: LoadBalancer` by `type: ClusterIP` (or `type: NodePort`) in all `service.yaml` manifests :
+
 
 ```
 find delivery -type f -name "*.yaml" -print0 | xargs -0 sed -i 's/type: LoadBalancer/type: ClusterIP/g'
