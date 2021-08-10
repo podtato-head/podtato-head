@@ -176,4 +176,5 @@ jobs:
 
       - name: Test Deployment
         run: |
-          sed 's/latest-dev/${{ env.VERSION }}/g' delivery/manifest/manifest.yaml | kubectl apply -f - --timeout=60s --wait
+          sed 's/latest-dev/${{ env.VERSION }}/g' delivery/manifest/manifest.yaml | kubectl apply -f -
+          kubectl wait --for=condition=ready pod --all -n demospace -t 120
