@@ -106,7 +106,7 @@ jobs:
     needs: [prepare_ci_run]
     strategy:
       matrix:
-        component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hat", "podtato-master" ]
+        component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "podtato-main" ]
     runs-on: ubuntu-20.04
     env:
       BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
