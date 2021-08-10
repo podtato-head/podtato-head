@@ -126,6 +126,7 @@ jobs:
         with:
           version: v1.29
           working-directory: podtato-services/podtato-main
+          args: --issues-exit-code=0
 
       - name: Build
         id: docker_build_podtato-main
@@ -161,6 +162,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          working-directory: podtato-services/right-leg
+          args: --issues-exit-code=0
+
       - name: Build
         id: docker_build_right-leg
         uses: docker/build-push-action@v2
@@ -194,6 +202,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          working-directory: podtato-services/left-leg
+          args: --issues-exit-code=0
 
       - name: Build
         id: docker_build_left-leg
@@ -229,6 +244,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          working-directory: podtato-services/right-arm
+          args: --issues-exit-code=0
+
       - name: Build
         id: docker_build_right-arm
         uses: docker/build-push-action@v2
@@ -263,6 +285,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          working-directory: podtato-services/left-arm
+          args: --issues-exit-code=0
+
       - name: Build
         id: docker_build_left-arm
         uses: docker/build-push-action@v2
@@ -296,6 +325,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          working-directory: podtato-services/hats
+          args: --issues-exit-code=0
 
       - name: Build
         id: docker_build_hats
