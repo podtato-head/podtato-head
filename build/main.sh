@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -a TAGS=("0.1.0" "0.1.1" "0.1.2" "0.1.3" "0.1.4")
+declare -a TAGS=("v1" "v2" "v3" "v4")
 
 for TAG in "${TAGS[@]}"
 do
