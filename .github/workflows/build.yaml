@@ -167,8 +167,13 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.2.0
+
       - name: Test Deployment
         run: |
           sed 's/latest-dev/${{ env.VERSION }}/g' delivery/manifest/manifest.yaml | kubectl apply -f - --timeout=60s --wait
