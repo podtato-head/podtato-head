@@ -102,9 +102,11 @@ jobs:
   ############################################################################
   # Build Container Images                                                   #
   ############################################################################
-  container_build_podtato-main:
+  container_build:
     needs: [prepare_ci_run]
-    name: Container Build podtato-main
+    strategy:
+      matrix:
+        component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hat", "podtato-master" ]
     runs-on: ubuntu-20.04
     env:
       BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
@@ -127,275 +129,25 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
-          working-directory: podtato-services/podtato-main
+          working-directory: podtato-services/${{ matrix.component }}
           args: --issues-exit-code=0
 
       - name: Build
-        id: docker_build_podtato-main
+        id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: podtato-services/podtato-main/.
+          context: podtato-services/${{ matrix.component }}/.
           push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-          file: podtato-services/podtato-main/docker/Dockerfile
+          file: podtato-services/${{ matrix.component }}/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:${{ env.VERSION }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
-          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
-          severity: '${{ env.TRIVY_SEVERITY }}'
-          
-  container_build_right-leg:
-    needs: [prepare_ci_run]
-    name: Container Build right-leg
-    runs-on: ubuntu-20.04
-    env:
-      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
-      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
-      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
-      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-          working-directory: podtato-services/right-leg
-          args: --issues-exit-code=0
-
-      - name: Build
-        id: docker_build_right-leg
-        uses: docker/build-push-action@v2
-        with:
-          context: podtato-services/right-leg/.
-          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-          file: podtato-services/right-leg/docker/Dockerfile
-          platforms: linux/amd64
-          tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_LEG }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_LEG }}:${{ env.VERSION }}
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_LEG }}:${{ env.VERSION }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
-          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
-          severity: '${{ env.TRIVY_SEVERITY }}'
-          
-  container_build_left-leg:
-    needs: [prepare_ci_run]
-    name: Container Build left-leg
-    runs-on: ubuntu-20.04
-    env:
-      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
-      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
-      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
-      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-          working-directory: podtato-services/left-leg
-          args: --issues-exit-code=0
-
-      - name: Build
-        id: docker_build_left-leg
-        uses: docker/build-push-action@v2
-        with:
-          context: podtato-services/left-leg/.
-          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-          file: podtato-services/left-leg/docker/Dockerfile
-          platforms: linux/amd64
-          tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_LEG }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_LEG }}:${{ env.VERSION }}
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_LEG }}:${{ env.VERSION }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
-          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
-          severity: '${{ env.TRIVY_SEVERITY }}'
-
-  container_build_right-arm:
-    needs: [prepare_ci_run]
-    name: Container Build right-arm
-    runs-on: ubuntu-20.04
-    env:
-      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
-      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
-      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
-      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-          working-directory: podtato-services/right-arm
-          args: --issues-exit-code=0
-
-      - name: Build
-        id: docker_build_right-arm
-        uses: docker/build-push-action@v2
-        with:
-          context: podtato-services/right-arm/.
-          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-          file: podtato-services/right-arm/docker/Dockerfile
-          platforms: linux/amd64
-          tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_ARM }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_ARM }}:${{ env.VERSION }}
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_ARM }}:${{ env.VERSION }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
-          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
-          severity: '${{ env.TRIVY_SEVERITY }}'
-          
-  container_build_left-arm:
-    needs: [prepare_ci_run]
-    name: Container Build left-arm
-    runs-on: ubuntu-20.04
-    env:
-      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
-      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
-      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
-      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-          working-directory: podtato-services/left-arm
-          args: --issues-exit-code=0
-
-      - name: Build
-        id: docker_build_left-arm
-        uses: docker/build-push-action@v2
-        with:
-          context: podtato-services/left-arm/.
-          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-          file: podtato-services/left-arm/docker/Dockerfile
-          platforms: linux/amd64
-          tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:${{ env.VERSION }}
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:${{ env.VERSION }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
-          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
-          severity: '${{ env.TRIVY_SEVERITY }}'
-
-  container_build_hats:
-    needs: [prepare_ci_run]
-    name: Container Build hats
-    runs-on: ubuntu-20.04
-    env:
-      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
-      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
-      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
-      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-          working-directory: podtato-services/hats
-          args: --issues-exit-code=0
-
-      - name: Build
-        id: docker_build_hats
-        uses: docker/build-push-action@v2
-        with:
-          context: podtato-services/hats/.
-          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
-          file: podtato-services/left-arm/docker/Dockerfile
-          platforms: linux/amd64
-          tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_HATS }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_HATS }}:${{ env.VERSION }}
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_HATS }}:${{ env.VERSION }}'
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
