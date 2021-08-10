@@ -107,7 +107,7 @@ jobs:
     strategy:
       matrix:
         component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "podtato-main" ]
-        version: [ "v1", "v2", "v3", "4" ]
+        version: [ "v1", "v2", "v3", "v4" ]
     runs-on: ubuntu-20.04
     env:
       BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
@@ -150,7 +150,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ env.VERSION }}'
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
