@@ -15,6 +15,10 @@ on:
       - '!main'
       - '!release-*'
 
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  CONTAINER_PODTATO_MAIN: podtato-head/podtato-main
+
 defaults:
   run:
     shell: bash
@@ -41,12 +45,6 @@ jobs:
         with:
           fetch-depth: 0 # need to checkout "all commits" for certain features to work (e.g., get all changed files)
 
-      - name: Load CI Environment from .ci_env
-        id: load_ci_env
-        uses: c-py/action-dotenv-to-setenv@v3
-        with:
-          env-file: .github/workflows/.ci_env
-
       - name: Extract branch name
         id: extract_branch
         # see https://github.com/keptn/gh-action-extract-branch-name for details
@@ -57,6 +55,7 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1.1"
         with:
           fallback: "0.0.1"
+
       - name: 'Get next patch version'
         id: get_next_semver_tag
         uses: "WyriHaximus/github-action-next-semvers@v1.1"
@@ -127,13 +126,13 @@ jobs:
           file: podtato-services/podtato-main/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ghcr.io/podtato-head/podtato-main:latest
-            ghcr.io/podtato-head/podtato-main:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:latest
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/podtato-head/podtato-main:${{ env.VERSION }}'
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
