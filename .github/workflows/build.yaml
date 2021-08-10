@@ -161,6 +161,7 @@ jobs:
 
   test_manifest_deployment:
     name: Test manifest-based deployment
+    needs: [container_build]
     # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
     # built afterwards (in other jobs that depend on this one).
 
@@ -168,6 +169,6 @@ jobs:
     steps:
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.2.0
-      - name: Test
+      - name: Test Deployment
         run: |
-          kubectl get pods
+          sed 's/latest-dev/${{ env.VERSION }}/g' delivery/manifest/manifest.yaml' | kubectl apply -f - --timeout=60s --wait
