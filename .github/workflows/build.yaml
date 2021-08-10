@@ -159,6 +159,12 @@ jobs:
           vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
           severity: '${{ env.TRIVY_SEVERITY }}'
 
+      - name: Sign Container
+        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: cosign sign -key .github/workflows/cosign.key -a GIT_HASH=${{ env.GIT_SHA }} -a VERSION=${{ needs.prepare_ci_run.outputs.VERSION }} ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
+
   test_manifest_deployment:
     name: Test manifest-based deployment
     needs: [prepare_ci_run, container_build]
