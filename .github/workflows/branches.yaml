@@ -162,8 +162,8 @@ jobs:
           file: podtato-services/right-leg/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_LEG }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_LEG }}:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_LEG }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_LEG }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -196,8 +196,8 @@ jobs:
           file: podtato-services/left-leg/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_LEG }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_LEG }}:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_LEG }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_LEG }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -211,7 +211,7 @@ jobs:
 
   container_build_right-arm:
     needs: [prepare_ci_run]
-    name: Container Build left-leg
+    name: Container Build right-arm
     runs-on: ubuntu-20.04
     env:
       BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
@@ -230,8 +230,8 @@ jobs:
           file: podtato-services/right-arm/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_ARM }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_ARM }}:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_ARM }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_ARM }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -245,7 +245,7 @@ jobs:
           
   container_build_left-arm:
     needs: [prepare_ci_run]
-    name: Container Build left-leg
+    name: Container Build left-arm
     runs-on: ubuntu-20.04
     env:
       BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
@@ -264,8 +264,8 @@ jobs:
           file: podtato-services/left-arm/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -298,8 +298,8 @@ jobs:
           file: podtato-services/left-arm/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_HATS }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_HATS }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
