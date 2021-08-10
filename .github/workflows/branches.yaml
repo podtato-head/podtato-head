@@ -85,16 +85,13 @@ jobs:
           if [[ "$BRANCH" == "release-"* ]]; then
             # Release Branch: extract version from branch name
             VERSION=${BRANCH#"release-"}
-            PUSH_IMAGE=true
             else
             if [[ "$BRANCH" == "master" ]]; then
               # master branch = latest-dev
               VERSION="${GIT_NEXT_TAG}-dev"
-              PUSH_IMAGE=true
             else
               # Feature/Development Branch - use last tag with branch slug
               VERSION="${GIT_NEXT_TAG}-dev-${BRANCH_SLUG}"
-              PUSH_IMAGE=false
             fi
           fi
 
@@ -137,7 +134,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: podtato-services/podtato-main/.
-          push: ${{ env.PUSH_IMAGE }}
+          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/podtato-main/docker/Dockerfile
           platforms: linux/amd64
           tags: |
@@ -179,7 +176,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: podtato-services/right-leg/.
-          push: ${{ env.PUSH_IMAGE }}
+          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/right-leg/docker/Dockerfile
           platforms: linux/amd64
           tags: |
@@ -221,7 +218,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: podtato-services/left-leg/.
-          push: ${{ env.PUSH_IMAGE }}
+          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/left-leg/docker/Dockerfile
           platforms: linux/amd64
           tags: |
@@ -263,7 +260,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: podtato-services/right-arm/.
-          push: ${{ env.PUSH_IMAGE }}
+          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/right-arm/docker/Dockerfile
           platforms: linux/amd64
           tags: |
@@ -305,7 +302,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: podtato-services/left-arm/.
-          push: ${{ env.PUSH_IMAGE }}
+          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/left-arm/docker/Dockerfile
           platforms: linux/amd64
           tags: |
@@ -347,7 +344,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: podtato-services/hats/.
-          push: ${{ env.PUSH_IMAGE }}
+          push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/left-arm/docker/Dockerfile
           platforms: linux/amd64
           tags: |
