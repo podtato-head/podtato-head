@@ -104,8 +104,9 @@ jobs:
           echo "::set-output name=TIME::$(date +'%H%M')"
           echo "::set-output name=DATETIME::$(date +'%Y%m%d')$(date +'%H%M')"
 
+
   ############################################################################
-  # Build Container Images                                                      #
+  # Build Container Images                                                   #
   ############################################################################
   container_build_podtato-main:
     needs: [prepare_ci_run]
@@ -119,6 +120,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          working-directory: podtato-services/podtato-main
 
       - name: Build
         id: docker_build_podtato-main
