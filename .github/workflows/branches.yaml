@@ -18,7 +18,15 @@ on:
 env:
   CONTAINER_REGISTRY: ghcr.io
   CONTAINER_PODTATO_MAIN: podtato-head/podtato-main
-
+  CONTAINER_LEFT_LEG: podtato-head/podtato-left-leg
+  CONTAINER_RIGHT_LEG: podtato-head/podtato-right-leg
+  CONTAINER_LEFT_ARM: podtato-head/podtato-left-arm
+  CONTAINER_RIGHT_ARM: podtato-head/podtato-right-arm
+  CONTAINER_HATS: podtato-head/podtato-hats
+  TRIVY_IGNORE_UNFIXED: true
+  TRIVY_VULN_TYPE: 'os,library'
+  TRIVY_SEVERITY: 'CRITICAL,HIGH'
+  
 defaults:
   run:
     shell: bash
@@ -78,7 +86,7 @@ jobs:
             VERSION=${BRANCH#"release-"}
             else
             if [[ "$BRANCH" == "master" ]]; then
-              # master branch = latest
+              # master branch = latest-dev
               VERSION="${GIT_NEXT_TAG}-dev"
             else
               # Feature/Development Branch - use last tag with branch slug
@@ -120,7 +128,7 @@ jobs:
           file: podtato-services/podtato-main/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:latest
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:latest-dev
             ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
@@ -129,6 +137,176 @@ jobs:
           image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_MAIN }}:${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
+          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
+          severity: '${{ env.TRIVY_SEVERITY }}'
+          
+  container_build_right-leg:
+    needs: [prepare_ci_run]
+    name: Container Build right-leg
+    runs-on: ubuntu-20.04
+    env:
+      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
+      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build
+        id: docker_build_right-leg
+        uses: docker/build-push-action@v2
+        with:
+          context: podtato-services/right-leg/.
+          file: podtato-services/right-leg/docker/Dockerfile
+          platforms: linux/amd64
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_LEG }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_LEG }}:${{ env.VERSION }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_LEG }}:${{ env.VERSION }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
+          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
+          severity: '${{ env.TRIVY_SEVERITY }}'
+          
+  container_build_left-leg:
+    needs: [prepare_ci_run]
+    name: Container Build left-leg
+    runs-on: ubuntu-20.04
+    env:
+      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
+      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build
+        id: docker_build_left-leg
+        uses: docker/build-push-action@v2
+        with:
+          context: podtato-services/left-leg/.
+          file: podtato-services/left-leg/docker/Dockerfile
+          platforms: linux/amd64
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_LEG }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_LEG }}:${{ env.VERSION }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_LEG }}:${{ env.VERSION }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
+          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
+          severity: '${{ env.TRIVY_SEVERITY }}'
+
+  container_build_right-arm:
+    needs: [prepare_ci_run]
+    name: Container Build left-leg
+    runs-on: ubuntu-20.04
+    env:
+      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
+      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build
+        id: docker_build_right-arm
+        uses: docker/build-push-action@v2
+        with:
+          context: podtato-services/right-arm/.
+          file: podtato-services/right-arm/docker/Dockerfile
+          platforms: linux/amd64
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_ARM }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_RIGHT_ARM }}:${{ env.VERSION }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_RIGHT_ARM }}:${{ env.VERSION }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
+          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
+          severity: '${{ env.TRIVY_SEVERITY }}'
+          
+  container_build_left-arm:
+    needs: [prepare_ci_run]
+    name: Container Build left-leg
+    runs-on: ubuntu-20.04
+    env:
+      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
+      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build
+        id: docker_build_left-arm
+        uses: docker/build-push-action@v2
+        with:
+          context: podtato-services/left-arm/.
+          file: podtato-services/left-arm/docker/Dockerfile
+          platforms: linux/amd64
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:${{ env.VERSION }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:${{ env.VERSION }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
+          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
+          severity: '${{ env.TRIVY_SEVERITY }}'
+
+  container_build_hats:
+    needs: [prepare_ci_run]
+    name: Container Build hats
+    runs-on: ubuntu-20.04
+    env:
+      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
+      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build
+        id: docker_build_hats
+        uses: docker/build-push-action@v2
+        with:
+          context: podtato-services/hats/.
+          file: podtato-services/left-arm/docker/Dockerfile
+          platforms: linux/amd64
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_PODTATO_LEFT_ARM }}:${{ env.VERSION }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_LEFT_ARM }}:${{ env.VERSION }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
+          vuln-type: '${{ env.TRIVY_VULN_TYPE }}'
+          severity: '${{ env.TRIVY_SEVERITY }}'
