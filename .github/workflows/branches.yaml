@@ -1,19 +1,12 @@
-name: branches
+name: builder
 
 on:
   push:
     branches:
-      - '*'         # matches every branch that doesn't contain a '/'
-      - '*/*'       # matches every branch containing a single '/'
       - '**'        # matches every branch
-      - '!master'   # excludes master
-      - '!main'
-      - '!release-*'
   pull_request:
     branches:
-      - '!master'
-      - '!main'
-      - '!release-*'
+      - '**'
 
 env:
   CONTAINER_REGISTRY: ghcr.io
