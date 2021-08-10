@@ -3,17 +3,13 @@ name: builder
 on:
   push:
     branches:
-      - 'master'
       - 'main'
       - 'release-*'
-      - 'microservices'
 
   pull_request:
     branches:
-      - 'master'
       - 'main'
       - 'release-*'
-      - 'microservices'
 
 env:
   CONTAINER_REGISTRY: ghcr.io
