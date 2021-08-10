@@ -3,6 +3,7 @@ package pkg
 import (
 	"github.com/gorilla/mux"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -41,5 +42,8 @@ func callPodtatoService(w http.ResponseWriter, part, image string) {
 
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.WriteHeader(resp.StatusCode)
-	w.Write(body)
+	_, err = w.Write(body)
+	if err != nil {
+		log.Printf("Write failed: %v", err)
+	}
 }

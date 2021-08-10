@@ -137,7 +137,6 @@ jobs:
         with:
           version: v1.29
           working-directory: podtato-services/${{ matrix.component }}
-          args: --issues-exit-code=0
 
       - name: Build
         id: docker_build
