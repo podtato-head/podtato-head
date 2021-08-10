@@ -166,6 +166,8 @@ jobs:
     # built afterwards (in other jobs that depend on this one).
 
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
     steps:
 
       - name: Checkout Code
