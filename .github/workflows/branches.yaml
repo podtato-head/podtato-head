@@ -145,13 +145,13 @@ jobs:
           file: podtato-services/${{ matrix.component }}/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ matrix.version}}-latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/${{ matrix.component }}:${{ matrix.version}}-latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}'
+          image-ref: '${{ env.CONTAINER_REGISTRY }}/podtato-head/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
