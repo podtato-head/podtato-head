@@ -107,6 +107,7 @@ jobs:
     strategy:
       matrix:
         component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "podtato-main" ]
+        version: [ "v1", "v2", "v3", "4" ]
     runs-on: ubuntu-20.04
     env:
       BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
@@ -136,13 +137,15 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          build-args: |
+            VERSION="${{ matrix.version }}"
           context: podtato-services/${{ matrix.component }}/.
           push: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/${{ matrix.component }}/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ matrix.version}}-latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
