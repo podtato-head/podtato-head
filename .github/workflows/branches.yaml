@@ -3,10 +3,16 @@ name: builder
 on:
   push:
     branches:
-      - '**'        # matches every branch
+      - 'master'
+      - 'main'
+      - 'release-*'
+      - 'microservices'
+
   pull_request:
     branches:
-      - '**'
+      - 'master'
+      - 'main'
+      - 'release-*'
 
 env:
   CONTAINER_REGISTRY: ghcr.io
