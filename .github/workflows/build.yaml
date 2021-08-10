@@ -176,6 +176,7 @@ jobs:
     # built afterwards (in other jobs that depend on this one).
 
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
     env:
       VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
     steps:
