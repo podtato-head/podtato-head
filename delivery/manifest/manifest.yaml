@@ -35,6 +35,8 @@ kind: Service
 metadata:
   name: podtato-main
   namespace: demospace
+  labels: 
+    app: helloservice
 spec:
   selector:
     app: podtato-main
