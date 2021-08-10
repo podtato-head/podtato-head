@@ -115,6 +115,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
@@ -156,6 +164,14 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
 
       - name: Lint
         uses: golangci/golangci-lint-action@v2
@@ -199,6 +215,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
@@ -240,6 +264,14 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
 
       - name: Lint
         uses: golangci/golangci-lint-action@v2
@@ -283,6 +315,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
@@ -324,6 +364,14 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
 
       - name: Lint
         uses: golangci/golangci-lint-action@v2
