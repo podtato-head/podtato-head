@@ -69,8 +69,14 @@ func prometheusMiddleware(next http.Handler) http.Handler {
 }
 
 func init() {
-	prometheus.Register(getCallCounter)
-	prometheus.Register(responseTimeHistogram)
+	err := prometheus.Register(getCallCounter)
+	if err != nil {
+		log.Fatal(err, "couldn't register CallCounter")
+	}
+	err = prometheus.Register(responseTimeHistogram)
+	if err != nil {
+		log.Fatal(err, "couldn't register responseTimeHistogram")
+	}
 }
 
 func main() {

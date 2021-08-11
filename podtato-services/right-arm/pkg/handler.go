@@ -34,5 +34,8 @@ func (v versionedHandler) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.WriteHeader(200)
-	w.Write(img)
+	_, err = w.Write(img)
+	if err != nil {
+		log.Printf("Write failed: %v", err)
+	}
 }
