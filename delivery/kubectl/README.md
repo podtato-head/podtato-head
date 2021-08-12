@@ -10,7 +10,7 @@ parameter.
 To deploy the manifest in this repo directly with kubectl:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/cncf/podtato-head/main/delivery/manifest/manifest.yaml
+kubectl apply -f https://raw.githubusercontent.com/cncf/podtato-head/main/delivery/kubectl/manifest.yaml
 ```
 
 Alternatively, clone this repo, change to its directory, and apply the local
@@ -47,7 +47,7 @@ If using a NodePort-type service, get the address of a node and the service's
 NodePort as follows:
 
 ```
-ADDR=$(kubectl get nodes kind-worker -o jsonpath={.status.addresses[0].address})
+ADDR=$(kubectl get nodes {NODE_NAME} -o jsonpath={.status.addresses[0].address})
 PORT=$(kubectl get services --namespace=podtato-kubectl podtato-main -ojsonpath='{.spec.ports[0].nodePort}')
 ```
 
@@ -74,6 +74,6 @@ xdg-open http://${ADDR}:${PORT}/
 To remove all provisioned resources:
 
 ```
-kubectl delete -f https://raw.githubusercontent.com/cncf/podtato-head/main/delivery/manifest/manifest.yaml
+kubectl delete -f https://raw.githubusercontent.com/cncf/podtato-head/main/delivery/kubectl/manifest.yaml
 kubectl delete -f ./delivery/kubectl/manifest.yaml
 ```

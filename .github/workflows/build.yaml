@@ -164,8 +164,8 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: cosign sign -key .github/workflows/cosign.key -a GIT_HASH=${{ env.GIT_SHA }} -a VERSION=${{ needs.prepare_ci_run.outputs.VERSION }} ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
 
-  test_manifest_deployment:
-    name: Test manifest-based deployment
+  test_kubectl_deployment:
+    name: Test single kubectl deployment
     needs: [prepare_ci_run, container_build]
     # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
     # built afterwards (in other jobs that depend on this one).
@@ -184,6 +184,7 @@ jobs:
 
       - name: Test Deployment
         run: |
-          sed "s/latest-dev/${{ env.VERSION }}/g" delivery/manifest/manifest.yaml | kubectl apply -f -
-          kubectl get deploy -A -n demospace -owide
-          kubectl wait --for=condition=ready pod --timeout=30s -l app -n demospace
+          namespace=podtato-kubectl
+          sed "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl apply -n ${namespace} -f -
+          kubectl get deployments -A -n ${namespace} -owide
+          kubectl wait --for=condition=ready pod --timeout=30s -l component=podtato-main -n ${namespace}
