@@ -1,1 +1,0 @@
-helm install --debug --dry-run simulation-release --namespace simulation-demospace ./podtatoserver

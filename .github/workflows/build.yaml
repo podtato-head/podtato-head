@@ -187,3 +187,25 @@ jobs:
           sed "s/latest-dev/${{ env.VERSION }}/g" delivery/manifest/manifest.yaml | kubectl apply -f -
           kubectl get deploy -A -n demospace -owide
           kubectl wait --for=condition=ready pod --timeout=30s -l app -n demospace
+
+  test_helm_deployment:
+    name: Test single helm deployment
+    needs: [prepare_ci_run, container_build]
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+    env:
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test Deployment
+        run: |
+          namespace=podtato-helm
+          kubectl create namespace ${namespace}
+          kubectl config set-context --current --namespace=${namespace}
+          helm install podtato-head ./delivery/chart
+          kubectl get deployments -A -n ${namespace} -owide
+          kubectl wait --for=condition=ready pod --timeout=30s -l app.kubernetes.io/component=podtato-head-main -n ${namespace}
+          helm uninstall podtato-head
