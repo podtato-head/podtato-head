@@ -3,7 +3,7 @@
 ## Installing prerequisites
 
 * Install Prerequisites (Kubernetes, Istio)
-  * [Tutorial](https://tutorials.keptn.sh/tutorials/keptn-full-tour-prometheus-07/index.html?index=..%2F..index#6) Step 1-7
+  * [Tutorial](https://tutorials.keptn.sh/tutorials/keptn-full-tour-prometheus-08/index.html?index=..%2F..index#3) Step 1-7
 
 For your convenience, commands are listed below :
 
@@ -70,22 +70,22 @@ You can now login into Keptn portal.
 
 ### Install Prometheus service
 
-Installing Keptn Prometheus service:
+Download the Keptn's Prometheus service manifest
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/prometheus-service/release-0.3.6/deploy/service.yaml
+kubectl apply -f  https://raw.githubusercontent.com/keptn-contrib/prometheus-service/release-0.6.1/deploy/service.yaml
+```
+
+Install Role and Rolebinding to permit Keptn's prometheus-service for performing operations in the Prometheus installed namespace.
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/prometheus-service/release-0.6.1/deploy/role.yaml -n monitoring
 ```
 
 Set up the Prometheus Alerting Manager rules:
 
 ```bash
 keptn configure monitoring prometheus --project=pod-tato-head --service=helloservice
-```
-
-### Install Prometheus sli service
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/prometheus-sli-service/release-0.2.2/deploy/service.yaml
 ```
 
 ### Adding quality gates
