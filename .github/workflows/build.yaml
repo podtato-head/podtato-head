@@ -187,4 +187,4 @@ jobs:
           namespace=podtato-kubectl
           sed "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl apply -n ${namespace} -f -
           kubectl get deployments -A -n ${namespace} -owide
-          kubectl wait --for=condition=ready pod --timeout=30s -l component=podtato-main -n ${namespace}
+          kubectl wait --for=condition=ready pod --timeout=30s -l component -n ${namespace}
