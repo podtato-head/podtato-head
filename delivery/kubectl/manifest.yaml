@@ -1,66 +1,70 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: demospace
-
+  name: podtato-kubectl
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: podtato-main
-  namespace: demospace  
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
     matchLabels:
-      app: podtato-main
+      component: podtato-main
   template:
     metadata:
       labels:
-        app: podtato-main
+        component: podtato-main
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image:  ghcr.io/podtato-head/podtato-main:v1-latest-dev
+        image: ghcr.io/podtato-head/podtato-main:v1-latest-dev
         imagePullPolicy: Always
         ports:
         - containerPort: 9000
         env:
         - name: PORT
           value: "9000"
-                    
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: podtato-main
-  namespace: demospace
-  labels: 
-    app: helloservice
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
-    app: podtato-main
+    component: podtato-main
   ports:
   - name: http
     port: 9000
     protocol: TCP
     targetPort: 9000
   type: LoadBalancer
-
+  # change to NodePort if no LoadBalancer controller is available
+  # type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: podtato-hats
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
     matchLabels:
-      app: podtato-hats
+      component: podtato-hats
   template:
     metadata:
       labels:
-        app: podtato-hats
+        component: podtato-hats
     spec:
       terminationGracePeriodSeconds: 5
       containers:
@@ -72,37 +76,39 @@ spec:
           env:
             - name: PORT
               value: "9000"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: podtato-hats
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
-    app: podtato-hats
+    component: podtato-hats
   ports:
     - name: http
       port: 9001
       protocol: TCP
       targetPort: 9000
   type: ClusterIP
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: podtato-left-leg
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
     matchLabels:
-      app: podtato-left-leg
+      component: podtato-left-leg
   template:
     metadata:
       labels:
-        app: podtato-left-leg
+        component: podtato-left-leg
     spec:
       terminationGracePeriodSeconds: 5
       containers:
@@ -114,37 +120,39 @@ spec:
           env:
             - name: PORT
               value: "9000"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: podtato-left-leg
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
-    app: podtato-left-leg
+    component: podtato-left-leg
   ports:
     - name: http
       port: 9002
       protocol: TCP
       targetPort: 9000
   type: ClusterIP
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: podtato-left-arm
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
     matchLabels:
-      app: podtato-left-arm
+      component: podtato-left-arm
   template:
     metadata:
       labels:
-        app: podtato-left-arm
+        component: podtato-left-arm
     spec:
       terminationGracePeriodSeconds: 5
       containers:
@@ -156,37 +164,39 @@ spec:
           env:
             - name: PORT
               value: "9000"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: podtato-left-arm
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
-    app: podtato-left-arm
+    component: podtato-left-arm
   ports:
     - name: http
       port: 9003
       protocol: TCP
       targetPort: 9000
   type: ClusterIP
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: podtato-right-leg
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
     matchLabels:
-      app: podtato-right-leg
+      component: podtato-right-leg
   template:
     metadata:
       labels:
-        app: podtato-right-leg
+        component: podtato-right-leg
     spec:
       terminationGracePeriodSeconds: 5
       containers:
@@ -198,37 +208,39 @@ spec:
           env:
             - name: PORT
               value: "9000"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: podtato-right-leg
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
-    app: podtato-right-leg
+    component: podtato-right-leg
   ports:
     - name: http
       port: 9004
       protocol: TCP
       targetPort: 9000
   type: ClusterIP
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: podtato-right-arm
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
     matchLabels:
-      app: podtato-right-arm
+      component: podtato-right-arm
   template:
     metadata:
       labels:
-        app: podtato-right-arm
+        component: podtato-right-arm
     spec:
       terminationGracePeriodSeconds: 5
       containers:
@@ -240,16 +252,17 @@ spec:
           env:
             - name: PORT
               value: "9000"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: podtato-right-arm
-  namespace: demospace
+  namespace: podtato-kubectl
+  labels:
+    app: podtato-head
 spec:
   selector:
-    app: podtato-right-arm
+    component: podtato-right-arm
   ports:
     - name: http
       port: 9005
