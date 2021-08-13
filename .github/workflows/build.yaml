@@ -182,9 +182,20 @@ jobs:
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.2.0
 
-      - name: Test Deployment
+      - name: Test Deployment (kubectl)
         run: |
           namespace=podtato-kubectl
-          sed "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl apply -n ${namespace} -f -
+          sed "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl apply -f -
           kubectl get deployments -A -n ${namespace} -owide
-          kubectl wait --for=condition=ready pod --timeout=30s -l component -n ${namespace}
+          kubectl wait --for=condition=ready pod --timeout=30s -l component -n demospace
+          "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl delete -f -
+
+      - name: Test Deployment (Helm)
+        run: |
+          namespace=podtato-helm
+          kubectl create namespace ${namespace}
+          kubectl config set-context --current --namespace=${namespace}
+          helm install podtato-head ./delivery/chart
+          kubectl get deployments -A -n ${namespace} -owide
+          kubectl wait --for=condition=ready pod --timeout=30s -l app.kubernetes.io/component -n ${namespace}
+          helm uninstall podtato-head

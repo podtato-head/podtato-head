@@ -1,0 +1,21 @@
+{{ $componentName := "hats" }}
+{{ $serviceType := .Values.hats.serviceType }}
+{{ $servicePort := .Values.hats.servicePort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-%s" "podtato" $componentName }}
+  labels:
+    {{- include "podtato-head.labels" . | nindent 4 }}
+    app.kubernetes.io/component: {{ printf "%s-%s" (include "podtato-head.fullname" .) $componentName }}
+spec:
+  type: {{ default "ClusterIP" $serviceType }}
+  ports:
+    - port: {{ $servicePort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "podtato-head.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: {{ printf "%s-%s" (include "podtato-head.fullname" .) $componentName }}

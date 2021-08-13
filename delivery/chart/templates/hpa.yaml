@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "podtatoserver.fullname" . }}
+  name: {{ include "podtato-head.fullname" . }}
   labels:
-    {{- include "podtatoserver.labels" . | nindent 4 }}
+    {{- include "podtato-head.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "podtatoserver.fullname" . }}
+    name: {{ include "podtato-head.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

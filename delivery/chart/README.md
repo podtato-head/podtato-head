@@ -1,31 +1,34 @@
-# Hello Server Helm Chart
+# Deliver with Helm
 
-## Pre Requisites
+Here's how to deliver podtato-head using [Helm](https://helm.sh).
 
-* Kubernetes 1.9+
-* Requires at least Helm v3.0.0
+## Prerequisites
 
-## Installing the Chart
+- Install Helm ([official instructions](https://helm.sh/docs/intro/install/))
 
-The chart is currently available via Git in a local directory. To install the
-chart first checkout the source code, open a terminal, and move to the delivery/charts
-sub-directory. Then run:
+## Deliver
+
+You must clone this repo and install from a local copy of the chart:
 
 ```
-helm install hs podtatoserver
+git clone https://github.com/cncf/podtato-head.git && cd podtato-head
+helm install podtato-head ./delivery/chart
 ```
 
-This will install the _podtatoserver_ chart under the name `hs`.
+This will install the chart in this directory with release name `podtato-head`.
 
-The installation can be customized by changing the following paramaters:
+The installation can be customized by changing the following parameters via `--set` or a custom `values.yaml` file:
 
 | Parameter                       | Description                                                     | Default                      |
 | ------------------------------- | ----------------------------------------------------------------| -----------------------------|
 | `replicaCount`                  | Number of replicas of the container                             | `1`                          |
-| `image.repository`              | Podtato Head Container image name                               | `ghcr.io/podtato-head/podtatoserver`|
-| `image.tag`                     | Podtato Head image tag                                          | `v0.1.2`                     |
-| `image.pullPolicy`              | Podtato Head Container pull policy                              | `IfNotPresent`               |
-| `imagePullSecrets`              | Podtato Head Pod pull secret                                    | ``                           |
+| `images.repositoryDirname`      | Prefix for image repos                                          | `ghcr.io/podtato-head`       |
+| `images.pullPolicy`             | Podtato Head Container pull policy                              | `IfNotPresent`               |
+| `images.pullSecrets`            | Podtato Head Pod pull secret                                    | ``                           |
+| `<service>.repositoryBasename`  | Leaf part of name of image repo for <service>                   | `podtato-main` etc.          |
+| `<service>.tag`                 | Tag of image repo for <service>                                 | `v1-latest-dev`              |
+| `<service>.serviceType`         | Service type for <service>                                      | `LoadBalancer` for main      |
+| `<service>.servicePort`         | Service port for <service>                                      | `9000`-`9005`
 | `serviceAccount.create`         | Whether or not to create dedicated service account              | `true`                       |
 | `serviceAccount.name`           | Name of the service account to use                              | `default`                    |
 | `serviceAccount.annotations`    | Annotations to add to a created service account                 | `{}`                         |
@@ -45,37 +48,81 @@ The installation can be customized by changing the following paramaters:
 | `service.type`                  | Kubernetes Service type                                         | `ClusterIP`                  |
 | `service.port`                  | The port the service will use                                   | `9000`                       |
 
-## Updating the version
+## Test
+
+Verify the release succeeded:
+
+```
+helm list
+kubectl get pods
+kubectl get services
+```
+
+### Test the API endpoint
+
+To connect to the API you'll first need to determine the correct address and
+port.
+
+If using a LoadBalancer-type service for `main`, get the IP address of the load balancer
+and use port 9000:
+
+```
+ADDR=$(kubectl get service podtato-main -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+PORT=9000
+```
+
+If using a NodePort-type service, get the address of a node and the service's
+NodePort as follows:
+
+```
+ADDR=$(kubectl get nodes {NODE_NAME} -o jsonpath={.status.addresses[0].address})
+PORT=$(kubectl get services podtato-main -ojsonpath='{.spec.ports[0].nodePort}')
+```
+
+If using a ClusterIP-type service, run `kubectl port-forward` in the background
+and connect through that:
+
+> NOTE: Find and kill the port-forward process afterwards using `ps` and `kill`.
+
+```
+kubectl port-forward vc/podtato-main 9000:9000 &
+ADDR=127.0.0.1
+PORT=9000
+```
+
+Now test the API itself with curl and/or a browser:
+
+```
+curl http://${ADDR}:${PORT}/
+xdg-open http://${ADDR}:${PORT}/
+```
+
+## Update
 
 To update the application version, you can choose one of the following methods :
 
-- update the `image.tag` value in `values.yaml` (set the value to `v0.1.1`) and run `helm upgrade hs podtatoserver`
-- run `helm upgrade hs podtatoserver --set image.tag=v0.1.1`
+- update `<service>.tag` in `values.yaml` for each service and run `helm upgrade podtato-head ./delivery/chart`
+- run `helm upgrade podtato-head ./delivery/chart --set main.tag=v0.1.1 --set leftLeg.tag=v0.1.1 ...`
 
 A new revision is then installed.
 
-## Rollback to a previous version
+## Rollback
 
 To rollback to a previous revision, run :
 
 ```
 # Check revision history
-helm history hs
+helm history podtato-head
 
 # Rollback to the revision 1
-helm rollback hs 1
+helm rollback podtato-head 1
 
 # Check the revision
-helm status hs
+helm status podtato-head
 ```
 
-## Uninstall the chart
+## Uninstall
 
 ```
-helm uninstall hs
+helm uninstall podtato-head
 ```
-
-## Notes
-
-1. The chart was started by using the command `helm create` and then modified from there
-2. The JSON Schema was generated using [this](https://github.com/karuppiah7890/helm-schema-gen) Helm plugin.
