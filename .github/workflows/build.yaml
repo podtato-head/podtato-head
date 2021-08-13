@@ -184,11 +184,30 @@ jobs:
 
       - name: Test Deployment (kubectl)
         run: |
+        
           namespace=podtato-kubectl
           sed "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl apply -f -
           kubectl get deployments -A -n ${namespace} -owide
-          kubectl wait --for=condition=ready pod --timeout=30s -l component -n demospace
+          kubectl wait --for=condition=ready pod --timeout=30s -l component -n ${namespace} 
           "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl delete -f -
+ 
+  test_helm_deployment:
+    name: Test Helm deployment
+    needs: [prepare_ci_run, container_build]
+    # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
+    # built afterwards (in other jobs that depend on this one).
+
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+    env:
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.2.0
 
       - name: Test Deployment (Helm)
         run: |
@@ -198,4 +217,3 @@ jobs:
           helm install podtato-head ./delivery/chart
           kubectl get deployments -A -n ${namespace} -owide
           kubectl wait --for=condition=ready pod --timeout=30s -l app.kubernetes.io/component -n ${namespace}
-          helm uninstall podtato-head
