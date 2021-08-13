@@ -1,42 +1,49 @@
-# Project _pod_ tato Head - A demo project for showcasing cloud-native application delivery use cases using different tools for various use cases
+# Project _pod_ tato Head
+
+Podtato-head demonstrates cloud-native application delivery scenarios using many
+different tools and services. It is intended to help application delivery
+support teams test and decide which mechanism(s) to use.
 
 ![podtatohead](/images/podtatoHead.png)
 
-## What you are getting
+## What is it?
 
-This project consists of the smallest possible application to demo cloud native
-application delivery. It - for sure - will grow over time. Right now you get the following components:
+Several communicating services are defined in this project with as little
+additional logic as possible to enable you to focus on the delivery mechanisms
+themselves.
 
-* A single file go server that displays different versions of the podtato-head depending on the version
-* A multi-stage build docker file to build a container
-* A manifest to create a Kubernetes service and deployment.
-* A helm chart for the service and the deployment.
-* Three container images showing different versions
+These communicating services are defined and containerized as encoded in the
+`podtato-services` directory. Each contains a simple HTTP server and Dockerfile.
+`main` is the externally-accessible endpoint; it communicates with the other
+services.
 
-  * ghcr.io/podtato-head/podtatoserver:v0.1.0
-  * ghcr.io/podtato-head/podtatoserver:v0.1.1
-  * ghcr.io/podtato-head/podtatoserver:v0.1.2
+Within the `delivery` directory this set of services and container images is
+delivered in many different ways to enable you to compare and contrast them.
+Each delivery mechanism yields the same end result: an API service which
+communicates with other API services and returns HTML.
 
-## Scenarios and Use Cases you can test with this repository
+## Delivery scenarios
 
-This list is supposed to grow over time. Here is the list of use cases, that are
-currently supported:
+Following is the list of scenarios currently implemented. "Single" deployments
+mean the action effects the state of the resources only once at the time of
+invocation. "GitOps" deployments mean the action maintains (reconciles) the
+desired state periodically.
 
-* [Direct deployment via a manifest](/delivery/manifest/README.md)
-* [Direct deployment via a Helm chart](/delivery/charts/README.md)
-* [Direct deployment via Kustomize](/delivery/kustomize/README.md)
-* [Direct deployment via Ketch](/delivery/ketch/README.md)
-* [Direct deployment via Kapp](/delivery/kapp/README.md)
-* [GitOps-based deployment using Flux](/delivery/flux/README.md)
-* [GitOps-based deployment using ArgoCd](/delivery/ArgoCD/README.md)
-* [Canary releases via Argo Rollouts](/delivery/rollout/README.md)
+* [Single deployment via Kubectl](/delivery/manifest/README.md)
+* [Single deployment via Helm](/delivery/charts/README.md)
+* [Single deployment via Kustomize](/delivery/kustomize/README.md)
+* [Single deployment via Ketch](/delivery/ketch/README.md)
+* [Single deployment via Kapp](/delivery/kapp/README.md)
+* [GitOps deployment via Flux](/delivery/flux/README.md)
+* [GitOps deployment via ArgoCd](/delivery/ArgoCD/README.md)
+* [Single canary deployment via Argo Rollouts](/delivery/rollout/README.md)
 * [Helm-based operator deployment](/delivery/podtato-operator/README.md)
 * [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
 * [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md)
-* [GitOps-based deployment using KubeVela](/delivery/KubeVela/README.md)
-* [GitOps-based deployment using Gimlet CLI](/delivery/gimlet/README.md)
+* [GitOps deployment via KubeVela](/delivery/KubeVela/README.md)
+* [GitOps deployment via Gimlet CLI](/delivery/gimlet/README.md)
 
-Use cases supported going foward:
+Other scenarios to be targeted in the future:
 
 * multiple services in different version
 * stateful workloads
@@ -48,7 +55,7 @@ Use cases supported going foward:
 You can use any K8S cluster to run this project.
 If you do not have a K8S cluster at your disposal, you can quickly get a local one with [kind](https://kind.sigs.k8s.io/docs/user/quick-start/).
 
-_NOTE_: If you use a cluster with no access to external LoadBalancer (like a `kind` cluster), you may have to replace `type: LoadBalancer` by `type: ClusterIP` (or `type: NodePort`) in all `service.yaml` manifests :
+_NOTE_: If you use a cluster with no access to external LoadBalancer (like a `kind` cluster), you may have to replace `type: LoadBalancer` by `type: ClusterIP` (or `type: NodePort`) in all `service.yaml` manifests:
 
 
 ```
