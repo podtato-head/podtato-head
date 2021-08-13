@@ -189,7 +189,6 @@ jobs:
           sed "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl apply -f -
           kubectl get deployments -A -n ${namespace} -owide
           kubectl wait --for=condition=ready pod --timeout=30s -l component -n ${namespace} 
-          "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl delete -f -
  
   test_helm_deployment:
     name: Test Helm deployment
