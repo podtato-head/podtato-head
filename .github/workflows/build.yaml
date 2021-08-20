@@ -20,15 +20,18 @@ env:
 defaults:
   run:
     shell: bash
+
 jobs:
+
+  ################
+  ## gather info
+  ################
+
+  # prepare_ci_run gathers info about the commit
   prepare_ci_run:
     name: Prepare CI Run
-    # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
-    # built afterwards (in other jobs that depend on this one).
     runs-on: ubuntu-20.04
     outputs: # declare what this job outputs (so it can be re-used for other jobs)
-      # build config
-      # metadata
       GIT_SHA: ${{ steps.extract_branch.outputs.GIT_SHA }}
       BRANCH: ${{ steps.extract_branch.outputs.BRANCH }}
       BRANCH_SLUG: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
@@ -60,6 +63,7 @@ jobs:
         uses: "WyriHaximus/github-action-next-semvers@v1.1"
         with:
           version: ${{ steps.get_previous_tag.outputs.tag }}
+
       - name: Get the version
         id: get_version
         env:
@@ -88,6 +92,7 @@ jobs:
           echo "VERSION=${VERSION}"
 
           echo "##[set-output name=VERSION;]$(echo ${VERSION})"
+
       - name: Get current date and time
         id: get_datetime
         run: |
@@ -95,12 +100,72 @@ jobs:
           echo "::set-output name=TIME::$(date +'%H%M')"
           echo "::set-output name=DATETIME::$(date +'%Y%m%d')$(date +'%H%M')"
 
+  ##################
+  ## Verify code
+  ################## 
 
-  ############################################################################
-  # Build Container Images                                                   #
-  ############################################################################
-  container_build:
-    needs: [prepare_ci_run]
+  lint_go_code:
+    strategy:
+      matrix:
+        component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "main" ]
+        version: [ "v1", "v2", "v3", "v4" ]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          working-directory: podtato-services/${{ matrix.component }}
+
+  ##################
+  ## Build images
+  ################## 
+
+  ## container_build_fork builds and pushes images from a fork
+  container_build_fork:
+    needs: [prepare_ci_run, lint_go_code]
+    strategy:
+      matrix:
+        component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "main" ]
+        version: [ "v1", "v2", "v3", "v4" ]
+    runs-on: ubuntu-20.04
+    env:
+      BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
+      VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
+      DATETIME: ${{ needs.prepare_ci_run.outputs.DATE }}${{ needs.prepare_ci_run.outputs.TIME }}
+      GIT_SHA: ${{ needs.prepare_ci_run.outputs.GIT_SHA }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: Build for current fork
+        id: docker_build_fork
+        uses: docker/build-push-action@v2
+        with:
+          build-args: |
+            VERSION=${{ matrix.version }}
+          context: podtato-services/${{ matrix.component }}/.
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+          file: podtato-services/${{ matrix.component }}/docker/Dockerfile
+          platforms: linux/amd64
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
+
+  ## container_build_main builds, signs, pushes, and scans images from main repo
+  container_build_main:
+    if: github.repository_owner == 'cncf'
+    needs: [prepare_ci_run,lint_go_code]
     strategy:
       matrix:
         component: [ "left-leg", "right-leg", "left-arm", "right-arm", "hats", "main" ]
@@ -123,19 +188,12 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
+          registry: ${{ env.CONTAINER_REGISTRY }}
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+          password: ${{ github.token }}
 
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-          working-directory: podtato-services/${{ matrix.component }}
-
-      - name: Build
-        id: docker_build
+      - name: Build for main
+        id: docker_build_main
         uses: docker/build-push-action@v2
         with:
           build-args: |
@@ -164,55 +222,59 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: cosign sign -key .github/workflows/cosign.key -a GIT_HASH=${{ env.GIT_SHA }} -a VERSION=${{ needs.prepare_ci_run.outputs.VERSION }} ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
 
+  ##################
+  ## Test deliveries
+  ##################
+
+  ## kubectl
+  ## TODO: enable this to work with containers built in a fork
+  ##       at the moment the image names are hard-coded to main's repos
+  ##       in the manifest
   test_kubectl_deployment:
     name: Test single kubectl deployment
-    needs: [prepare_ci_run, container_build]
-    # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
-    # built afterwards (in other jobs that depend on this one).
-
+    needs: [prepare_ci_run, container_build_main]
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
     env:
       VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
     steps:
 
-      - name: Checkout Code
+      - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Create k8s Kind Cluster
+      - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
 
-      - name: Test Deployment (kubectl)
+      - name: Test delivery with kubectl
         run: |
-        
           namespace=podtato-kubectl
           sed "s/latest-dev/${{ env.VERSION }}/g" delivery/kubectl/manifest.yaml | kubectl apply -f -
-          kubectl get deployments -A -n ${namespace} -owide
-          kubectl wait --for=condition=ready pod --timeout=30s -l component -n ${namespace} 
+          kubectl get deployments --namespace=${namespace} --output wide
  
   test_helm_deployment:
-    name: Test Helm deployment
-    needs: [prepare_ci_run, container_build]
-    # Prepare CI Run looks at what has been changed in this commit/PR/... and determines which artifacts should be
-    # built afterwards (in other jobs that depend on this one).
-
+    name: Test single Helm deployment
+    needs: [prepare_ci_run, container_build_fork]
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
     env:
       VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
     steps:
 
-      - name: Checkout Code
+      - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Create k8s Kind Cluster
+      - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
 
-      - name: Test Deployment (Helm)
+      - name: Test delivery with helm
         run: |
           namespace=podtato-helm
           kubectl create namespace ${namespace}
           kubectl config set-context --current --namespace=${namespace}
-          helm install podtato-head ./delivery/chart
-          kubectl get deployments -A -n ${namespace} -owide
-          kubectl wait --for=condition=ready pod --timeout=30s -l app.kubernetes.io/component -n ${namespace}
+          helm install podtato-head ./delivery/chart \
+            --set images.repositoryDirname=${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/podtato-head
+          echo "----> main deployment:"
+          kubectl get deployment --selector 'app.kubernetes.io/component=podtato-head-main' --output yaml
+          echo "----> wait for ready"
+          kubectl wait --for=condition=ready pod --timeout=30s \
+            --selector app.kubernetes.io/component=podtato-head-main --namespace=${namespace}
