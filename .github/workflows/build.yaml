@@ -168,7 +168,7 @@ jobs:
         with:
           registry: ${{ env.CONTAINER_REGISTRY }}
           username: ${{ github.repository_owner }}
-          password: ${{ github.token }}
+          password: ${{ secrets.CR_PAT }}
       - name: Build for main
         id: docker_build_main
         uses: docker/build-push-action@v2
