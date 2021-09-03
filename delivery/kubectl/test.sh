@@ -15,10 +15,13 @@ kubectl create namespace ${namespace} --save-config || true &> /dev/null
 kubectl config set-context --current --namespace ${namespace}
 
 if [[ -n "${github_token}" ]]; then
-    kubectl create secret docker-registry ghcr --namespace ${namespace} \
-        --docker-server "ghcr.io/${github_user}" \
-        --docker-username "${github_user}" \
-        --docker-password "${github_token}"
+    # kubectl create secret docker-registry ghcr --namespace ${namespace} \
+    #     --docker-server "ghcr.io" \
+    #     --docker-username "${github_user}" \
+    #     --docker-password "${github_token}"
+
+    kubectl create secret generic ghcr --type "kubernetes.io/dockerconfigjson" \
+        --from-literal=".dockerconfigjson=$(cat ${HOME}/.docker/config.json)"
 
     kubectl patch serviceaccount default --namespace ${namespace} \
         --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'
@@ -28,7 +31,8 @@ kubectl get serviceaccount default -oyaml
 kubectl get secret ghcr -oyaml
 kubectl get secret ghcr -o jsonpath="{.data['\.dockerconfigjson']}" | base64 -d
 
-echo "${github_token}" | docker login "ghcr.io/${github_user}" \
+echo ""
+echo "${github_token}" | docker login "ghcr.io" \
     --username ${github_user} \
     --password-stdin
 
