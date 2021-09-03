@@ -11,7 +11,7 @@ on:
       - 'release-*'
 
 permissions:
-  packages: read|write
+  packages: write
 
 env:
   CONTAINER_REGISTRY: ghcr.io
