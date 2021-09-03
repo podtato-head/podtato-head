@@ -27,6 +27,13 @@ fi
 kubectl get serviceaccount default -oyaml
 kubectl get secret ghcr -oyaml
 kubectl get secret ghcr -o jsonpath="{.data['\.dockerconfigjson']}" | base64 -d
+
+docker login ghcr.io \
+    --username ${github_user} \
+    --password "${github_token}"
+
+docker pull ghcr.io/cncf/podtato-head/podtato-main:v1-0.1.1-dev-PR-97
+
 cat ${HOME}/.docker/config.json
 
 echo "---> manifest to be applied"
