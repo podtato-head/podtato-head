@@ -1,12 +1,13 @@
 #! /usr/bin/env bash
 
-set -e
+# set -e
 
 github_user=${1:-cncf}
 github_token=${2}
 ci_version=${3:-latest-dev}
 
 echo "ci_version: ${ci_version}, github_user: ${github_user}"
+echo "obscured_token: $(echo ${github_token} | sed 's/./\*/g')"
 
 this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 namespace=podtato-kubectl
@@ -14,14 +15,19 @@ kubectl create namespace ${namespace} --save-config || true &> /dev/null
 kubectl config set-context --current --namespace ${namespace}
 
 if [[ -n "${github_token}" ]]; then
-    kubectl create secret docker-registry ghcr \
+    kubectl create secret docker-registry ghcr --namespace ${namespace} \
         --docker-server 'ghcr.io' \
         --docker-username "${github_user}" \
         --docker-password "${github_token}"
 
-    kubectl patch serviceaccount default \
+    kubectl patch serviceaccount default --namespace ${namespace} \
         --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'
 fi
+
+kubectl get serviceaccount default -oyaml
+kubectl get secret ghcr -oyaml
+kubectl get secret ghcr -o jsonpath="{.data['\.dockerconfigjson']}" | base64 -d
+cat ${HOME}/.docker/config.json
 
 echo "---> manifest to be applied"
 cat "${this_dir}/manifest.yaml" | \
