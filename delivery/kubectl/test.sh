@@ -23,12 +23,18 @@ if [[ -n "${github_token}" ]]; then
         --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'
 fi
 
-cat "${this_dir}/manifest.yaml" | \
-    sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
-    sed "s/latest-dev/${ci_version}/g" | \
-        kubectl apply -f -
+if [[ "${github_user}" != "cncf" ]]; then
+    cat "${this_dir}/manifest.yaml" | \
+        sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
+        sed "s/latest-dev/${ci_version}/g" | \
+            kubectl apply -f -
+else
+    cat "${this_dir}/manifest.yaml" | \
+        sed "s/latest-dev/${ci_version}/g" | \
+            kubectl apply -f -
+fi
 
-kubectl wait --for=condition=Available --timeout=90s \
+kubectl wait --for=condition=Available --timeout=30s \
     deployment --namespace ${namespace} podtato-main
 
 kubectl get deployments --namespace=${namespace}

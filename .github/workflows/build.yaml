@@ -107,6 +107,7 @@ jobs:
 
   ##  container_build builds and pushes images for any fork
   container_build:
+    if: github.repository_owner != 'cncf'
     needs: [prepare_ci_run, lint_go_code]
     strategy:
       matrix:
@@ -202,7 +203,7 @@ jobs:
     name: Deliver with kubectl
     needs: [prepare_ci_run, container_build]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+    # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
     env:
       VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
     steps:
@@ -218,7 +219,7 @@ jobs:
     name: Deliver with Helm
     needs: [prepare_ci_run, container_build]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+    # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
     env:
       VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
     steps:
