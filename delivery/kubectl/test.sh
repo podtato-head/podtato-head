@@ -33,12 +33,10 @@ cat "${this_dir}/manifest.yaml" | \
     sed "s/latest-dev/${ci_version}/g" | \
         kubectl apply -f -
 
-kubectl wait --for=condition=Available --timeout=30s \
-    deployment --namespace ${namespace} podtato-main || true
+sleep 30
+# kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-main
 
-if [[ $? != 0 ]]; then
-    kubectl get events --namespace ${namespace}
-    kubectl logs --namespace ${namespace} -l 'app=podtato-head'
-fi
+kubectl get events --namespace ${namespace}
+kubectl logs --namespace ${namespace} -l 'app=podtato-head'
 
 kubectl get deployments --namespace=${namespace}
