@@ -126,7 +126,7 @@ jobs:
         with:
           registry: ${{ env.CONTAINER_REGISTRY }}
           username: ${{ github.repository_owner }}
-          password: ${{ github.token }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build image and push to current fork
         id: docker_build_fork
         uses: docker/build-push-action@v2
