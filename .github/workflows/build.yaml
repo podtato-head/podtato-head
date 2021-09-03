@@ -139,6 +139,10 @@ jobs:
           tags: |
             ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-latest-dev
             ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
+      - name: Test pull
+        run: |
+          echo "---> test pull of image"
+          docker pull ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
 
   ## container_build_main builds, signs, pushes, and scans images from main repo
   ## the repo path targeted by container_build_main doesn't include `cncf` in
