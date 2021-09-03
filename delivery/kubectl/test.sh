@@ -23,12 +23,22 @@ if [[ -n "${github_token}" ]]; then
         --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'
 fi
 
+echo "---> manifest to be applied"
+cat "${this_dir}/manifest.yaml" | \
+    sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
+    sed "s/latest-dev/${ci_version}/g"
+
 cat "${this_dir}/manifest.yaml" | \
     sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
     sed "s/latest-dev/${ci_version}/g" | \
         kubectl apply -f -
 
-kubectl wait --for=condition=Available --timeout=90s \
-    deployment --namespace ${namespace} podtato-main
+kubectl wait --for=condition=Available --timeout=30s \
+    deployment --namespace ${namespace} podtato-main || true
+
+if [[ $? != 0 ]]; then
+    kubectl get events --namespace ${namespace}
+    kubectl logs --namespace ${namespace} -l 'app=podtato-head'
+fi
 
 kubectl get deployments --namespace=${namespace}

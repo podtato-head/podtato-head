@@ -202,7 +202,7 @@ jobs:
     name: Deliver with kubectl
     needs: [prepare_ci_run, container_build]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+    # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
     env:
       VERSION: ${{ needs.prepare_ci_run.outputs.VERSION }}
     steps:
