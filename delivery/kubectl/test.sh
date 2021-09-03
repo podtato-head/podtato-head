@@ -15,7 +15,7 @@ kubectl config set-context --current --namespace ${namespace}
 
 if [[ -n "${github_token}" ]]; then
     kubectl create secret docker-registry ghcr \
-        --docker-server 'https://ghcr.io/' \
+        --docker-server 'ghcr.io' \
         --docker-username "${github_user}" \
         --docker-password "${github_token}"
 
