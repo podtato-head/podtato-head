@@ -16,7 +16,7 @@ kubectl config set-context --current --namespace ${namespace}
 
 if [[ -n "${github_token}" ]]; then
     kubectl create secret docker-registry ghcr --namespace ${namespace} \
-        --docker-server 'ghcr.io' \
+        --docker-server "ghcr.io/${github_user}" \
         --docker-username "${github_user}" \
         --docker-password "${github_token}"
 
@@ -28,11 +28,11 @@ kubectl get serviceaccount default -oyaml
 kubectl get secret ghcr -oyaml
 kubectl get secret ghcr -o jsonpath="{.data['\.dockerconfigjson']}" | base64 -d
 
-docker login ghcr.io \
+echo "${github_token}" | docker login "ghcr.io/${github_user}" \
     --username ${github_user} \
-    --password "${github_token}"
+    --password-stdin
 
-docker pull ghcr.io/cncf/podtato-head/podtato-main:v1-0.1.1-dev-PR-97
+docker pull ghcr.io/${github_user}/podtato-head/podtato-main:v1-0.1.1-dev-PR-97
 
 cat ${HOME}/.docker/config.json
 
