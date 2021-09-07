@@ -182,6 +182,20 @@ jobs:
           tags: |
             ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-latest-dev
             ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
+      - name: Build for main - distroless
+        id: docker_build_main_distroless
+        uses: docker/build-push-action@v2
+        with:
+          build-args: |
+            VERSION=${{ matrix.version }}
+          context: podtato-services/${{ matrix.component }}/.
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
+          file: podtato-services/${{ matrix.component }}/docker/Dockerfile.distroless
+          platforms: linux/amd64
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}-distroless:${{ matrix.version}}-latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}-distroless:${{ matrix.version}}-${{ env.VERSION }}
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
