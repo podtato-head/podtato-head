@@ -194,8 +194,8 @@ jobs:
           file: podtato-services/${{ matrix.component }}/docker/Dockerfile.distroless
           platforms: linux/amd64
           tags: |
-            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}-distroless:${{ matrix.version}}-latest-dev
-            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}-distroless:${{ matrix.version}}-${{ env.VERSION }}
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:distroless-${{ matrix.version}}-latest-dev
+            ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:distroless-${{ matrix.version}}-${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
