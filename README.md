@@ -30,7 +30,7 @@ invocation. "GitOps" deployments mean the action maintains (reconciles) the
 desired state periodically.
 
 * [Single deployment via Kubectl](/delivery/manifest/README.md)
-* [Single deployment via Helm](/delivery/charts/README.md)
+* [Single deployment via Helm](/delivery/chart/README.md)
 * [Single deployment via Kustomize](/delivery/kustomize/README.md)
 * [Single deployment via Ketch](/delivery/ketch/README.md)
 * [Single deployment via Kapp](/delivery/kapp/README.md)
