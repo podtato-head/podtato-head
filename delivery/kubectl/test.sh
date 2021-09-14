@@ -2,11 +2,10 @@
 
 set -e
 
-github_user=${1:-cncf}
+github_user=${1}
 github_token=${2}
-ci_version=${3:-latest-dev}
 
-echo "ci_version: ${ci_version}, github_user: ${github_user}"
+echo "github_user: ${github_user}"
 
 this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 namespace=podtato-kubectl
@@ -24,8 +23,7 @@ if [[ -n "${github_token}" ]]; then
 fi
 
 cat "${this_dir}/manifest.yaml" | \
-    sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
-    sed "s/latest-dev/${ci_version}/g" | \
+    sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user:+${github_user}/}podtato-head@g" | \
         kubectl apply -f -
 
 kubectl wait --for=condition=Available --timeout=90s \
