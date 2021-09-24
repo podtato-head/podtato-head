@@ -4,6 +4,7 @@
 certmanager_version=1.5.3
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v${certmanager_version}/cert-manager.yaml
 kubectl wait --for=condition="Available" deployment -n cert-manager cert-manager
+kubectl wait --for=condition="Available" deployment -n cert-manager cert-manager-webhook
 
 ## install a ClusterIssuer
 kubectl apply -f - <<EOF
