@@ -75,3 +75,15 @@ jobs:
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with helm
         run: ./delivery/chart/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+  test_ketch_delivery:
+    if: github.repository_owner != 'cncf'
+    name: Deliver with ketch
+    needs: [build_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with helm
+        run: ./delivery/ketch/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
