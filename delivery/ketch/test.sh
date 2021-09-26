@@ -44,7 +44,7 @@ fi
 ## add ketch app
 ## must login _locally_ for image push, _in cluster_ for image pull
 echo "----> ketch app deploy:"
-docker login ghcr.io --username ${github_user} --password "${github_token}"
+# docker login ghcr.io --username ${github_user} --password "${github_token}"
 ketch app deploy podtato-head "${root_dir}/podtato-server" \
     --registry-secret ghcr \
     --builder gcr.io/buildpacks/builder:v1 \
