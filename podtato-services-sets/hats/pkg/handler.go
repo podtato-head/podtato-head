@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"io/ioutil"
+	"embed"
 	"log"
 	"net/http"
 )
@@ -9,6 +9,7 @@ import (
 type versionedHandler struct {
 	staticFilePath string
 	version        string
+	embedFS        embed.FS
 }
 
 var versionBinding = map[string]string{
@@ -18,15 +19,16 @@ var versionBinding = map[string]string{
 	"v4": "03",
 }
 
-func NewVersionedHandler(version, staticFilePath string) versionedHandler {
+func NewVersionedHandler(version, staticFilePath string, embedFS embed.FS) versionedHandler {
 	return versionedHandler{
 		version:        version,
 		staticFilePath: staticFilePath,
+		embedFS:        embedFS,
 	}
 }
 
 func (v versionedHandler) Handler(w http.ResponseWriter, r *http.Request) {
-	img, err := ioutil.ReadFile(v.staticFilePath + "hat-" + versionBinding[v.version] + ".svg")
+	img, err := v.embedFS.ReadFile(v.staticFilePath + "hat-" + versionBinding[v.version] + ".svg")
 	if err != nil {
 		log.Print("Error: ", err)
 		w.WriteHeader(500)

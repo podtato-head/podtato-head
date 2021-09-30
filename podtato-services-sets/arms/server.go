@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"github.com/cncf/podtato-head/podtato-services/arms/pkg"
 	"github.com/kelseyhightower/envconfig"
@@ -14,6 +15,10 @@ import (
 	"log"
 	"net/http"
 )
+
+//go:embed static/*
+
+var static embed.FS
 
 // create a new counter vector
 var getCallCounter = prometheus.NewCounterVec(
@@ -89,9 +94,8 @@ func main() {
 	router := mux.NewRouter()
 	router.Use(prometheusMiddleware)
 
-	staticDir := "./static/images"
-	versionedHandler := pkg.NewVersionedHandler(c.LeftArmVersion, c.RightArmVersion, staticDir)
-
+	staticDir := "static/images"
+	versionedHandler := pkg.NewVersionedHandler(c.LeftArmVersion, c.RightArmVersion, staticDir, static)
 	// Serving image
 	router.Path("/images/{hat}").HandlerFunc(versionedHandler.Handler)
 

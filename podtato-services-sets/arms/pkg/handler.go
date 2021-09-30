@@ -1,8 +1,8 @@
 package pkg
 
 import (
+	"embed"
 	"github.com/gorilla/mux"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -12,6 +12,7 @@ type versionedHandler struct {
 	staticFilePath string
 	leftVersion    string
 	rightVersion   string
+	embedFS embed.FS
 }
 
 var versionBinding = map[string]string{
@@ -21,11 +22,12 @@ var versionBinding = map[string]string{
 	"v4": "04",
 }
 
-func NewVersionedHandler(leftVersion, rightVersion, staticFilePath string) versionedHandler {
+func NewVersionedHandler(leftVersion, rightVersion, staticFilePath string, embedFS embed.FS) versionedHandler {
 	return versionedHandler{
 		leftVersion:    leftVersion,
 		rightVersion:   rightVersion,
 		staticFilePath: staticFilePath,
+		embedFS: 		embedFS,
 	}
 }
 
@@ -39,7 +41,7 @@ func (v versionedHandler) Handler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		version = versionBinding[v.leftVersion]
 	}
-	img, err := ioutil.ReadFile(v.staticFilePath + "/" + side + "-arm-" + version + ".svg")
+	img, err := v.embedFS.ReadFile(v.staticFilePath + "/" + side + "-arm-" + version + ".svg")
 	if err != nil {
 		log.Print("Error:", err)
 		w.WriteHeader(500)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"strconv"
 	"time"
@@ -18,8 +19,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/kelseyhightower/envconfig"
+	"embed"
 )
 
+//go:embed static/*
+
+var static embed.FS
 var serviceVersion string
 
 // HTML page template
@@ -74,7 +79,7 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		getCallCounter.WithLabelValues(status).Inc()
 	}()
 
-	overviewTemplate = template.Must(template.ParseFiles("./static/podtato-new.html"))
+	overviewTemplate = template.Must(template.ParseFiles("static/podtato-new.html"))
 	err := overviewTemplate.Execute(res, serviceVersion)
 
 	if err != nil {
@@ -127,6 +132,8 @@ func main() {
 		log.Fatal(err, "Could not read environment")
 	}
 
+	var staticFS,_ = fs.Sub(static, "static")
+
 	serviceVersion = c.MainVersion
 
 	// create a new handler
@@ -143,7 +150,7 @@ func main() {
 	// Serving static files
 	router.
 		PathPrefix(staticDir).
-		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir("."+staticDir))))
+		Handler(http.StripPrefix(staticDir, http.FileServer(http.FS(staticFS))))
 
 	router.Path("/parts/{service}/{img}").HandlerFunc(pkg.ProviderHandler)
 
