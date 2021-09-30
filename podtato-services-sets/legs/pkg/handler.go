@@ -12,7 +12,6 @@ type versionedHandler struct {
 	staticFilePath string
 	leftVersion    string
 	rightVersion   string
-	side           string
 }
 
 var versionBinding = map[string]string{
