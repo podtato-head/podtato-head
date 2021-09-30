@@ -20,7 +20,7 @@ func ProviderHandler(w http.ResponseWriter, r *http.Request) {
 	err := envconfig.Process("main", &c)
 	fmt.Println(c)
 	if err != nil {
-		fmt.Errorf("Could not read environment")
+		fmt.Println("Could not read environment")
 	}
 
 	serviceMap = map[string]string{
