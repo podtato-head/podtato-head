@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"github.com/cncf/podtato-head/podtato-server/pkg"
 	"strconv"
 	"time"
@@ -128,12 +129,15 @@ func main() {
 	router.Path("/").Handler(handler)
 	router.Path("/")
 
-	staticDir := "/static/"
+	staticDir := os.Getenv("STATIC_DIR")
+	if staticDir == "" {
+		staticDir = "./static/"
+	}
 
 	// Serving static files
 	router.
 		PathPrefix(staticDir).
-		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir("."+staticDir))))
+		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir(staticDir))))
 
 	router.Path("/metrics").Handler(promhttp.Handler())
 
