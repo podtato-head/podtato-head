@@ -57,9 +57,11 @@ and connect through that:
 > NOTE: Find and kill the port-forward process afterwards using `ps` and `kill`.
 
 ```
-kubectl port-forward --namespace podtato-kubectl svc/podtato-main 9000:9000 &
+# Choose below the IP address of your machine you want to use to access application 
 ADDR=127.0.0.1
+# Choose below the port of your machine you want to use to access application 
 PORT=9000
+kubectl port-forward --namespace podtato-kubectl --address ${ADDR} svc/podtato-main ${PORT}:9000 &
 ```
 
 Now test the API itself with curl and/or a browser:

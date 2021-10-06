@@ -56,11 +56,13 @@ Other scenarios to be targeted in the future:
 You can use any K8S cluster to run this project.
 If you do not have a K8S cluster at your disposal, you can quickly get a local one with [kind](https://kind.sigs.k8s.io/docs/user/quick-start/).
 
-_NOTE_: If you use a cluster with no access to external LoadBalancer (like a `kind` cluster), you may have to replace `type: LoadBalancer` by `type: ClusterIP` (or `type: NodePort`) in all `service.yaml` manifests:
+_NOTE_: If you use a cluster with no access to external LoadBalancer (like a `kind` cluster), you may have to replace `type: LoadBalancer` by `type: ClusterIP` (or `type: NodePort`) in all files declaring a service definition :
 
-
-```
+```bash
+# Update service type in all K8S manifests
 find delivery -type f -name "*.yaml" -print0 | xargs -0 sed -i 's/type: LoadBalancer/type: ClusterIP/g'
+# Update service type in all Helm values
+find delivery -type f -name "*.yaml" -print0 | xargs -0 sed -i 's/serviceType: LoadBalancer/serviceType: ClusterIP/g'
 ```
 
 ## Contributing

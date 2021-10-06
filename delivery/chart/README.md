@@ -17,6 +17,8 @@ helm install podtato-head ./delivery/chart
 
 This will install the chart in this directory with release name `podtato-head`.
 
+> NOTE: You can instruct helm to wait for the resources to be ready before marking the release as successful by adding the `--wait` option to the previous command.
+
 The installation can be customized by changing the following parameters via `--set` or a custom `values.yaml` file:
 
 | Parameter                       | Description                                                     | Default                      |
@@ -85,9 +87,11 @@ and connect through that:
 > NOTE: Find and kill the port-forward process afterwards using `ps` and `kill`.
 
 ```
-kubectl port-forward vc/podtato-main 9000:9000 &
+# Choose below the IP address of your machine you want to use to access application 
 ADDR=127.0.0.1
+# Choose below the port of your machine you want to use to access application 
 PORT=9000
+kubectl port-forward --address ${ADDR} svc/podtato-main ${PORT}:9000 &
 ```
 
 Now test the API itself with curl and/or a browser:
@@ -105,6 +109,12 @@ To update the application version, you can choose one of the following methods :
 - run `helm upgrade podtato-head ./delivery/chart --set main.tag=v0.1.1 --set leftLeg.tag=v0.1.1 ...`
 
 A new revision is then installed.
+
+> NOTE : to ensure idempotency between the first installation and the following updates, you should use the following command :
+
+```
+helm upgrade --install podtato-head ./delivery/chart
+```
 
 ## Rollback
 
