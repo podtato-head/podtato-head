@@ -144,7 +144,7 @@ jobs:
           context: podtato-services/${{ matrix.component }}/.
           push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/${{ matrix.component }}/docker/Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-latest-dev
             ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version}}-${{ env.VERSION }}
@@ -157,7 +157,7 @@ jobs:
           context: podtato-services/${{ matrix.component }}/.
           push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
           file: podtato-services/${{ matrix.component }}/docker/Dockerfile.distroless
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:distroless-${{ matrix.version}}-latest-dev
             ${{ env.CONTAINER_REGISTRY }}/podtato-head/podtato-${{ matrix.component }}:distroless-${{ matrix.version}}-${{ env.VERSION }}
