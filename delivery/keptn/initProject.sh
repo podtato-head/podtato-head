@@ -12,7 +12,7 @@ case "$1" in
     ;;
   "onboard-service")
     echo "Onboarding keptn service helloservice in project ${PROJECT}"
-    keptn onboard service helloservice --project="${PROJECT}" --chart=helm-charts/helloserver
+    keptn onboard service helloservice --project="${PROJECT}" --chart=helm-charts/helloservice
     ;;
   "first-deploy-service")
     echo "Deploying keptn service helloservice in project ${PROJECT}"
