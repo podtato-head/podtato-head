@@ -50,7 +50,7 @@ jobs:
             VERSION=${{ matrix.version }}
           context: podtato-services/${{ matrix.component }}/.
           file: podtato-services/${{ matrix.component }}/docker/Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64
           tags: |
             ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/podtato-head/podtato-${{ matrix.component }}:${{ matrix.version }}-latest-dev
   test_kubectl_delivery:
