@@ -124,7 +124,11 @@ jobs:
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
+        id: buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+          version: latest
 
       - name: Login to GitHub Container Registry
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release-*' }}
