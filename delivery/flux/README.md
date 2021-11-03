@@ -1,169 +1,205 @@
-# Delivery using Flux
+# Deliver with Flux
 
-## Resources
+Here's how to deliver podtato-head using [flux](https://fluxcd.io). Flux deploys workloads as Helm releases or kustomize renderings.
 
-For more detailed information about Flux installation see the flux documentation [here][1]
+## Prerequisites
 
-## Guide
+1. Install `flux` CLI ([official instructions](https://toolkit.fluxcd.io/guides/installation/))
+1. Install Flux's controllers in a cluster: `flux install --version=latest`
 
-This guide is adapted from the [Getting Started][6] guide in the Flux documentation.
+To update the Flux control plane later run `flux install` again.
 
-By the end of this guide you will have
-- Deployed Flux in Cluster
-- Configured Flux to deploy manifests from a Git Repository
+> Alternatively, you may use the `flux bootstrap ...` command to install Flux
+  and store its configuration in a git repo for ongoing reconciliation. To store
+  the configuration in GitHub, first [get a GitHub personal access
+  token](https://github.com/settings/tokens) and set it as the value of
+  environment variable `GITHUB_TOKEN`. An example follows:
 
-### Prerequisites
+```bash
+export GITHUB_TOKEN=<personal_access_token>
+export GITHUB_USER=<github_username>
+export GITHUB_REPO=flux-tests
 
-You will need
-- A Kubernetes Cluster
-- Flux CLI tool. [Installation Instructions][2]
-- A GitHub Personal access token that can create new repositories (Check all permissions under repo). [Instructions][3]
+flux bootstrap github \
+    --owner="${GITHUB_USER}" \
+    --repository="${GITHUB_REPO}" \
+    --private=false \
+    --personal
 
-### Bootstrapping flux
-
-Export your GitHub personal access token and username:
-
-```
-$ export GITHUB_TOKEN=<your-token>
-$ export GITHUB_USER=<your-username>
-```
-
-Run the bootstrap command:
-
-```
-$ flux bootstrap github \
-  --owner=$GITHUB_USER \
-  --repository=podtato-test \
-  --personal \
-  --private=false
+## verify
+flux get all
 ```
 
-The bootstrap command creates a repository if one doesn't exist, commits manifests for Flux Components to the default branch, and installs the flux components. Then it configures the target cluster to synchronize with the repository.
+## Deliver
 
-### Clone the git repository
+You will fork the podtato-head repo and deliver it to your cluster.
 
-We are going to drive app deployments in a GitOps manner, using the Git repository as the desired state for our cluster. Instead of applying the manifests directly to the cluster, Flux will apply it for us instead.
+### Connect to git repo
 
-Therefore, we need to clone the repository to our local machine:
+First, [fork the podtato-head repo](https://github.com/podtato-head/podtato-head/fork)
+so that you can add an SSH key to it.
 
-```
-$ git clone https://github.com/$GITHUB_USER/podtato-test
-$ cd podtato-test
-```
+Next, connect this repo to Flux in your cluster by adding an SSH key pair and a
+"source" resource as follows.
 
-### Adding Podtato repository to Flux
+The `flux create secret git` command creates an SSH key pair for the specified
+host and puts it into a named Kubernetes secret in Flux's management namespace
+(by default `flux-system`). The command also outputs the public key, which
+should be added to the repos "Deploy keys" in GitHub.
 
-Create a GitRepository manifest `helloservice` pointing to [podtato-head][4] repository's main branch:
-
-```
- flux create source git helloservice \
---url=https://github.com/cncf/podtato-head \
---branch=main \
---interval=30s \
---export > ./helloservice-source.yaml
+```bash
+GITHUB_USER=<your_github_username>
+flux create secret git podtato-flux-secret --url=ssh://git@github.com/${GITHUB_USER}/podtato-head
 ```
 
-The above command generates the following manifest:
+If you need to retrieve the public key later you can extract it from the secret as follows:
 
-```yaml
----
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: GitRepository
-metadata:
-  name: helloservice
-  namespace: flux-system
-spec:
-  interval: 30s
-  ref:
-    branch: main
-  url: https://github.com/cncf/podtato-head
+```bash
+kubectl get secret podtato-flux-secret -n flux-system -ojson | jq -r '.data."identity.pub" | @base64d'
 ```
 
-Commit and push the manifest to the `podtato-test` repository:
+Use the public key as a Deploy key in your fork of the podtato-head repo. Browse to
+this URL, replacing `<your_github_username>` with your GitHub username:
+`https://github.com/<your_github_username>/podtato-head/settings/keys`. The page will appear as follows:
 
-```
-$ git add helloservice-source.yaml 
-$ git commit -m "Add GitRepository Source for helloservice"
-$ git push
-```
+<img alt="GitHub SSH Deploy Keys" width="400px" src="./images/github-ssh-deploy-keys.png" />
 
-### Deploying helloservice
-
-We will create a Flux Kustomization manifest for helloservice. This configures Flux to build and apply the [manifest][5] directory located in the podtato-head repository.
-```
-$ flux create kustomization helloservice \
---source=helloservice \
---path="./delivery/manifest" \
---prune=true \
---validation=client \
---interval=5m \
---export > ./helloservice-kustomization.yaml
+```bash
+ssh_public_key=$(kubectl get secret podtato-flux-secret -n flux-system -ojson | jq -r '.data."identity.pub" | @base64d')
+gh api repos/${GITHUB_USER}/podtato-head/keys \
+    -F title=podtato-flux-secret \
+    -F "key=${ssh_public_key}"
 ```
 
-The above command generates the following manifest:
+Finally, create a git source that uses this secret:
 
-```yaml
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
-kind: Kustomization
-metadata:
-  name: helloservice
-  namespace: flux-system
-spec:
-  interval: 5m0s
-  path: ./delivery/manifest
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: helloservice
-  validation: client
+```bash
+GITHUB_USER=<your_github_username>
+flux create source git podtato-flux-repo \
+    --url=ssh://git@github.com/${GITHUB_USER}/podtato-head \
+    --secret-ref podtato-flux-secret \
+    --branch=main
+
+# verify
+flux get source git
 ```
 
-Commit and push the Kustomization manifest to the repository:
+### Process and apply
 
-```
-$ git add helloservice-kustomization.yaml 
-$ git commit -m "Add helloservice Kustomization"
-$ git push
-```
+Now that a git source is available we will instruct Flux how to render and apply
+it. Flux provides two rendering strategies - kustomizations and HelmReleases.
+Both build on the git repo source created above.
 
-The structure of your repository should look like this
+#### HelmRelease
 
-```
-├── README.md
-├── flux-system
-│   ├── gotk-components.yaml
-│   ├── gotk-sync.yaml
-│   └── kustomization.yaml
-├── helloservice-kustomization.yaml
-└── helloservice-source.yaml
-```
+A HelmRelease composes a chart from a git or helm repository with values stored
+in the resource and applies it to the cluster.
 
-### Watch Flux sync the application
+```bash
+# the command only reads values from files so write this to one first
+tmp_values_file=$(mktemp)
+echo -e "main:\n  serviceType: NodePort" > ${tmp_values_file}
 
-In about 30s the synchronization should start:
+flux create helmrelease podtato-flux-release \
+    --target-namespace=podtato-flux \
+    --create-target-namespace \
+    --source=GitRepository/podtato-flux-repo.flux-system \
+    --chart=./delivery/chart \
+    --values="${tmp_values_file}"
 
-```
-$ watch flux get kustomizations
-NAME            READY   MESSAGE                                                         REVISION                                        SUSPENDED 
-flux-system     True    Applied revision: main/4c2a9d272176a36fec9acf9eab75447410fe5573 main/4c2a9d272176a36fec9acf9eab75447410fe5573   False    
-helloservice    True    Applied revision: main/0e3e9cffa177185c57d01d9bc067950dce221c7c main/0e3e9cffa177185c57d01d9bc067950dce221c7c   False    
+# verify
+flux get helmrelease podtato-flux-release
 ```
 
-When the synchronization finishes you can check that helloservice has been deployed on your cluster:
+#### Kustomization
+
+A Kustomization is a render-and-apply strategy based on kustomize. Create a
+kustomization as follows:
+
+```bash
+kubectl create namespace podtato-kflux
+flux create kustomization podtato-flux-kustomization \
+    --target-namespace podtato-kflux \
+    --source=GitRepository/podtato-flux-repo.flux-system \
+    --path=./delivery/kustomize/base \
+    --prune=true
+
+# verify
+flux get kustomization podtato-kflux-kustomization
+```
+
+## Test
+
+### Verify delivery
+
+List all apps, get info or get logs for an app:
+
+```bash
+flux get all
+flux get helmreleases
+flux get kustomizations
+flux get sources git
+kubectl get pods -n podtato-flux
+kubectl get pods -n podtato-kflux
+```
+
+### Test the API endpoint
+
+To connect to the API you'll first need to determine the correct address and
+port.
+
+If using a LoadBalancer-type service for `main`, get the IP address of the load balancer
+and use port 9000:
 
 ```
-$ kubectl -n demospace get deployments,services 
-NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/helloservice   1/1     1            1           40m
-
-NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-service/helloservice   LoadBalancer   10.96.124.100   <pending>     9000:30579/TCP   40m
+ADDR=$(kubectl get service podtato-main -n podtato-flux -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+PORT=9000
 ```
 
-[1]: https://toolkit.fluxcd.io/guides/installation/
-[2]: https://toolkit.fluxcd.io/guides/installation/#install-the-flux-cli
-[3]: https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
-[4]: https://github.com/cncf/podtato-head
-[5]: https://github.com/cncf/podtato-head/tree/main/delivery/manifest
-[6]: https://toolkit.fluxcd.io/get-started/
+If using a NodePort-type service, get the address of a node and the service's
+NodePort as follows:
+
+```
+ADDR=$(kubectl get nodes {NODE_NAME} -o jsonpath={.status.addresses[0].address})
+PORT=$(kubectl get services podtato-main -n podtato-flux -ojsonpath='{.spec.ports[0].nodePort}')
+```
+
+If using a ClusterIP-type service, run `kubectl port-forward` in the background
+and connect through that:
+
+> NOTE: Find and kill the port-forward process afterwards using `ps` and `kill`.
+
+```
+# Choose below the IP address of your machine you want to use to access application 
+ADDR=127.0.0.1
+# Choose below the port of your machine you want to use to access application 
+PORT=9000
+kubectl port-forward --address ${ADDR} svc/podtato-main ${PORT}:9000 &
+```
+
+Now test the API itself with curl and/or a browser:
+
+```
+curl http://${ADDR}:${PORT}/
+xdg-open http://${ADDR}:${PORT}/
+```
+
+## Update
+
+Flux monitors the source git repo and redeploys the application when it detects
+changes.
+
+// TODO: describe how to update to a new version by modifying the git repo
+
+## Rollback
+
+// TODO: describe how to roll back to a previous version of the app
+
+## Purge
+
+```bash
+flux delete --silent helmrelease podtato-flux-release
+flux delete --silent kustomization podtato-flux-kustomization
+flux delete --silent source git podtato-flux-repo
+kubectl delete -n flux-system secret podtato-flux-secret
+```
