@@ -7,7 +7,7 @@
 #
 IS_DOCKER_INSTALLED = $(shell which docker >> /dev/null 2>&1; echo $$?)
 
-REPONAME ?= ghcr.io/podtato-head
+REPONAME ?= dirien
 
 .PHONY: help
 help:

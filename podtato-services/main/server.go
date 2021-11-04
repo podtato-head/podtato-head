@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/cncf/podtato-head/podtato-services/podtato-main/pkg"
+	dapr "github.com/dapr/go-sdk/client"
 	"os"
 	"strconv"
 	"time"
@@ -44,6 +45,10 @@ type HTTPHandler struct{}
 type statusRecorder struct {
 	http.ResponseWriter
 	statusCode int
+}
+
+type DaprClient struct {
+	client dapr.Client
 }
 
 func (rec *statusRecorder) WriteHeader(statusCode int) {
@@ -97,7 +102,7 @@ func prometheusMiddleware(next http.Handler) http.Handler {
 		duration := time.Since(start)
 		statusCode := strconv.Itoa(rec.statusCode)
 		route := getRoutePattern(r)
-		fmt.Println(duration.Seconds())
+		//fmt.Println(duration.Seconds())
 		responseTimeHistogram.WithLabelValues(route, r.Method, statusCode).Observe(duration.Seconds())
 	})
 }
@@ -117,6 +122,14 @@ func main() {
 	// expecting version as first parameter
 	serviceVersion = os.Getenv("VERSION")
 
+	client, err := dapr.NewClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+	daprClient := DaprClient{
+		client: client,
+	}
+	defer client.Close()
 	// create a new handler
 	handler := HTTPHandler{}
 
@@ -133,11 +146,15 @@ func main() {
 		PathPrefix(staticDir).
 		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir("."+staticDir))))
 
-	router.Path("/parts/{service}/{img}").HandlerFunc(pkg.ProviderHandler)
+	router.Path("/parts/{service}/{img}").HandlerFunc(daprClient.ProviderHandlerWrapper)
 
 	router.Path("/metrics").Handler(promhttp.Handler())
 
 	fmt.Println("Serving requests on port 9000")
-	err := http.ListenAndServe(":9000", router)
+	err = http.ListenAndServe(":9000", router)
 	log.Fatal(err)
+}
+
+func (d *DaprClient) ProviderHandlerWrapper(w http.ResponseWriter, r *http.Request) {
+	pkg.ProviderHandler(w, r, d.client)
 }
