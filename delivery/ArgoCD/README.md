@@ -63,7 +63,7 @@ have ArgoCD take care of namespace management.
 #### Setting the Github repo
 
 Use the Github repo you forked before and ensure you set the path to ```
-delivery/charts/podtatoserver```. This will use the Helm of the tutorial
+delivery/chart```. This will use the Helm of the tutorial
 
 ![Define GitHub Repo to use](images/argoGithub.png)
 
@@ -107,8 +107,8 @@ will see all application components as healthy.
 ### Updating the project to a new version
 
 Updating the project required to update the ```values``` file in the
-```/delivery/charts/podtatoserver/``` folder fo your Git
-repository. Change the ```tag``` value to ```v0.1.1```.
+```/delivery/chart``` folder fo your Git
+repository. Change some ```tag``` values to another version (```v2-latest-dev```,```v3-latest-dev```,```v4-latest-dev```).
 
 The application will now show up as ```out of sync```. Simply hit ```sync``` and
 the application should update
