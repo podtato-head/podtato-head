@@ -35,7 +35,8 @@ $ flux bootstrap github \
   --owner=$GITHUB_USER \
   --repository=podtato-test \
   --personal \
-  --private=false
+  --private=false \
+  --token-auth
 ```
 
 The bootstrap command creates a repository if one doesn't exist, commits manifests for Flux Components to the default branch, and installs the flux components. Then it configures the target cluster to synchronize with the repository.
@@ -93,9 +94,8 @@ We will create a Flux Kustomization manifest for helloservice. This configures F
 ```
 $ flux create kustomization helloservice \
 --source=helloservice \
---path="./delivery/manifest" \
+--path="./delivery/kubectl" \
 --prune=true \
---validation=client \
 --interval=5m \
 --export > ./helloservice-kustomization.yaml
 ```
@@ -111,7 +111,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./delivery/manifest
+  path: ./delivery/kubectl
   prune: true
   sourceRef:
     kind: GitRepository
@@ -153,7 +153,7 @@ helloservice    True    Applied revision: main/0e3e9cffa177185c57d01d9bc067950dc
 When the synchronization finishes you can check that helloservice has been deployed on your cluster:
 
 ```
-$ kubectl -n demospace get deployments,services 
+$ kubectl -n podtato-kubectl get deployments,services 
 NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/helloservice   1/1     1            1           40m
 
