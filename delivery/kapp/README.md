@@ -23,7 +23,7 @@ You can install `kapp` CLI with :
 - Deploy an application :
 
 ```
-kapp deploy -a podtatoserver-app -f ../manifest/manifest.yaml
+kapp deploy -a podtatoserver-app -f ../kubectl/manifest.yaml
 ```
 
 _Note: No need to write a script to wait until all your resources are _really_ created : kapp is waiting for all dependencies of your resources to be ready._
@@ -33,8 +33,8 @@ If you try to run the above command a second time, nothing happens : kapp only c
 - Inspect an app : `kapp inspect -a podtatoserver-app --tree`
 - Display apps : `kapp ls`
 - Update an app :
-  - change image tag in `../manifest/manifest.yaml`
-  - display diff before deploying : `kapp deploy -a podtatoserver-app -f ../manifest/manifest.yaml --diff-changes`
+  - change image tag in `../kubectl/manifest.yaml`
+  - display diff before deploying : `kapp deploy -a podtatoserver-app -f ../kubectl/manifest.yaml --diff-changes`
 - Delete app : `kapp delete -a podtatoserver-app`
 
 _Note: Those who know Terraform should see similarities regarding resources management._
@@ -42,7 +42,7 @@ _Note: Those who know Terraform should see similarities regarding resources mana
 ### Deploy with Helm charts
 
 ```
-kapp -y deploy -a podtatoserver-chart -f <(helm template ph ../charts/podtatoserver)
+kapp -y deploy -a podtatoserver-chart -f <(helm template ph ../chart/)
 ```
 
 and simply delete with `kapp delete -a podtatoserver-chart`
@@ -50,7 +50,7 @@ and simply delete with `kapp delete -a podtatoserver-chart`
 ### Deploy with Kustomize
 
 ```
-kapp -y deploy -a podtatoserver-kusto-app -f <(kustomize build ../kustomize/overlays/dev)
+kapp -y deploy -a podtatoserver-kusto-app -f <(kustomize build ../kustomize/overlay)
 ```
 
 and simply delete with `kapp delete -a podtatoserver-kusto-app`
