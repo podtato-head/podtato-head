@@ -11,7 +11,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 9002
+    - port: 9003
       targetPort: http
       protocol: TCP
       name: http
