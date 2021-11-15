@@ -63,7 +63,7 @@ have ArgoCD take care of namespace management.
 #### Setting the Github repo
 
 Use the Github repo you forked before and ensure you set the path to ```
-delivery/charts/podtatoserver```. This will use the Helm of the tutorial
+delivery/chart```. This will use the Helm of the tutorial
 
 ![Define GitHub Repo to use](images/argoGithub.png)
 
@@ -84,17 +84,21 @@ anything here and just can leave it as it.
 
 #### Create application
 
-Now hit create application and it should be visible in the project overview. If
-you cannot see the application ensure that the filters are set properly. The
-application will show up yellow as it has not been synced yet.
+Now hit create application and it should be visible in the project overview.
 
-![Argo Application Overview](images/argoApps.png)
+If you cannot see the application ensure that the filters are set properly.
+
+The application will show up yellow as it has not been synced yet.
+
+![Argo Application Overview](images/argoAppsOutOfSync.png)
 
 ## Deploying application versions
 
 ### Syncing the project
 
-In order to sync and deploy the application click ```sync```.
+In order to sync and deploy the application, click ```sync``` at the bottom of the application square.
+
+A new panel appears to show every resource that will be synchronized : click ```synchronize``` to validate.
 
 ![syncing the application](images/argoSynchronize.png)
 
@@ -104,11 +108,15 @@ will see all application components as healthy.
 
 ![Show deployed application in ArgoCD](images/argoDeployment.png)
 
+And if you go back the the Applications view, your application is now synched and healthy
+
+![Argo Application Overview](images/argoApps.png)
+
 ### Updating the project to a new version
 
 Updating the project required to update the ```values``` file in the
-```/delivery/charts/podtatoserver/``` folder fo your Git
-repository. Change the ```tag``` value to ```v0.1.1```.
+```/delivery/chart``` folder fo your Git
+repository. Change some ```tag``` values to another version (```v2-latest-dev```,```v3-latest-dev```,```v4-latest-dev```).
 
 The application will now show up as ```out of sync```. Simply hit ```sync``` and
 the application should update
