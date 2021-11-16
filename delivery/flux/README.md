@@ -307,3 +307,5 @@ kubectl delete -n flux-system secret podtato-flux-secret
 
 If they were created by checking in declarations they can be reverted by
 deleting those declarations and pushing a new git commit.
+
+To remove the Flux control plan, run `flux uninstall`.
