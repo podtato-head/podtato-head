@@ -20,7 +20,8 @@ flux bootstrap github \
     --owner="${GITHUB_USER}" \
     --repository="${GITHUB_REPO}" \
     --private=false \
-    --personal
+    --personal \
+    --token-auth
 
 ## verify
 flux get all
@@ -277,11 +278,21 @@ xdg-open http://${ADDR}:${PORT}/
 Flux monitors the source git repo and redeploys the application when it detects
 changes.
 
-// TODO: describe how to update to a new version by modifying the git repo
+To update the Flux control plane, run the `flux bootstrap ...` command again; it
+will push a new commit to the repo with the latest component configurations.
+
+To update a HelmRelease managed by Flux, make the desired changes to the chart
+and bump the `version` property in Chart.yaml, then commit these changes. For
+example, change the `replicas` value to `2` in `./deliver/chart/values.yaml`,
+bump the `version` value in `./deliver/chart/Chart.yaml`, commit and push the
+changes to the git repo, and watch the effects with `kubectl get -n podtato-flux
+pods --watch`.
 
 ## Rollback
 
-// TODO: describe how to roll back to a previous version of the app
+To roll back a chart version, roll back the changes in the git repo! For
+example, to roll back the change in the previous section, run `git revert HEAD`
+and `git push`, then watch the extra pods get deleted.
 
 ## Purge
 
