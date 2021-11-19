@@ -5,11 +5,15 @@ workloads as Helm releases or kustomize renderings.
 
 ## Prerequisites
 
-1. Install `flux` CLI ([official instructions](https://toolkit.fluxcd.io/guides/installation/))
+1. Install `flux` CLI ([official
+   instructions](https://toolkit.fluxcd.io/guides/installation/))
+1. [Get a GitHub personal access token](https://github.com/settings/tokens) with
+   _all_ `repo` permissions and set it as the value of environment variable
+   `GITHUB_TOKEN`.
 1. Install Flux components and commit their configuration to a git repo with the
-   `flux bootstrap ...` command. To do so, first [get a GitHub personal access
-   token](https://github.com/settings/tokens) and set it as the value of
-   environment variable `GITHUB_TOKEN`. An example follows:
+   `flux bootstrap ...` command.
+   
+An example follows:
 
 ```bash
 export GITHUB_TOKEN=<personal_access_token>
@@ -20,7 +24,8 @@ flux bootstrap github \
     --owner="${GITHUB_USER}" \
     --repository="${GITHUB_REPO}" \
     --private=false \
-    --personal
+    --personal \
+    --token-auth
 
 ## verify
 flux get all
@@ -60,7 +65,7 @@ as follows:
 
 ```bash
 kubectl get secret podtato-flux-secret -n flux-system -ojson \
-    | jq -r '.data."identity.pub" | @base64d'
+    | jq -r '.data."identity.pub"' | base64 -d
 ```
 
 Use the public key as a Deploy key in your fork of the podtato-head repo. Browse
@@ -277,11 +282,21 @@ xdg-open http://${ADDR}:${PORT}/
 Flux monitors the source git repo and redeploys the application when it detects
 changes.
 
-// TODO: describe how to update to a new version by modifying the git repo
+To update the Flux control plane, run the `flux bootstrap ...` command again; it
+will push a new commit to the repo with the latest component configurations.
+
+To update a HelmRelease managed by Flux, make the desired changes to the chart
+and bump the `version` property in Chart.yaml, then commit these changes. For
+example, change the `replicas` value to `2` in `./delivery/chart/values.yaml`,
+bump the `version` value in `./delivery/chart/Chart.yaml`, commit and push the
+changes to the git repo, and watch the effects with `kubectl get -n podtato-flux
+pods --watch`.
 
 ## Rollback
 
-// TODO: describe how to roll back to a previous version of the app
+To roll back a chart version, roll back the changes in the git repo! For
+example, to roll back the change in the previous section, run `git revert HEAD`
+and `git push`, then watch the extra pods get deleted.
 
 ## Purge
 
@@ -296,3 +311,5 @@ kubectl delete -n flux-system secret podtato-flux-secret
 
 If they were created by checking in declarations they can be reverted by
 deleting those declarations and pushing a new git commit.
+
+To remove the Flux control plan, run `flux uninstall`.
