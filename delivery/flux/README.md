@@ -5,11 +5,15 @@ workloads as Helm releases or kustomize renderings.
 
 ## Prerequisites
 
-1. Install `flux` CLI ([official instructions](https://toolkit.fluxcd.io/guides/installation/))
+1. Install `flux` CLI ([official
+   instructions](https://toolkit.fluxcd.io/guides/installation/))
+1. [Get a GitHub personal access token](https://github.com/settings/tokens) with
+   _all_ `repo` permissions and set it as the value of environment variable
+   `GITHUB_TOKEN`.
 1. Install Flux components and commit their configuration to a git repo with the
-   `flux bootstrap ...` command. To do so, first [get a GitHub personal access
-   token](https://github.com/settings/tokens) and set it as the value of
-   environment variable `GITHUB_TOKEN`. An example follows:
+   `flux bootstrap ...` command.
+   
+An example follows:
 
 ```bash
 export GITHUB_TOKEN=<personal_access_token>
@@ -61,7 +65,7 @@ as follows:
 
 ```bash
 kubectl get secret podtato-flux-secret -n flux-system -ojson \
-    | jq -r '.data."identity.pub" | @base64d'
+    | jq -r '.data."identity.pub"' | base64 -d
 ```
 
 Use the public key as a Deploy key in your fork of the podtato-head repo. Browse
@@ -283,8 +287,8 @@ will push a new commit to the repo with the latest component configurations.
 
 To update a HelmRelease managed by Flux, make the desired changes to the chart
 and bump the `version` property in Chart.yaml, then commit these changes. For
-example, change the `replicas` value to `2` in `./deliver/chart/values.yaml`,
-bump the `version` value in `./deliver/chart/Chart.yaml`, commit and push the
+example, change the `replicas` value to `2` in `./delivery/chart/values.yaml`,
+bump the `version` value in `./delivery/chart/Chart.yaml`, commit and push the
 changes to the git repo, and watch the effects with `kubectl get -n podtato-flux
 pods --watch`.
 
