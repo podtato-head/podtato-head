@@ -27,7 +27,7 @@ WORKDIR /dist
 RUN cp /build/podtatoserver .
 
 # Build a small image
-FROM scratch
+FROM gcr.io/distroless/base-debian10
 
 COPY --from=builder /dist/podtatoserver /
 COPY /static  /static
