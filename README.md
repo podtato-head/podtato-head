@@ -4,7 +4,7 @@ Podtato-head demonstrates cloud-native application delivery scenarios using many
 different tools and services. It is intended to help application delivery
 support teams test and decide which mechanism(s) to use.
 
-![podtato-head](/pkg/assets/images/podtato-head.png)
+![podtato-head](/podtato-head/pkg/assets/images/podtato-head.png)
 
 ## What is it?
 

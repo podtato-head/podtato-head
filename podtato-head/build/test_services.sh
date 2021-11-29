@@ -1,7 +1,8 @@
 #! /usr/bin/env bash
 
 declare -r this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
-declare -r root_dir=$(cd ${this_dir}/.. && pwd)
+declare -r app_dir=$(cd ${this_dir}/.. && pwd)
+declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
 
 github_user=${1:-${GITHUB_USER}}
 github_token=${2:-${GITHUB_TOKEN}}

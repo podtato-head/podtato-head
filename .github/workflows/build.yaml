@@ -1,10 +1,8 @@
-name: service-test
+name: podtato-head-test
 
 on:
   - push
   - pull_request
-
-permissions: write-all
 
 env:
   CONTAINER_REGISTRY: ghcr.io
