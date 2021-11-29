@@ -24,9 +24,14 @@ if [[ -n "${github_token}" ]]; then
         --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'
 fi
 
-cat "${this_dir}/manifest.yaml" | \
-    sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user:+${github_user}/}podtato-head@g" | \
-        kubectl apply -f -
+if [[ -z "${RELEASE_BUILD}" ]]; then
+    # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests
+    cat "${this_dir}/manifest.yaml" | \
+        sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
+            kubectl apply -f -
+else
+    kubectl apply -f ${this_dir}/manifest.yaml
+fi
 
 kubectl get deployments --namespace=${namespace}
 

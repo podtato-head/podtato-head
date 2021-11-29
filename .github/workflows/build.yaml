@@ -4,6 +4,9 @@ on:
   - push
   - pull_request
 
+permissions:
+  packages: write
+
 env:
   CONTAINER_REGISTRY: ghcr.io
   GITHUB_TOKEN: ${{ github.token }}  
@@ -14,7 +17,7 @@ defaults:
     shell: bash
 
 jobs:
-  build_images:
+  push_images:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -23,7 +26,7 @@ jobs:
         run: make push-images 
 
   test_services:
-    needs: build_images
+    needs: push_images
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout

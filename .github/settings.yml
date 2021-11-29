@@ -1,0 +1,13 @@
+# See https://developer.github.com/v3/repos/#edit for all available settings.
+repository:
+  name: podtato-head
+  description: 📨🚚 CNCF App Delivery SIG Demo
+  homepage: https://cncf.io/projects
+collaborators:
+  # TAG App Delivery Leads
+  - username: AloisReitbauer
+    permission: admin
+  - username: Jenniferstrej
+    permission: admin
+  - username: hongchaodeng
+    permission: admin
