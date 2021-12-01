@@ -22,7 +22,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build images
+        with:
+          fetch-depth: 0
+      - name: Set custom tag/version
+        if: github.ref_name != 'main'
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [[ "${BRANCH}" =~ 'release-' ]]; then
+            # release branch: extracting version from branch name
+            echo "VERSION=${BRANCH#'release-'}" >> $GITHUB_ENV
+          # else
+          #   consider adding something like this to isolate test tags
+          #
+          #   to ensure downstream tests still work, support for the ${VERSION}
+          #   env var needs to be added to them too so that they can update
+          #   image tags
+          #
+          #   echo "VERSION=test" >> ${GITHUB_ENV}
+          fi
+      - name: Push images
         run: make push-images 
 
   test_services:
