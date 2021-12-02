@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
       - name: Install requirements
         run: |
-          ./hack/requirements.sh "/usr/local/bin"
+          ./scripts/requirements.sh "/usr/local/bin"
       - name: Login to ghcr.io/podtato-head
         uses: docker/login-action@v1
         with:

@@ -1,7 +1,7 @@
 GITHUB_USER ?= podtato-head
 
 install-requirements:
-	hack/requirements.sh /usr/local/bin
+	scripts/requirements.sh /usr/local/bin
 
 build-images:
 	podtato-head/build/build_images.sh

@@ -62,7 +62,7 @@ for part in "${parts[@]}"; do
     kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
 done
 
-${root_dir}/hack/test_services.sh ${namespace}
+${root_dir}/scripts/test_services.sh ${namespace}
 
 echo ""
 echo "=== kubectl logs deployment/podtato-entry"
@@ -111,7 +111,7 @@ for part in "${parts[@]}"; do
     kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
 done
 
-${root_dir}/hack/test_services.sh ${namespace}
+${root_dir}/scripts/test_services.sh ${namespace}
 
 echo ""
 echo "=== kubectl logs deployment/podtato-entry"

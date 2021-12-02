@@ -108,7 +108,7 @@ for part in "${parts[@]}"; do
 done
 
 # service tests
-${root_dir}/hack/test_services.sh ${namespace}
+${root_dir}/scripts/test_services.sh ${namespace}
 
 echo ""
 echo "=== kubectl logs deployment/podtato-entry"
