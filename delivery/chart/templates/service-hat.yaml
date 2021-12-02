@@ -1,6 +1,6 @@
-{{ $componentName := "hats" }}
-{{ $serviceType := .Values.hats.serviceType }}
-{{ $servicePort := .Values.hats.servicePort }}
+{{ $componentName := "hat" }}
+{{ $serviceType := .Values.hat.serviceType }}
+{{ $servicePort := .Values.hat.servicePort }}
 ---
 apiVersion: v1
 kind: Service

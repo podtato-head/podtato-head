@@ -1,0 +1,101 @@
+name: podtato-head-delivery-tests
+
+on:
+  - push
+  - pull_request
+
+permissions:
+  packages: write
+  deployments: write
+
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  GITHUB_TOKEN: ${{ github.token }}  
+  GITHUB_USER: ${{ github.repository_owner }}
+  
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build_and_push_images:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Push images
+        run: make push-images 
+
+  test_kubectl_delivery:
+    name: Deliver with kubectl
+    needs: [build_and_push_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with kubectl
+        run: ./delivery/kubectl/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+
+  test_helm_delivery:
+    name: Deliver with Helm
+    needs: [build_and_push_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with helm
+        run: ./delivery/chart/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+
+  test_kustomize_delivery:
+    name: Deliver with kustomize
+    needs: [build_and_push_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with helm
+        run: ./delivery/kustomize/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+
+  test_ketch_delivery:
+    name: Deliver with ketch
+    needs: [build_and_push_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with helm
+        run: ./delivery/ketch/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+
+  test_flux_delivery:
+    name: Deliver with flux
+    needs: [build_and_push_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with flux
+        run: ./delivery/flux/test.sh "${{ github.repository_owner }}" "${{ github.token }}"

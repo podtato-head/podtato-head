@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 
-set -e
 declare -r this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
 if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
@@ -14,7 +13,7 @@ namespace=podtato-kubectl
 kubectl create namespace ${namespace} --save-config || true &> /dev/null
 kubectl config set-context --current --namespace ${namespace}
 
-if [[ -n "${github_token}" ]]; then
+if [[ -n "${github_token}" && -n "${github_user}" ]]; then
     kubectl create secret docker-registry ghcr \
         --docker-server 'ghcr.io' \
         --docker-username "${github_user}" \
@@ -41,3 +40,21 @@ parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
 for part in "${parts[@]}"; do
     kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
 done
+
+${root_dir}/hack/test_services.sh ${namespace}
+
+echo ""
+echo "=== kubectl logs deployment/podtato-entry"
+kubectl logs deployment/podtato-entry
+
+echo ""
+echo "=== kubectl logs deployment/podtato-hat"
+kubectl logs deployment/podtato-hat
+
+if [[ -n "${WAIT_FOR_DELETE}" ]]; then
+    echo ""
+    read -N 1 -s -p "press a key to delete resources..."
+    echo ""
+fi
+
+kubectl delete namespace ${namespace}

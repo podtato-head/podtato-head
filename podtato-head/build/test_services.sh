@@ -25,70 +25,9 @@ echo ""
 echo "=== Testing kubectl deployment..."
 ${root_dir}/delivery/kubectl/test.sh "${github_user}" "${github_token}"
 
-kubectl get pods
-
-ADDR=127.0.0.1
-PORT=9000
-# will be killed when cluster is deleted
-kubectl port-forward --namespace podtato-kubectl --address ${ADDR} svc/podtato-entry ${PORT}:9000 &> /dev/null &
-sleep 3
-
-echo ""
-echo "=== Testing API endpoints"
-ret=0
-curl --fail --silent --output /dev/null http://localhost:${PORT}/
-if [[ $? != 0 ]]; then
-    >&2 echo "FAILed to get home page"
-    ret=2 
-fi
-
-curl --fail --silent --output /dev/null http://localhost:${PORT}/assets/css/styles.css
-if [[ $? != 0 ]]; then
-    >&2 echo "FAILed to get static asset"
-    ret=2
-fi
-
-curl --fail --silent --output /dev/null http://localhost:${PORT}/parts/hat/hat.svg
-if [[ $? != 0 ]]; then
-    >&2 echo "FAILed to get hat.svg"
-    ret=2
-fi
-
-curl --fail --silent --output /dev/null http://localhost:${PORT}/parts/right-leg/right-leg.svg
-if [[ $? != 0 ]]; then
-    >&2 echo "FAILed to get right-leg.svg"
-    ret=2
-fi
-
-curl --fail --silent --output /dev/null http://localhost:${PORT}/parts/right-arm/right-arm.svg
-if [[ $? != 0 ]]; then
-    >&2 echo "FAILed to get right-arm.svg"
-    ret=2
-fi
-
-curl --fail --silent --output /dev/null http://localhost:${PORT}/parts/left-leg/left-leg.svg
-if [[ $? != 0 ]]; then
-    >&2 echo "FAILed to get left-leg.svg"
-    ret=2
-fi
-
-curl --fail --silent --output /dev/null http://localhost:${PORT}/parts/left-arm/left-arm.svg
-if [[ $? != 0 ]]; then
-    >&2 echo "FAILed to get left-arm.svg"
-    ret=2
-fi
-
-echo ""
-echo "=== kubectl logs deployment/podtato-entry"
-kubectl logs deployment/podtato-entry
-
-echo ""
-echo "=== kubectl logs deployment/podtato-hat"
-kubectl logs deployment/podtato-hat
-
 echo ""
 if [[ -n "${WAIT_FOR_DELETE}" ]]; then
-    read -N 1 -s -p "press a key to continue..."
+    read -N 1 -s -p "press a key to delete cluster..."
 fi
 
 echo ""

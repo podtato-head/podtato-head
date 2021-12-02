@@ -1,11 +1,13 @@
 #! /usr/bin/env bash
 
-set -e
+declare -r this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
+declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
+if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
 
-github_user=${1}
-github_token=${2}
+github_user=${1:-${GITHUB_USER}}
+github_token=${2:-${GITHUB_TOKEN}}
 
-this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
+echo "github_user: ${github_user}"
 
 namespace=podtato-helm
 kubectl create namespace ${namespace} --save-config || true &> /dev/null
@@ -13,20 +15,36 @@ kubectl config set-context --current --namespace=${namespace}
 
 if [[ -n "${github_token}" && -n "${github_user}" ]]; then
     kubectl create secret docker-registry ghcr \
-        --docker-server 'https://ghcr.io/' \
+        --docker-server 'ghcr.io/' \
         --docker-username "${github_user}" \
         --docker-password "${github_token}"
 fi
 
-helm upgrade --install --debug podtato-head ${this_dir} \
-    --set "images.repositoryDirname=ghcr.io/${github_user:+${github_user}/}podtato-head" \
-    ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
+if [[ -z "${RELEASE_BUILD}" ]]; then
+    # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests
+    helm upgrade --install --debug podtato-head ${this_dir} \
+        --set "images.repositoryDirname=ghcr.io/${github_user:+${github_user}/}podtato-head" \
+        ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
+else
+    helm upgrade --install --debug podtato-head ${this_dir} \
+        ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
+fi
+
+kubectl get deployments --namespace=${namespace}
 
 echo ""
-echo "----> main deployment:"
-kubectl get deployment --selector 'app.kubernetes.io/component=podtato-head-main' --output yaml
+echo "=== await readiness of deployments..."
+parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
+for part in "${parts[@]}"; do
+    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
+done
 
-echo ""
-echo "----> wait for ready"
-kubectl wait --for=condition=ready pod --timeout=30s \
-    --selector app.kubernetes.io/component=podtato-head-main --namespace=${namespace}
+${root_dir}/hack/test_services.sh ${namespace}
+
+if [[ -n "${WAIT_FOR_DELETE}" ]]; then
+    echo ""
+    read -N 1 -s -p "press a key to continue..."
+    echo ""
+fi
+
+kubectl delete namespace ${namespace}

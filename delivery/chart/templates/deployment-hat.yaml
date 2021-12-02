@@ -1,6 +1,6 @@
-{{ $componentName := "main" }}
-{{ $repoBasename := .Values.main.repositoryBasename }}
-{{ $repoTag := .Values.main.tag }}
+{{ $componentName := "hat" }}
+{{ $repoBasename := .Values.hat.repositoryBasename }}
+{{ $repoTag := .Values.hat.tag }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -55,13 +55,13 @@ spec:
             - name: http
               containerPort: 9000
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

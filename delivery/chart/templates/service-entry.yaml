@@ -1,6 +1,6 @@
-{{ $componentName := "main" }}
-{{ $serviceType := .Values.main.serviceType }}
-{{ $servicePort := .Values.main.servicePort }}
+{{ $componentName := "entry" }}
+{{ $serviceType := .Values.entry.serviceType }}
+{{ $servicePort := .Values.entry.servicePort }}
 ---
 apiVersion: v1
 kind: Service

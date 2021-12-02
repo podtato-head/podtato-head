@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['podtato-main:{{ .Values.main.servicePort }}']
+      args: ['podtato-entry:{{ .Values.entry.servicePort }}']
   restartPolicy: Never

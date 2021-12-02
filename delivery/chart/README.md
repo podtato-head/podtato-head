@@ -11,15 +11,18 @@ Here's how to deliver podtato-head using [Helm](https://helm.sh).
 You must clone this repo and install from a local copy of the chart:
 
 ```
-git clone https://github.com/cncf/podtato-head.git && cd podtato-head
+git clone https://github.com/podtato-head/podtato-head.git && cd podtato-head
 helm install podtato-head ./delivery/chart
 ```
 
 This will install the chart in this directory with release name `podtato-head`.
 
-> NOTE: You can instruct helm to wait for the resources to be ready before marking the release as successful by adding the `--wait` option to the previous command.
+> NOTE: You can instruct helm to wait for the resources to be ready before
+marking the release as successful by adding the `--wait` option to the previous
+command.
 
-The installation can be customized by changing the following parameters via `--set` or a custom `values.yaml` file:
+The installation can be customized by changing the following parameters via
+`--set` or a custom `values.yaml` file specified with `--values`:
 
 | Parameter                       | Description                                                     | Default                      |
 | ------------------------------- | ----------------------------------------------------------------| -----------------------------|
@@ -27,10 +30,10 @@ The installation can be customized by changing the following parameters via `--s
 | `images.repositoryDirname`      | Prefix for image repos                                          | `ghcr.io/podtato-head`       |
 | `images.pullPolicy`             | Podtato Head Container pull policy                              | `IfNotPresent`               |
 | `images.pullSecrets`            | Podtato Head Pod pull secret                                    | ``                           |
-| `<service>.repositoryBasename`  | Leaf part of name of image repo for <service>                   | `podtato-main` etc.          |
-| `<service>.tag`                 | Tag of image repo for <service>                                 | `v1-latest-dev`              |
+| `<service>.repositoryBasename`  | Leaf part of name of image repo for <service>                   | `entry`, `hat`, etc.         |
+| `<service>.tag`                 | Tag of image repo for <service>                                 | `0.1.0`                      |
 | `<service>.serviceType`         | Service type for <service>                                      | `LoadBalancer` for main      |
-| `<service>.servicePort`         | Service port for <service>                                      | `9000`-`9005`
+| `<service>.servicePort`         | Service port for <service>                                      | `9000`-`9005`                |
 | `serviceAccount.create`         | Whether or not to create dedicated service account              | `true`                       |
 | `serviceAccount.name`           | Name of the service account to use                              | `default`                    |
 | `serviceAccount.annotations`    | Annotations to add to a created service account                 | `{}`                         |
@@ -65,11 +68,11 @@ kubectl get services
 To connect to the API you'll first need to determine the correct address and
 port.
 
-If using a LoadBalancer-type service for `main`, get the IP address of the load balancer
+If using a LoadBalancer-type service for `entry`, get the IP address of the load balancer
 and use port 9000:
 
 ```
-ADDR=$(kubectl get service podtato-main -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+ADDR=$(kubectl get service podtato-entry -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 PORT=9000
 ```
 
@@ -78,7 +81,7 @@ NodePort as follows:
 
 ```
 ADDR=$(kubectl get nodes {NODE_NAME} -o jsonpath={.status.addresses[0].address})
-PORT=$(kubectl get services podtato-main -ojsonpath='{.spec.ports[0].nodePort}')
+PORT=$(kubectl get services podtato-entry -ojsonpath='{.spec.ports[0].nodePort}')
 ```
 
 If using a ClusterIP-type service, run `kubectl port-forward` in the background
@@ -91,7 +94,7 @@ and connect through that:
 ADDR=127.0.0.1
 # Choose below the port of your machine you want to use to access application 
 PORT=9000
-kubectl port-forward --address ${ADDR} svc/podtato-main ${PORT}:9000 &
+kubectl port-forward --address ${ADDR} svc/podtato-entry ${PORT}:9000 &
 ```
 
 Now test the API itself with curl and/or a browser:
@@ -106,7 +109,7 @@ xdg-open http://${ADDR}:${PORT}/
 To update the application version, you can choose one of the following methods :
 
 - update `<service>.tag` in `values.yaml` for each service and run `helm upgrade podtato-head ./delivery/chart`
-- run `helm upgrade podtato-head ./delivery/chart --set main.tag=v0.1.1 --set leftLeg.tag=v0.1.1 ...`
+- run `helm upgrade podtato-head ./delivery/chart --set entry.tag=0.1.1 --set leftLeg.tag=0.1.1 ...`
 
 A new revision is then installed.
 
