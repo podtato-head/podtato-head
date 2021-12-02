@@ -4,10 +4,12 @@ repository:
   description: 📨🚚 CNCF App Delivery SIG Demo
   homepage: https://cncf.io/projects
 collaborators:
-  # TAG App Delivery Leads
+  # podtato-head leads
   - username: AloisReitbauer
     permission: admin
   - username: Jenniferstrej
     permission: admin
   - username: hongchaodeng
+    permission: admin
+  - username: joshgav
     permission: admin

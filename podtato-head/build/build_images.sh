@@ -47,13 +47,21 @@ echo "INFO: will use version/tag: ${version}"
 sign_images=$(if type -P cosign > /dev/null; then echo 1; else echo 0; fi)
 cosign_key_path=${COSIGN_KEY_PATH:-"${root_dir}/.github/workflows/cosign.key"}
 if [[ ${sign_images} == 1 && -n "${COSIGN_PASSWORD}" ]]; then
-    echo "INFO: will sign images using cosign version $(cosign version --json | jq -r '.GitVersion')"
+    echo "INFO: will sign images using cosign version" \
+        $(cosign version --json | jq -r '.GitVersion')
 fi
 # /end set up cosign
 
+# set up trivy
+scan_images=$(if type -P trivy > /dev/null; then echo 1; else echo 0; fi)
+if [[ ${scan_images} == 1 ]]; then
+    echo "INFO: will scan images using trivy version" \
+        $(trivy --version | head -1 | sed -E 's/^Version: (.*)$/\1/')
+fi
+# /end set up trivy
 ### /end set up build
 
-### build entry container
+### build, push and sign entry container
 if [[ -z "${RELEASE_BUILD}" ]]; then
     container_name=${registry}/${github_user}/podtato-head/entry
 else
@@ -78,9 +86,17 @@ if [[ ${sign_images} == 1 && -n "${COSIGN_PASSWORD}" ]]; then
         --annotations version=${version} \
         ${container_name}:latest
 fi
-### /end build entry container
+if [[ ${scan_images} == 1 ]]; then
+    echo "INFO: scanning ${container_name}"
+    trivy image \
+        --format table \
+        --severity "HIGH,CRITICAL" \
+        --no-progress \
+            ${container_name}
+fi
+### /end build, push and sign entry container
 
-### build parts containers
+### build et al parts containers
 parts=($(find ${app_dir}/pkg/assets/images/* -type d -printf '%f\n'))
 for part in "${parts[@]}"; do
     if [[ -z "${RELEASE_BUILD}" ]]; then
@@ -107,5 +123,13 @@ for part in "${parts[@]}"; do
             --annotations version=${version} \
             ${container_name}:${version}
     fi
+    if [[ ${scan_images} == 1 ]]; then
+        echo "INFO: scanning ${container_name}"
+        trivy image \
+            --format table \
+            --severity "HIGH,CRITICAL" \
+            --no-progress \
+                ${container_name}
+    fi
 done
-### /end build parts containers
+### /end build et al parts containers
