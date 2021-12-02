@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-main
+  name: podtato-hat
   labels:
     app.kubernetes.io/name: podtato-head
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: hat
     app.kubernetes.io/version: '0.1.0'
     app.kubernetes.io/managed-by: kustomize
 spec:
@@ -13,29 +13,29 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: podtato-head
-      app.kubernetes.io/component: main
+      app.kubernetes.io/component: hat
   template:
     metadata:
       labels:
         app.kubernetes.io/name: podtato-head
-        app.kubernetes.io/component: main
+        app.kubernetes.io/component: hat
     spec:
       terminationGracePeriodSeconds: 5
       serviceAccountName: podtato-head
       containers:
-        - name: podtato-head-main
-          image: ghcr.io/podtato-head/podtato-main:v1-latest-dev
+        - name: podtato-head-hat
+          image: ghcr.io/podtato-head/hat:0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 9000
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources: {}

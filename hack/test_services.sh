@@ -13,6 +13,7 @@ pid=$!
 trap "kill ${pid} &> /dev/null" EXIT
 sleep 3
 
+set +e
 echo "=== Testing API endpoints"
 ret=0
 curl --fail --silent --output /dev/null http://localhost:${PORT}/

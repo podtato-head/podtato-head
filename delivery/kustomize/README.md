@@ -60,7 +60,7 @@ If using a LoadBalancer-type service, get the IP address of the load balancer
 and use port 9000:
 
 ```
-ADDR=$(kubectl get service podtato-main --namespace podtato-kustomize -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+ADDR=$(kubectl get service podtato-entry --namespace podtato-kustomize -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 PORT=9000
 ```
 
@@ -69,7 +69,7 @@ NodePort as follows:
 
 ```
 ADDR=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
-PORT=$(kubectl get services --namespace=podtato-kustomize podtato-main -ojsonpath='{.spec.ports[0].nodePort}')
+PORT=$(kubectl get services --namespace=podtato-kustomize podtato-entry -ojsonpath='{.spec.ports[0].nodePort}')
 ```
 
 If using a ClusterIP-type service, run `kubectl port-forward` in the background
@@ -78,7 +78,7 @@ and connect through that:
 > NOTE: Find and kill the port-forward process afterwards using `ps` and `kill`.
 
 ```
-kubectl port-forward --namespace podtato-kubectl svc/podtato-main 9000:9000 &
+kubectl port-forward --namespace podtato-kustomize svc/podtato-entry 9000:9000 &
 ADDR=127.0.0.1
 PORT=9000
 ```
@@ -95,9 +95,4 @@ xdg-open http://${ADDR}:${PORT}/
 ```
 kustomize build ./delivery/kustomize/base | kubectl delete -f -
 kustomize build ./delivery/kustomize/overlay | kubectl delete -f -
-
-# or
-
-kubectl delete -k ./delivery/kustomize/base
-kubectl delete -k ./delivery/kustomize/overlay
 ```
