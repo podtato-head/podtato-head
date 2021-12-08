@@ -81,7 +81,7 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	}
 	// Slow build
 	if podtatoConfiguration.ServiceVersion == "0.1.2" {
-		time.Sleep(2 * time.Second)
+		time.Sleep(400 * time.Millisecond)
 	}
 
 	if err != nil {
