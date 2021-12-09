@@ -1,34 +1,15 @@
+# See https://developer.github.com/v3/repos/#edit for all available settings.
 repository:
-  # See https://developer.github.com/v3/repos/#edit for all available settings.
-
-  # The name of the repository. Changing this will rename the repository
   name: podtato-head
-
-  # A short description of the repository that will show up on GitHub
   description: 📨🚚 CNCF App Delivery SIG Demo
-
-  # A URL with more information about the repository
   homepage: https://cncf.io/projects
-  
-  # Collaborators: give specific users access to this repository.
-  # see /governance/roles.md for details on write access policy
-  # note that the permissions below may provide wider access than needed for
-  # a specific role, and we trust these individuals to act according to their
-  # role. If there are questions, please contact one of the chairs.
 collaborators:
-  # TOC Liasons
-  - username: michelleN
-    permission: admin
-
-  - username: monadic
-    permission: admin
-
-  # SIG Chairs 
+  # podtato-head leads
   - username: AloisReitbauer
     permission: admin
-
-  - username: bryanl
+  - username: Jenniferstrej
     permission: admin
-    
-  - username: resouer
+  - username: hongchaodeng
+    permission: admin
+  - username: joshgav
     permission: admin

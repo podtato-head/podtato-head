@@ -1,40 +1,15 @@
-# Makefile for building Litmus Portal
-# Reference Guide - https://www.gnu.org/software/make/manual/make.html
+GITHUB_USER ?= podtato-head
 
-#
-# Internal variables or constants.
-# NOTE - These will be executed when any make target is invoked.
-#
-IS_DOCKER_INSTALLED = $(shell which docker >> /dev/null 2>&1; echo $$?)
+install-requirements:
+	scripts/requirements.sh /usr/local/bin
 
-REPONAME ?= ghcr.io/podtato-head
+build-images:
+	podtato-head/build/build_images.sh
 
-.PHONY: help
-help:
-	@echo ""
-	@echo "Usage:-"
-	@echo "\tmake all   -- [default] builds the podtato-head images"
-	@echo ""
+push-images:
+	PUSH_TO_REGISTRY=1 podtato-head/build/build_images.sh
 
-.PHONY: deps
-deps: _build_check_docker
+test-services:
+	podtato-head/build/test_services.sh
 
-_build_check_docker:
-	@echo "------------------"
-	@echo "--> Check the Docker deps"
-	@echo "------------------"
-	@if [ $(IS_DOCKER_INSTALLED) -eq 1 ]; \
-		then echo "" \
-		&& echo "ERROR:\tdocker is not installed. Please install it before build." \
-		&& echo "" \
-		&& exit 1; \
-		fi;
-
-.PHONY: all
-all: build-push
-
-build-push:
-	REPOSITORY=$(REPONAME) PUSH=yes bash build/main.sh
-
-build-only:
-	REPOSITORY=$(REPONAME) bash build/main.sh
+.PHONY: build-images push-images test-services install-requirements

@@ -72,7 +72,9 @@ Use the public key as a Deploy key in your fork of the podtato-head repo. Browse
 to the following URL, replacing `<your_github_username>` with your GitHub
 username:
 `https://github.com/<your_github_username>/podtato-head/settings/keys`. The page
-will appear as follows:
+will appear as follows. Click "Add deploy key" and paste the key data (starts
+with `ssh-<alg> ...` ) into the contents. The name is arbitrary, we use
+podtato-flux-secret here.
 
 <img alt="GitHub SSH Deploy Keys" width="400px" src="./images/github-ssh-deploy-keys.png" />
 
@@ -157,7 +159,7 @@ To create a HelmRelease imperatively:
 ```bash
 # the command only reads values from files so write an override to one first
 tmp_values_file=$(mktemp)
-echo -e "main:\n  serviceType: NodePort" > ${tmp_values_file}
+echo -e "entry:\n  serviceType: NodePort" > ${tmp_values_file}
 
 flux create helmrelease podtato-flux-release \
     --target-namespace=podtato-flux \
@@ -174,7 +176,7 @@ To create and check in a declaration for the resource instead:
 
 ```bash
 tmp_values_file=$(mktemp)
-echo -e "main:\n  serviceType: NodePort" > ${tmp_values_file}
+echo -e "entry:\n  serviceType: NodePort" > ${tmp_values_file}
 
 flux create helmrelease podtato-flux-release \
     --target-namespace=podtato-flux \
@@ -242,11 +244,11 @@ kubectl get pods -n podtato-kflux
 To connect to the API you'll first need to determine the correct address and
 port.
 
-If using a LoadBalancer-type service for `main`, get the IP address of the load
+If using a LoadBalancer-type service for `entry`, get the IP address of the load
 balancer and use port 9000:
 
 ```
-ADDR=$(kubectl get service podtato-main -n podtato-flux -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+ADDR=$(kubectl get service podtato-entry -n podtato-flux -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 PORT=9000
 ```
 
@@ -256,7 +258,7 @@ NodePort as follows:
 ```
 export NODE_NAME=<any_node_name>
 ADDR=$(kubectl get nodes ${NODE_NAME} -o jsonpath={.status.addresses[0].address})
-PORT=$(kubectl get services podtato-main -n podtato-flux -ojsonpath='{.spec.ports[0].nodePort}')
+PORT=$(kubectl get services podtato-entry -n podtato-flux -ojsonpath='{.spec.ports[0].nodePort}')
 ```
 
 If using a ClusterIP-type service, run `kubectl port-forward` in the background
@@ -267,7 +269,7 @@ and connect through that:
 ```
 ADDR=127.0.0.1
 PORT=9000
-kubectl port-forward --address ${ADDR} svc/podtato-main ${PORT}:9000 &
+kubectl port-forward --address ${ADDR} svc/podtato-entry ${PORT}:9000 &
 ```
 
 Now test the API itself with curl and/or a browser:

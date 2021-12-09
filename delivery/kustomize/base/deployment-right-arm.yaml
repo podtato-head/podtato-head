@@ -24,7 +24,7 @@ spec:
       serviceAccountName: podtato-head
       containers:
         - name: podtato-head-right-arm
-          image: ghcr.io/podtato-head/podtato-right-arm:v1-latest-dev
+          image: ghcr.io/podtato-head/right-arm:0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

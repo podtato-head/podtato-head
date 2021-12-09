@@ -2,16 +2,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - deployment-hats.yaml
+  - deployment-hat.yaml
   - deployment-left-arm.yaml
   - deployment-left-leg.yaml
-  - deployment-main.yaml
+  - deployment-entry.yaml
   - deployment-right-arm.yaml
   - deployment-right-leg.yaml
-  - service-hats.yaml
+  - service-hat.yaml
   - service-left-arm.yaml
   - service-left-leg.yaml
-  - service-main.yaml
+  - service-entry.yaml
   - service-right-arm.yaml
   - service-right-leg.yaml
   - serviceaccount.yaml
@@ -20,15 +20,15 @@ commonLabels:
   'app.kubernetes.io/name': 'podtato-head'
 
 # images:
-#   - name: ghcr.io/podtato-head/podtato-main
-#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/podtato-main
-#   - name: ghcr.io/podtato-head/podtato-hats
-#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/podtato-hats
-#   - name: ghcr.io/podtato-head/podtato-right-leg
-#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/podtato-right-leg
-#   - name: ghcr.io/podtato-head/podtato-right-arm
-#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/podtato-right-arm
-#   - name: ghcr.io/podtato-head/podtato-left-leg
-#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/podtato-left-leg
-#   - name: ghcr.io/podtato-head/podtato-lef-arm
-#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/podtato-left-arm
+#   - name: ghcr.io/podtato-head/entry
+#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/entry
+#   - name: ghcr.io/podtato-head/hat
+#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/hat
+#   - name: ghcr.io/podtato-head/right-leg
+#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/right-leg
+#   - name: ghcr.io/podtato-head/right-arm
+#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/right-arm
+#   - name: ghcr.io/podtato-head/left-leg
+#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/left-leg
+#   - name: ghcr.io/podtato-head/left-arm
+#     newName: ghcr.io/${{ github.repository_owner }}/podtato-head/left-arm

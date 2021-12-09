@@ -7,5 +7,5 @@ spec:
   template:
     spec:
       containers:
-        - name: podtato-head-main
-          image: ghcr.io/joshgav/podtato-head/podtato-main:v1-latest-dev
+        - name: podtato-head-entry
+          image: ghcr.io/podtato-head/entry:0.1.0
