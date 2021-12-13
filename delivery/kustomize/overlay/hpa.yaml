@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: podtato-main-hpa
+  name: podtato-entry-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: podtato-main
+    name: podtato-entry
   minReplicas: 1
   maxReplicas: 2
   metrics:
