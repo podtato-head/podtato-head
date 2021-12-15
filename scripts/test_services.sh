@@ -7,8 +7,8 @@ target_namespace=${1:-podtato-kubectl}
 ADDR=127.0.0.1
 PORT=9000
 
-echo "INFO: forwarding port ${ADDR}:${PORT} to service/podtato-entry in namespace/${target_namespace}"
-kubectl port-forward --namespace ${target_namespace} --address ${ADDR} svc/podtato-entry ${PORT}:9000 &> /dev/null &
+echo "INFO: forwarding port ${ADDR}:${PORT} to service/podtato-head-entry in namespace/${target_namespace}"
+kubectl port-forward --namespace ${target_namespace} --address ${ADDR} service/podtato-head-entry ${PORT}:9000 &> /dev/null &
 pid=$!
 trap "kill ${pid} &> /dev/null" EXIT
 sleep 3

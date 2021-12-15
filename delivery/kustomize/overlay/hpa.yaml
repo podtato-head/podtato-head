@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: podtato-entry-hpa
+  name: podtato-head-entry-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
