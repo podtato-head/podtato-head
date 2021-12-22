@@ -1,6 +1,7 @@
 {{ $componentName := "entry" }}
 {{ $repoBasename := .Values.entry.repositoryBasename }}
 {{ $repoTag := .Values.entry.tag }}
+{{ $extraEnvs := .Values.entry.extraEnvs }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -65,3 +66,11 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:     
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          {{- if $extraEnvs }}
+            {{- toYaml $extraEnvs | nindent 12 }}
+          {{- end }}
