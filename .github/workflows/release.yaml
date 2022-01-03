@@ -75,7 +75,7 @@ jobs:
           fetch-depth: 0
       - name: Apply new git tag
         run: |
-          source ./podtato-head/build/version.sh
+          source ./podtato-head-microservices/build/version.sh
           version=$(version_to_use)
           echo "INFO: will tag commit as: ${version}"
           git tag -f "${version}"

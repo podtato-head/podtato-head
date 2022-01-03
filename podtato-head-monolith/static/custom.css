@@ -1,0 +1,27 @@
+html,
+.container {
+ height: 100%;
+}
+body {
+  height: 100%;
+  background-color: #fff;
+}
+div {
+  text-align: center;
+}
+main{
+  text-align: center;
+}
+
+img {
+  width: 40%;
+  margin: auto;
+  display: block;
+  min-width:300px;
+}
+
+body {
+  display: -ms-flexbox;
+  display: flex;
+  color: #000;
+}
