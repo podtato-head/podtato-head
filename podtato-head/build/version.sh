@@ -12,6 +12,7 @@
 # If ${INCREMENT_MAJOR} or ${INCREMENT_MINOR} are set we increment those instead.
 
 function version_to_use () {
+    git fetch --tags
     current_release_commit=$(git --no-pager rev-list --tags --max-count=1)
     current_release_version="$(git describe --tags ${current_release_commit})"
 

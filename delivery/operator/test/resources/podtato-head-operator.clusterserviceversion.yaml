@@ -1,0 +1,16 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: podtato-head-operator
+spec:
+  displayName: podtato-head-operator
+  description: Manages PodtatoHeadApp resources
+  keywords:
+  - app delivery
+  - cncf
+  maintainers:
+  - email: joshgavant@gmail.com
+    name: joshgav
+  provider:
+    name: podtato-head
+    url: https://github.com/podtato-head/podtato-head

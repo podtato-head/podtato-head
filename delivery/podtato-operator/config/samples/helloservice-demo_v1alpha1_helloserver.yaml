@@ -1,9 +1,0 @@
-apiVersion: helloservice-demo.helloservice/v1alpha1
-kind: podtatoserver
-metadata:
-  name: podtatoserver-sample
-spec:
-  # Default values copied from <project_dir>/helm-charts/podtatoserver/values.yaml
-  imageName: ghcr.io/podtato-head/podtatoserver:v0.1.1
-  
-  
