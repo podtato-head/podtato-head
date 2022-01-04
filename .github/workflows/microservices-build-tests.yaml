@@ -1,4 +1,4 @@
-name: podtato-head-test
+name: podtato-head-microservices-tests
 
 on:
   - push

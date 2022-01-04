@@ -1,12 +1,10 @@
-name: podtato-head-release
+name: podtato-head-microservices-release
 
 on:
   push:
     branches:
       - 'main'
-      - 'develop'
       - 'release-*'
-
 
 env:
   RELEASE_BUILD: 1
