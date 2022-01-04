@@ -25,7 +25,6 @@ FROM scratch
 
 COPY --from=builder /build/podtatoserver /
 COPY /static  /static
-COPY /static/podtato-new.html  /podtato-new.html
 
 # Export necessary port
 EXPOSE 9000

@@ -19,6 +19,14 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+const (
+	StaticAssetsPathEnvVar    = "STATIC_ASSETS_PATH"
+	StaticAssetsPathDefault   = "./static"
+	StaticAssetsURLPathPrefix = "/static"
+)
+
+var staticAssetsPath string
+
 var podtatoConfiguration *pkg.PodtatoConfig
 
 // HTML page template
@@ -73,7 +81,7 @@ func (h HTTPHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		getCallCounter.WithLabelValues(status).Inc()
 	}()
 
-	overviewTemplate = template.Must(template.ParseFiles("./static/podtato-new.html"))
+	overviewTemplate = template.Must(template.ParseFiles(fmt.Sprintf("%s/podtato-new.html", staticAssetsPath)))
 	err := overviewTemplate.Execute(res, podtatoConfiguration)
 
 	if err != nil {
@@ -108,6 +116,11 @@ func prometheusMiddleware(next http.Handler) http.Handler {
 func init() {
 	prometheus.Register(getCallCounter)
 	prometheus.Register(responseTimeHistogram)
+
+	staticAssetsPath = os.Getenv(StaticAssetsPathEnvVar)
+	if len(staticAssetsPath) == 0 {
+		staticAssetsPath = StaticAssetsPathDefault
+	}
 }
 
 func main() {
@@ -129,15 +142,10 @@ func main() {
 	router.Path("/").Handler(handler)
 	router.Path("/")
 
-	staticDir := os.Getenv("STATIC_DIR")
-	if staticDir == "" {
-		staticDir = "/static"
-	}
-
 	// Serving static files
 	router.
-		PathPrefix(staticDir).
-		Handler(http.StripPrefix(staticDir, http.FileServer(http.Dir(staticDir))))
+		PathPrefix(StaticAssetsURLPathPrefix).
+		Handler(http.StripPrefix(StaticAssetsURLPathPrefix, http.FileServer(http.Dir(staticAssetsPath))))
 
 	router.Path("/metrics").Handler(promhttp.Handler())
 
