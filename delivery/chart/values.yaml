@@ -7,6 +7,7 @@ images:
   repositoryDirname: ghcr.io/podtato-head
   pullPolicy: IfNotPresent
   pullSecrets: []
+    # - name: ghcr
 
 # keep ports in sync with podtato-services/main/pkg/provider.go
 entry:

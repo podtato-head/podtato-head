@@ -36,6 +36,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with kubectl
@@ -48,6 +50,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with helm
@@ -60,6 +64,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with kustomize
@@ -72,6 +78,14 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with ketch
@@ -84,7 +98,23 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with flux
         run: ./delivery/flux/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+
+  test_operator_delivery:
+    name: Deliver with operator
+    needs: [build_and_push_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with operator
+        run: ./delivery/operator/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
