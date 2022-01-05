@@ -13,21 +13,23 @@ echo "github_user: ${github_user}"
 namespace=podtato-helm
 kubectl create namespace ${namespace} --save-config || true &> /dev/null
 kubectl config set-context --current --namespace=${namespace}
-
 if [[ -n "${github_token}" && -n "${github_user}" ]]; then
-    kubectl create secret docker-registry ghcr \
-        --docker-server 'ghcr.io/' \
-        --docker-username "${github_user}" \
-        --docker-password "${github_token}"
+    test=$(kubectl get secret ghcr -oname 2> /dev/null || true)
+    if [[ -z "${test}" ]]; then
+        kubectl create secret docker-registry ghcr \
+            --docker-server 'ghcr.io/' \
+            --docker-username "${github_user}" \
+            --docker-password "${github_token}"
+    fi
 fi
 
 if [[ -z "${RELEASE_BUILD}" ]]; then
     # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests
-    helm upgrade --install --debug podtato-head ${this_dir} \
+    helm upgrade --install podtato-head ${this_dir} \
         --set "images.repositoryDirname=ghcr.io/${github_user:+${github_user}/}podtato-head" \
         ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
 else
-    helm upgrade --install --debug podtato-head ${this_dir} \
+    helm upgrade --install podtato-head ${this_dir} \
         ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
 fi
 
@@ -37,7 +39,7 @@ echo ""
 echo "=== await readiness of deployments..."
 parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
 for part in "${parts[@]}"; do
-    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
+    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-head-${part}
 done
 
 ${root_dir}/scripts/test_services.sh ${namespace}

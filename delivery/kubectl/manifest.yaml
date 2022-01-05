@@ -7,23 +7,23 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-entry
+  name: podtato-head-entry
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
     matchLabels:
-      component: podtato-entry
+      component: podtato-head-entry
   template:
     metadata:
       labels:
-        component: podtato-entry
+        component: podtato-head-entry
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: ghcr.io/podtato-head/entry:0.1.0
+        image: ghcr.io/podtato-head/entry:0.2.1
         imagePullPolicy: Always
         ports:
         - containerPort: 9000
@@ -34,13 +34,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: podtato-entry
+  name: podtato-head-entry
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
-    component: podtato-entry
+    component: podtato-head-entry
   ports:
   - name: http
     port: 9000
@@ -53,23 +53,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-hat
+  name: podtato-head-hat
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
     matchLabels:
-      component: podtato-hat
+      component: podtato-head-hat
   template:
     metadata:
       labels:
-        component: podtato-hat
+        component: podtato-head-hat
     spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image:  ghcr.io/podtato-head/hat:0.1.0
+          image:  ghcr.io/podtato-head/hat:0.2.1
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -80,13 +80,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: podtato-hat
+  name: podtato-head-hat
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
-    component: podtato-hat
+    component: podtato-head-hat
   ports:
     - name: http
       port: 9001
@@ -97,23 +97,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-left-leg
+  name: podtato-head-left-leg
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
     matchLabels:
-      component: podtato-left-leg
+      component: podtato-head-left-leg
   template:
     metadata:
       labels:
-        component: podtato-left-leg
+        component: podtato-head-left-leg
     spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image:  ghcr.io/podtato-head/left-leg:0.1.0
+          image:  ghcr.io/podtato-head/left-leg:0.2.1
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -124,13 +124,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: podtato-left-leg
+  name: podtato-head-left-leg
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
-    component: podtato-left-leg
+    component: podtato-head-left-leg
   ports:
     - name: http
       port: 9002
@@ -141,23 +141,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-left-arm
+  name: podtato-head-left-arm
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
     matchLabels:
-      component: podtato-left-arm
+      component: podtato-head-left-arm
   template:
     metadata:
       labels:
-        component: podtato-left-arm
+        component: podtato-head-left-arm
     spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image:  ghcr.io/podtato-head/left-arm:0.1.0
+          image:  ghcr.io/podtato-head/left-arm:0.2.1
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -168,13 +168,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: podtato-left-arm
+  name: podtato-head-left-arm
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
-    component: podtato-left-arm
+    component: podtato-head-left-arm
   ports:
     - name: http
       port: 9003
@@ -185,23 +185,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-right-leg
+  name: podtato-head-right-leg
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
     matchLabels:
-      component: podtato-right-leg
+      component: podtato-head-right-leg
   template:
     metadata:
       labels:
-        component: podtato-right-leg
+        component: podtato-head-right-leg
     spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image:  ghcr.io/podtato-head/right-leg:0.1.0
+          image:  ghcr.io/podtato-head/right-leg:0.2.1
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -212,13 +212,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: podtato-right-leg
+  name: podtato-head-right-leg
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
-    component: podtato-right-leg
+    component: podtato-head-right-leg
   ports:
     - name: http
       port: 9004
@@ -229,23 +229,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-right-arm
+  name: podtato-head-right-arm
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
     matchLabels:
-      component: podtato-right-arm
+      component: podtato-head-right-arm
   template:
     metadata:
       labels:
-        component: podtato-right-arm
+        component: podtato-head-right-arm
     spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: server
-          image:  ghcr.io/podtato-head/right-arm:0.1.0
+          image:  ghcr.io/podtato-head/right-arm:0.2.1
           imagePullPolicy: Always
           ports:
             - containerPort: 9000
@@ -256,13 +256,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: podtato-right-arm
+  name: podtato-head-right-arm
   namespace: podtato-kubectl
   labels:
     app: podtato-head
 spec:
   selector:
-    component: podtato-right-arm
+    component: podtato-head-right-arm
   ports:
     - name: http
       port: 9005

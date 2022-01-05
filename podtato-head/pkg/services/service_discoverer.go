@@ -17,11 +17,11 @@ type staticServiceDiscoverer struct {
 func NewStaticServiceDiscoverer() *staticServiceDiscoverer {
 	return &staticServiceDiscoverer{
 		staticServiceMap: map[string]*url.URL{
-			"hat": mustParseURL("http://podtato-hat:9001"),
-			"left-leg": mustParseURL("http://podtato-left-leg:9002"),
-			"left-arm": mustParseURL("http://podtato-left-arm:9003"),
-			"right-leg": mustParseURL("http://podtato-right-leg:9004"),
-			"right-arm": mustParseURL("http://podtato-right-arm:9005"),
+			"hat": mustParseURL("http://podtato-head-hat:9001"),
+			"left-leg": mustParseURL("http://podtato-head-left-leg:9002"),
+			"left-arm": mustParseURL("http://podtato-head-left-arm:9003"),
+			"right-leg": mustParseURL("http://podtato-head-right-leg:9004"),
+			"right-arm": mustParseURL("http://podtato-head-right-arm:9005"),
 		},
 	}
 }
