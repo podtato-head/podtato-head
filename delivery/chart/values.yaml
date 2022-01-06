@@ -14,7 +14,7 @@ entry:
   tag: "0.2.1"
   serviceType: LoadBalancer
   servicePort: 9000
-  extraEnvs: []
+  env: []
   #   - name: PODTATO_PART_NUMBER
   #     value: "01"
 hat:
@@ -22,7 +22,7 @@ hat:
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9001
-  extraEnvs: []
+  env: []
   #   - name: PODTATO_PART_NUMBER
   #     value: "01"
 leftLeg:
@@ -30,7 +30,7 @@ leftLeg:
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9002
-  extraEnvs: []
+  env: []
   #   - name: PODTATO_PART_NUMBER
   #     value: "01"
 leftArm:
@@ -38,7 +38,7 @@ leftArm:
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9003
-  extraEnvs: []
+  env: []
   #   - name: PODTATO_PART_NUMBER
   #     value: "01"
 rightLeg:
@@ -46,7 +46,7 @@ rightLeg:
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9004
-  extraEnvs: []
+  env: []
   #   - name: PODTATO_PART_NUMBER
   #     value: "01"
 rightArm:
@@ -54,7 +54,7 @@ rightArm:
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9005
-  extraEnvs: []
+  env: []
   #   - name: PODTATO_PART_NUMBER
   #     value: "01"
 

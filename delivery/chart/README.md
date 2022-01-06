@@ -34,7 +34,7 @@ The installation can be customized by changing the following parameters via
 | `<service>.tag`                 | Tag of image repo for <service>                                 | `0.1.0`                      |
 | `<service>.serviceType`         | Service type for <service>                                      | `LoadBalancer` for main      |
 | `<service>.servicePort`         | Service port for <service>                                      | `9000`-`9005`                |
-| `<service>.extraEnvs`           | Add "env:" entries on Deployments (ex: PODTATO_PART_NUMBER)     | `[]`                         |
+| `<service>.env`                 | Add "env:" entries on Deployments (ex: PODTATO_PART_NUMBER)     | `[]`                         |
 | `serviceAccount.create`         | Whether or not to create dedicated service account              | `true`                       |
 | `serviceAccount.name`           | Name of the service account to use                              | `default`                    |
 | `serviceAccount.annotations`    | Annotations to add to a created service account                 | `{}`                         |

@@ -1,7 +1,7 @@
 {{ $componentName := "right-arm" }}
 {{ $repoBasename := .Values.rightArm.repositoryBasename }}
 {{ $repoTag := .Values.rightArm.tag }}
-{{ $extraEnvs := .Values.rightArm.extraEnvs }}
+{{ $env := .Values.rightArm.env }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,6 +71,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          {{- if $extraEnvs }}
-            {{- toYaml $extraEnvs | nindent 12 }}
+          {{- if $env }}
+            {{- toYaml $env | nindent 12 }}
           {{- end }}

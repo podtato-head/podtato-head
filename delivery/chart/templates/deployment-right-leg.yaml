@@ -1,7 +1,7 @@
 {{ $componentName := "right-leg" }}
 {{ $repoBasename := .Values.rightLeg.repositoryBasename }}
 {{ $repoTag := .Values.rightLeg.tag }}
-{{ $extraEnvs := .Values.rightLeg.extraEnvs }}
+{{ $env := .Values.rightLeg.env }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,6 +71,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          {{- if $extraEnvs }}
-            {{- toYaml $extraEnvs | nindent 12 }}
+          {{- if $env }}
+            {{- toYaml $env | nindent 12 }}
           {{- end }}
