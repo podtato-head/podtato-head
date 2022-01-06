@@ -39,3 +39,8 @@ spec:
               path: /
               port: http
           resources: {}
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
