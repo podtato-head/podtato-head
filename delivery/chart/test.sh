@@ -27,11 +27,11 @@ if [[ -z "${RELEASE_BUILD}" ]]; then
     # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests and test changing hat part number
     helm upgrade --install podtato-head ${this_dir} \
         --set "images.repositoryDirname=ghcr.io/${github_user:+${github_user}/}podtato-head" \
-        --set "hat.env=02" \
+        --set "hat.env[0].name=PODTATO_PART_NUMBER" --set "hat.env[0].value=02" \
         ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
 else
     helm upgrade --install podtato-head ${this_dir} \
-        --set "hat.env=02" \
+        --set "hat.env[0].name=PODTATO_PART_NUMBER" --set "hat.env[0].value=02" \
         ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
 fi
 
