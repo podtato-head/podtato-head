@@ -59,18 +59,18 @@ echo ""
 echo "=== await readiness of deployments..."
 parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
 for part in "${parts[@]}"; do
-    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
+    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-head-${part}
 done
 
 ${root_dir}/scripts/test_services.sh ${namespace}
 
 echo ""
-echo "=== kubectl logs deployment/podtato-entry"
-kubectl logs deployment/podtato-entry
+echo "=== kubectl logs deployment/podtato-head-entry"
+kubectl logs deployment/podtato-head-entry
 
 echo ""
-echo "=== kubectl logs deployment/podtato-hat"
-kubectl logs deployment/podtato-hat
+echo "=== kubectl logs deployment/podtato-head-hat"
+kubectl logs deployment/podtato-head-hat
 
 if [[ -n "${WAIT_FOR_DELETE}" ]]; then
     echo ""
@@ -108,18 +108,18 @@ echo ""
 echo "=== await readiness of deployments..."
 parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
 for part in "${parts[@]}"; do
-    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
+    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-head-${part}
 done
 
 ${root_dir}/scripts/test_services.sh ${namespace}
 
 echo ""
-echo "=== kubectl logs deployment/podtato-entry"
-kubectl logs deployment/podtato-entry
+echo "=== kubectl logs deployment/podtato-head-entry"
+kubectl logs deployment/podtato-head-entry
 
 echo ""
-echo "=== kubectl logs deployment/podtato-hat"
-kubectl logs deployment/podtato-hat
+echo "=== kubectl logs deployment/podtato-head-hat"
+kubectl logs deployment/podtato-head-hat
 
 if [[ -n "${WAIT_FOR_DELETE}" ]]; then
     echo ""

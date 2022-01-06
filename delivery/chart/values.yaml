@@ -11,7 +11,7 @@ images:
 # keep ports in sync with podtato-services/main/pkg/provider.go
 entry:
   repositoryBasename: entry
-  tag: "0.1.0"
+  tag: "0.2.1"
   serviceType: LoadBalancer
   servicePort: 9000
   extraEnvs: []
@@ -19,7 +19,7 @@ entry:
   #     value: "01"
 hat:
   repositoryBasename: hat
-  tag: "0.1.0"
+  tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9001
   extraEnvs: []
@@ -27,7 +27,7 @@ hat:
   #     value: "01"
 leftLeg:
   repositoryBasename: left-leg
-  tag: "0.1.0"
+  tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9002
   extraEnvs: []
@@ -35,7 +35,7 @@ leftLeg:
   #     value: "01"
 leftArm:
   repositoryBasename: left-arm
-  tag: "0.1.0"
+  tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9003
   extraEnvs: []
@@ -43,7 +43,7 @@ leftArm:
   #     value: "01"
 rightLeg:
   repositoryBasename: right-leg
-  tag: "0.1.0"
+  tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9004
   extraEnvs: []
@@ -51,7 +51,7 @@ rightLeg:
   #     value: "01"
 rightArm:
   repositoryBasename: right-arm
-  tag: "0.1.0"
+  tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9005
   extraEnvs: []
@@ -82,7 +82,7 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-# applies to podtato-main deployment only
+# applies to podtato-head-entry deployment only
 ingress:
   enabled: false
   annotations: {}

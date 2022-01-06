@@ -24,7 +24,7 @@ if [[ -n "${github_token}" ]]; then
 fi
 
 # install gh
-gh_version=2.2.0
+gh_version=2.3.0
 curl -sSLO https://github.com/cli/cli/releases/download/v${gh_version}/gh_${gh_version}_linux_amd64.tar.gz
 tar -xzf gh_${gh_version}_linux_amd64.tar.gz \
     gh_${gh_version}_linux_amd64/bin/gh \
@@ -42,12 +42,11 @@ flux version --client
 flux install --version=latest
 # /end install flux CLI
 
-secret_ref_name=podtato-flux-secret
-git_source_name=podtato-flux-repo
+secret_ref_name=podtato-head-flux-secret
+git_source_name=podtato-head-flux-repo
 git_repo_url=https://github.com/${github_user}/podtato-head
-# TODO: update to main after merge
-git_source_branch=develop
-helmrelease_name=podtato-flux-release
+git_source_branch=main
+helmrelease_name=podtato-head-flux-release
 
 if [[ -n "${USE_SSH_GIT_AUTH}" ]]; then
     git_repo_url=ssh://git@github.com/${github_user}/podtato-head
@@ -89,6 +88,7 @@ flux create helmrelease ${helmrelease_name} \
     --target-namespace=${namespace} \
     --source=GitRepository/${git_source_name}.flux-system \
     --chart=./delivery/chart \
+    --release-name 'podtato-head' \
     --values="${tmp_values_file}"
 
 # do this here for when flux creates a new service account for the service
@@ -104,19 +104,19 @@ echo ""
 echo "=== await readiness of deployments..."
 parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
 for part in "${parts[@]}"; do
-    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-${part}
+    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-head-${part}
 done
 
 # service tests
 ${root_dir}/scripts/test_services.sh ${namespace}
 
 echo ""
-echo "=== kubectl logs deployment/podtato-entry"
-kubectl logs deployment/podtato-entry
+echo "=== kubectl logs deployment/podtato-head-entry"
+kubectl logs deployment/podtato-head-entry
 
 echo ""
-echo "=== kubectl logs deployment/podtato-hat"
-kubectl logs deployment/podtato-hat
+echo "=== kubectl logs deployment/podtato-head-hat"
+kubectl logs deployment/podtato-head-hat
 
 if [[ -n "${WAIT_FOR_DELETE}" ]]; then
     echo ""

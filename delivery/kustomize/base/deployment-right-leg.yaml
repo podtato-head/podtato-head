@@ -2,11 +2,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podtato-right-leg
+  name: podtato-head-right-leg
   labels:
     app.kubernetes.io/name: podtato-head
     app.kubernetes.io/component: right-leg
-    app.kubernetes.io/version: '0.1.0'
+    app.kubernetes.io/version: '0.2.1'
     app.kubernetes.io/managed-by: kustomize
 spec:
   replicas: 1
@@ -24,7 +24,7 @@ spec:
       serviceAccountName: podtato-head
       containers:
         - name: podtato-head-right-leg
-          image: ghcr.io/podtato-head/right-leg:0.1.0
+          image: ghcr.io/podtato-head/right-leg:0.2.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
