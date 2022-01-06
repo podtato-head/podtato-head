@@ -14,31 +14,49 @@ entry:
   tag: "0.2.1"
   serviceType: LoadBalancer
   servicePort: 9000
+  env: []
+  #   - name: PODTATO_PART_NUMBER
+  #     value: "01"
 hat:
   repositoryBasename: hat
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9001
+  env: []
+  #   - name: PODTATO_PART_NUMBER
+  #     value: "01"
 leftLeg:
   repositoryBasename: left-leg
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9002
+  env: []
+  #   - name: PODTATO_PART_NUMBER
+  #     value: "01"
 leftArm:
   repositoryBasename: left-arm
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9003
+  env: []
+  #   - name: PODTATO_PART_NUMBER
+  #     value: "01"
 rightLeg:
   repositoryBasename: right-leg
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9004
+  env: []
+  #   - name: PODTATO_PART_NUMBER
+  #     value: "01"
 rightArm:
   repositoryBasename: right-arm
   tag: "0.2.1"
   serviceType: ClusterIP
   servicePort: 9005
+  env: []
+  #   - name: PODTATO_PART_NUMBER
+  #     value: "01"
 
 serviceAccount:
   # Specifies whether a service account should be created
