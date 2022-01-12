@@ -4,7 +4,7 @@ fullnameOverride: ""
 # applies to all deployments in this chart
 replicaCount: 1
 images:
-  repositoryDirname: ghcr.io/podtato-head
+  repositoryDirname: ghcr.io/podtato-head/podtato-head
   pullPolicy: IfNotPresent
   pullSecrets: []
 
