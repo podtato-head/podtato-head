@@ -79,7 +79,7 @@ jobs:
           password: ${{ github.token }}
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
-      - name: Test delivery with helm
+      - name: Test delivery with ketch
         run: ./delivery/ketch/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
 
   test_flux_delivery:

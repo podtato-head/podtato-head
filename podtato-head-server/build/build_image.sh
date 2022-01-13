@@ -16,6 +16,7 @@ fi
 TAGS=("0.1.0" "0.1.1" "0.1.2")
 for TAG in "${TAGS[@]}"; do
   docker build --rm=false --file "${app_dir}/docker/DockerfileV${TAG}" \
+    --build-arg "GITHUB_USER=${github_user}" \
     --tag "${image_repo}/podtatoserver:v${TAG}" \
     "${app_dir}"
   if [[ -n "${PUSH_TO_REGISTRY}" ]]; then
