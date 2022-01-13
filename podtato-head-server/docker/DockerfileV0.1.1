@@ -18,7 +18,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o podtatoserver ./podtatoserver.go
+RUN go build -o podtatoserver ./main.go
 
 # Build a small image
 FROM scratch
@@ -30,4 +30,4 @@ COPY /static  /static
 EXPOSE 9000
 
 # Command to run when starting the container
-CMD ["/podtatoserver", "--version", "0.1.0" ]
+CMD ["/podtatoserver", "--version", "0.1.1"]

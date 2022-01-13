@@ -1,4 +1,4 @@
-module github.com/podtato-head/podtato-head-monolith
+module github.com/podtato-head/podtato-head-server
 
 go 1.17
 

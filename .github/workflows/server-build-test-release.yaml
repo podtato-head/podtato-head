@@ -1,0 +1,47 @@
+name: podtato-head-server-test-and-release
+
+on:
+  push:
+    paths:
+      - 'podtato-head-server/**'
+  pull_request:
+    paths:
+      - 'podtato-head-server/**'
+
+permissions:
+  packages: write
+
+  
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_USER: ${{ github.repository_owner }}
+      GITHUB_TOKEN: ${{ github.token }}  
+      IMAGE_REPO: "ghcr.io/${{ github.repository_owner }}/podtato-head"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build images
+        run: make push-server-images
+      - name: Test images
+        run: make test-server
+
+  release:
+    if: github.repository_owner == 'podtato-head' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_USER: ${{ github.repository_owner }}
+      GITHUB_TOKEN: ${{ secrets.CR_PAT }}  
+      IMAGE_REPO: "ghcr.io/podtato-head"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build images
+        run: make push-server-images
+      - name: Test images
+        run: make test-server

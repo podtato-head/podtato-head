@@ -42,7 +42,7 @@ jobs:
           #   echo "VERSION=test" >> ${GITHUB_ENV}
           fi
       - name: Push images
-        run: make push-images 
+        run: make push-microservices-images 
 
   test_services:
     needs: push_images
@@ -51,4 +51,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test services
-        run: make test-services
+        run: make test-microservices

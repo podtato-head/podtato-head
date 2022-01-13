@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/podtato-head/podtato-head-monolith/pkg"
+	"github.com/podtato-head/podtato-head-server/pkg"
 
 	"github.com/gorilla/mux"
 
