@@ -1,4 +1,4 @@
-name: podtato-head-delivery-tests
+name: podtato-head-microservices-delivery-tests
 
 on:
   - push
@@ -26,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Push images
-        run: make push-images 
+        run: make push-microservices-images 
 
   test_kubectl_delivery:
     name: Deliver with kubectl
@@ -79,7 +79,7 @@ jobs:
           password: ${{ github.token }}
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
-      - name: Test delivery with helm
+      - name: Test delivery with ketch
         run: ./delivery/ketch/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
 
   test_flux_delivery:

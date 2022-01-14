@@ -1,12 +1,10 @@
-name: podtato-head-release
+name: podtato-head-microservices-release
 
 on:
   push:
     branches:
       - 'main'
-      - 'develop'
       - 'release-*'
-
 
 env:
   RELEASE_BUILD: 1
@@ -45,7 +43,7 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
           # for access to ghcr.io/podtato-head instead of ghcr.io/podtato-head/podtato-head
           GITHUB_TOKEN: ${{ secrets.CR_PAT }}  
-        run: make push-images 
+        run: make push-microservices-images 
 
   test_services:
     if: github.repository_owner == 'podtato-head'
@@ -58,7 +56,7 @@ jobs:
         env:
           # for access to ghcr.io/podtato-head instead of ghcr.io/podtato-head/podtato-head
           GITHUB_TOKEN: ${{ secrets.CR_PAT }}  
-        run: make test-services
+        run: make test-microservices
 
   finalize:
     if: github.repository_owner == 'podtato-head' && github.ref_name == 'main'
@@ -75,7 +73,7 @@ jobs:
           fetch-depth: 0
       - name: Apply new git tag
         run: |
-          source ./podtato-head/build/version.sh
+          source ./podtato-head-microservices/build/version.sh
           version=$(version_to_use)
           echo "INFO: will tag commit as: ${version}"
           git tag -f "${version}"
