@@ -6,9 +6,9 @@ demonstrate delivery scenarios using many different tools and services. It is
 intended to help application delivery support teams test and decide which
 of these to use.
 
-<img src="podtato-head/pkg/assets/images/podtato-head.png" alt="Podtato Man" width="300" style="vertical-align: text-top;" />
+<img src="podtato-head-microservices/pkg/assets/images/podtato-head.png" alt="Podtato Man" width="300" style="vertical-align: text-top;" />
 
-The app comprises a set of microservices in `podtato-head` and a set of examples
+The app comprises a set of microservices in `podtato-head-microservices` and a set of examples
 demonstrating how to deliver them in `delivery`. The services are defined with
 as little additional logic as possible to enable you to focus on the delivery
 mechanisms themselves.
@@ -57,10 +57,10 @@ shared repo.
 ### Services
 
 podtato-head's services themselves are written in Go; entry points are in
-`podtato-head/cmd`. The entry point to the app is defined in `cmd/entry` and a
+`podtato-head-microservices/cmd`. The entry point to the app is defined in `cmd/entry` and a
 base for each of the app's downstream services is defined in `cmd/parts`.
 
-HTTP handlers and other shared functionality is defined in `podtato-head/pkg`.
+HTTP handlers and other shared functionality is defined in `podtato-head-microservices/pkg`.
 
 ### Build
 
@@ -73,7 +73,7 @@ build-images`.
 ### Publish
 
 To test the built images you'll need to push them to a registry so that
-Kubernetes can find them. `make push-images` can do this for
+Kubernetes can find them. `make push-microservices-images` can do this for
 GitHub's container registry if you are authorized to push to the target repo (as
 described next).
 
