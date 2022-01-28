@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"os"
 )
 
 type ServiceDiscoverer interface {
@@ -15,13 +16,34 @@ type staticServiceDiscoverer struct {
 }
 
 func NewStaticServiceDiscoverer() *staticServiceDiscoverer {
+	hatHost, found := os.LookupEnv("HAT_HOST")
+	if !found {
+		hatHost = "podtato-head-hat"
+	}
+	leftLegHost, found := os.LookupEnv("LEFT_LEG_HOST")
+	if !found {
+		leftLegHost = "podtato-head-left-leg"
+	}
+
+	leftArmHost, found := os.LookupEnv("LEFT_ARM_HOST")
+	if !found {
+		leftArmHost = "podtato-head-left-arm"
+	}
+	rightLegHost, found := os.LookupEnv("RIGHT_LEG_HOST")
+	if !found {
+		rightLegHost = "podtato-head-right-leg"
+	}
+	rightArmHost, found := os.LookupEnv("RIGHT_ARM_HOST")
+	if !found {
+		rightArmHost = "podtato-head-right-arm"
+	}
 	return &staticServiceDiscoverer{
 		staticServiceMap: map[string]*url.URL{
-			"hat": mustParseURL("http://podtato-head-hat:9001"),
-			"left-leg": mustParseURL("http://podtato-head-left-leg:9002"),
-			"left-arm": mustParseURL("http://podtato-head-left-arm:9003"),
-			"right-leg": mustParseURL("http://podtato-head-right-leg:9004"),
-			"right-arm": mustParseURL("http://podtato-head-right-arm:9005"),
+			"hat":       mustParseURL(fmt.Sprintf("http://%s:9001", hatHost)),
+			"left-leg":  mustParseURL(fmt.Sprintf("http://%s:9002", leftLegHost)),
+			"left-arm":  mustParseURL(fmt.Sprintf("http://%s:9003", leftArmHost)),
+			"right-leg": mustParseURL(fmt.Sprintf("http://%s:9004", rightLegHost)),
+			"right-arm": mustParseURL(fmt.Sprintf("http://%s:9005", rightArmHost)),
 		},
 	}
 }
