@@ -16,17 +16,16 @@ kubectl apply -f - <<EOF
       selfSigned: {}
 EOF
 
-## install istio
+## install nginx
 tmp_dir=$(mktemp -d)
 pushd "${tmp_dir}"
-curl -sSL https://istio.io/downloadIstio | sh -
-cp ./istio-*/bin/istioctl ./istioctl
-./istioctl version
-./istioctl install --set profile=demo --skip-confirmation
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
 popd && rm -rf "${tmp_dir}"
 
 ## install ketch controller
-ketch_version=0.5.0
+ketch_version=0.6.2
 kubectl apply -f https://github.com/shipa-corp/ketch/releases/download/v${ketch_version}/ketch-controller.yaml
 kubectl wait --for=condition="Available" deployment ketch-controller-manager -n ketch-system
 
