@@ -21,3 +21,17 @@ commonLabels:
 ## kustomize transformers that operate on resources
 transformers:
   - labels.yaml
+
+## patches to be applied to target resources
+#patches:
+#  - patch: |-
+#      - op: add
+#        path: /spec/template/spec/containers/0/env/-
+#        value: 
+#            name: PODTATO_PART_NUMBER
+#            value: "02"
+#    target:
+#      group: apps
+#      version: v1
+#      kind: Deployment  #patch all deployments
+##      name: podtato-head-hat  #patch a specific named deployment

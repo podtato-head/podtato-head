@@ -33,6 +33,8 @@ Look in `delivery/kustomize/overlay` for an example of an overlay which
 transforms resource for delivery to a production environment by adding labels
 and modifying image names.
 
+(OPTIONAL): Modify the kustomization.yaml to manipulate resources; for example, uncomment the patches.
+
 Render the overlay with `kustomize build ./delivery/kustomize/overlay`
 
 Apply it with `kustomize build ./delivery/kustomize/overlay | kubectl apply -f -`
