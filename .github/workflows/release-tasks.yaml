@@ -1,0 +1,117 @@
+name: release-tasks
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_build:
+        description: 'is this a release build?'
+        required: false
+        type: boolean
+        default: "false"
+      apply_git_tag:
+        description: 'should we apply git tag?'
+        required: false
+        type: boolean
+        default: "false"
+      git_tag:
+        description: 'If set, override calculated tag'
+        required: false
+        type: string
+        default: ""
+      apply_image_tag:
+        description: 'should we apply image tag?'
+        required: false
+        type: boolean
+        default: "false"
+      image_tag:
+        description: 'If set, override calculated tag'
+        required: false
+        type: string
+        default: ""
+
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  GITHUB_USER: ${{ github.repository_owner }}
+  # for access to ghcr.io/podtato-head instead of ghcr.io/podtato-head/podtato-head
+  GITHUB_TOKEN: ${{ github.token }}
+  
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  tag_and_push_images:
+    if: github.event.inputs.apply_image_tag == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install requirements
+        run: ./scripts/requirements.sh "/usr/local/bin"
+      - name: Set image tag to apply
+        run: |
+          IMAGE_VERSION=${{ github.event.inputs.image_tag }}
+          echo "IMAGE_VERSION=${IMAGE_VERSION}" >> $GITHUB_ENV
+          echo "IMAGE_VERSION: ${IMAGE_VERSION}"
+          echo "INFO: if IMAGE_VERSION isn't specified it will be determined dynamically"
+
+          if [[ "${{ github.event.inputs.release_build }}" == 'true' ]]; then
+              echo "INFO: release_build set, will push to ghcr.io/podtato-head"
+              echo "RELEASE_BUILD=1" >> $GITHUB_ENV
+              echo "GITHUB_TOKEN=${{ secrets.CR_PAT }}" >> $GITHUB_ENV
+          else
+              echo "INFO: release_build not set, will push to ghcr.io/podtato-head/${GITHUB_USER}"
+          fi
+      - name: Push image with tag
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: make push-images 
+
+  test_services:
+    if: github.event.inputs.apply_image_tag == 'true' || github.event.inputs.apply_git_tag == 'true'
+    needs: tag_and_push_images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set image tag to use
+        run: |
+          IMAGE_VERSION=${{ github.event.inputs.image_tag }}
+          echo "IMAGE_VERSION=${IMAGE_VERSION}" >> $GITHUB_ENV
+          echo "IMAGE_VERSION: ${IMAGE_VERSION}"
+          echo "INFO: if IMAGE_VERSION isn't specified it will be determined dynamically"
+
+          # don't automatically increment tag here
+          export NO_INCREMENT=1
+
+          if [[ "${{ github.event.inputs.release_build }}" == 'true' ]]; then
+              echo "RELEASE_BUILD=1" >> $GITHUB_ENV
+              echo "GITHUB_TOKEN=${{ secrets.CR_PAT }}" >> $GITHUB_ENV
+          fi
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Test services
+        run: make test-services
+
+  tag_git_repo:
+    if: github.event.inputs.apply_git_tag == 'true'
+    needs:
+      - test_services
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set git tag string
+        run: |
+          REPO_VERSION=${{ github.event.inputs.repo_tag }}
+          echo "REPO_VERSION=${REPO_VERSION}" >> $GITHUB_ENV
+          echo "REPO_VERSION: ${REPO_VERSION}"
+          echo "INFO: if REPO_VERSION isn't specified it will be determined dynamically"
+      - name: Apply new git tag
+        run: |
+          version=$(./scripts/repo_version.sh)
+          echo "INFO: will tag latest commit as: ${version}"
+          git tag -f "${version}"
+          git push --tags
