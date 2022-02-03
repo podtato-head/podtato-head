@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	assetsPrefix = "/assets"
+	assetsPrefix           = "/assets"
 	externalServicesPrefix = "/parts"
 )
 

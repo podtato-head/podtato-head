@@ -4,9 +4,11 @@ set -e
 declare -r this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
 if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
+source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
 github_token=${2:-${GITHUB_TOKEN}}
+image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 
 echo "github_user: ${github_user}"
 
@@ -15,10 +17,7 @@ kubectl create namespace ${namespace} --save-config || true &> /dev/null
 kubectl config set-context --current --namespace ${namespace}
 
 if [[ -n "${github_token}" && -n "${github_user}" ]]; then
-    kubectl create secret docker-registry ghcr \
-        --docker-server 'ghcr.io' \
-        --docker-username "${github_user}" \
-        --docker-password "${github_token}"
+    install_ghcr_secret "${namespace}" "${github_user}" "${github_token}"
 
     kubectl patch serviceaccount default \
         --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'
@@ -27,7 +26,8 @@ fi
 if [[ -z "${RELEASE_BUILD}" ]]; then
     # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests
     cat "${this_dir}/manifest.yaml" | \
-        sed "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
+        sed -E "s@ghcr\.io\/podtato-head/(.*)\:\S+@ghcr\.io\/podtato-head/\\1:${image_version}@g" | \
+        sed -E "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
             kubectl apply -f -
 else
     kubectl apply -f ${this_dir}/manifest.yaml

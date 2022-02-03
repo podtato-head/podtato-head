@@ -53,7 +53,7 @@ buildpacks](https://buildpacks.io/) or can deploy a pre-built container image.
 - Clone this repo and run the following command, replacing registry-secret and image repo hostname as appropriate:
 
 ```bash
-ketch app deploy podtato-head ${root_dir}/podtato-services/main \
+ketch app deploy podtato-head ${root_dir}/podtato-head-server \
     --registry-secret quay \
     --builder paketobuildpacks/builder:full \
     --framework framework1 \

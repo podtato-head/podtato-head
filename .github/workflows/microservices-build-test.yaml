@@ -1,0 +1,53 @@
+name: podtato-head-microservices-build-test
+
+on:
+  push:
+    paths:
+      - 'podtato-head-microservices/**'
+  pull_request:
+    paths:
+      - 'podtato-head-microservices/**'
+  workflow_call:
+
+permissions:
+  packages: write
+
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  GITHUB_TOKEN: ${{ github.token }}  
+  GITHUB_USER: ${{ github.repository_owner }}
+  IMAGE_VERSION: test
+  
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  verify_go_code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+      - name: Verify Go code
+        run: make podtato-head-verify
+
+  build_images:
+    needs: verify_go_code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and push images
+        run: make push-microservices-images 
+
+  test_services:
+    needs: build_images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Test services
+        run: make test-microservices

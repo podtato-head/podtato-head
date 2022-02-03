@@ -44,3 +44,12 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          - name: SERVICES_CONFIG_FILE_PATH
+            value: /config/servicesConfig.yaml
+          volumeMounts:
+            - name: service-discovery-map
+              mountPath: /config
+      volumes:
+        - name: service-discovery-map
+          configMap:
+              name: podtato-head-service-discovery

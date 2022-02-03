@@ -36,11 +36,11 @@ desired state periodically and reconciles it as needed.
 * [Single deployment via Helm](/delivery/chart/README.md)
 * [Single deployment via Kustomize](/delivery/kustomize/README.md)
 * [Single deployment via Ketch](/delivery/ketch/README.md)
-* [Single deployment via Kapp](/delivery/kapp/README.md)
 * [GitOps deployment via Flux](/delivery/flux/README.md)
 
 The following scenarios have not yet been updated for the multi-service app:
 
+* [Single deployment via Kapp](/delivery/kapp/README.md)
 * [GitOps deployment via ArgoCD](/delivery/ArgoCD/README.md)
 * [Canary deployment via Argo Rollouts](/delivery/rollout/README.md)
 * [Helm-based operator deployment](/delivery/podtato-operator/README.md)
@@ -61,6 +61,8 @@ podtato-head's services themselves are written in Go; entry points are in
 base for each of the app's downstream services is defined in `cmd/parts`.
 
 HTTP handlers and other shared functionality is defined in `podtato-head-microservices/pkg`.
+
+To run local tests on the Go code, run `make podtato-head-verify`.
 
 ### Build
 

@@ -14,7 +14,7 @@ fi
 ## trivy
 echo ""
 echo "installing trivy to ${install_dir}"
-trivy_version=v0.21.1
+trivy_version=v0.22.0
 curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
     sh -s -- -b "${install_dir}" "${trivy_version}"
 trivy --version
@@ -22,7 +22,26 @@ trivy --version
 ## cosign
 echo ""
 echo "installing cosign to ${install_dir}"
-cosign_version=v1.3.1
+cosign_version=v1.4.1
 curl -sSL -o "${install_dir}/cosign" https://storage.googleapis.com/cosign-releases/${cosign_version}/cosign-linux-amd64
 chmod +x "${install_dir}/cosign"
 cosign version
+
+## skopeo
+# https://github.com/containers/skopeo/blob/main/install.md
+echo ""
+eval $(cat /etc/os-release)
+case "${NAME}" in
+  "*Debian*" | "*Ubuntu*")
+    sudo apt install skopeo
+    ;;
+  "*Red Hat*" | "*Fedora*")
+    sudo dnf -y install skopeo
+    ;;
+  "*Darwin*")
+    sudo brew install skopeo
+    ;;
+  *)
+    sudo apt install skopeo
+    ;;
+esac
