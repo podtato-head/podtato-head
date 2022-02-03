@@ -39,3 +39,13 @@ spec:
               path: /
               port: http
           resources: {}
+          volumeMounts:
+            - name: service-discovery-map
+              mountPath: /config
+          env:
+            - name: SERVICES_CONFIG_FILE_PATH
+              value: /config/servicesConfig.yaml
+      volumes:
+        - name: service-discovery-map
+          configMap:
+              name: podtato-head-service-discovery

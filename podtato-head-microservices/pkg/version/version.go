@@ -6,7 +6,7 @@ import (
 
 const (
 	defaultServiceVersion string = "v0.1.0"
-	defaultPartNumber string = "01"
+	defaultPartNumber     string = "01"
 )
 
 func ServiceVersion() string {

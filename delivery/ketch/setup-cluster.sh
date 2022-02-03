@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 ## install cert-manager
-certmanager_version=1.5.3
+certmanager_version=1.6.1
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v${certmanager_version}/cert-manager.yaml
 kubectl wait --for=condition="Available" deployment -n cert-manager cert-manager
 kubectl wait --for=condition="Available" deployment -n cert-manager cert-manager-webhook
@@ -26,7 +26,7 @@ cp ./istio-*/bin/istioctl ./istioctl
 popd && rm -rf "${tmp_dir}"
 
 ## install ketch controller
-ketch_version=0.5.0
+ketch_version=0.6.1
 kubectl apply -f https://github.com/shipa-corp/ketch/releases/download/v${ketch_version}/ketch-controller.yaml
 kubectl wait --for=condition="Available" deployment ketch-controller-manager -n ketch-system
 

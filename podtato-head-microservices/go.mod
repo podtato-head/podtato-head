@@ -3,7 +3,9 @@ module github.com/podtato-head/podtato-head
 go 1.17
 
 require (
+	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/gorilla/mux v1.8.0
+	github.com/jarcoal/httpmock v1.1.0
 	github.com/prometheus/client_golang v1.11.0
 )
 

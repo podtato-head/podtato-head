@@ -11,6 +11,9 @@ image_repo=${3:-${IMAGE_REPO:-"ghcr.io/podtato-head"}}
 
 if [[ -n ${github_user} && -n ${github_token} ]]; then
   echo "${github_token}" | docker login ${image_repo} --username="${github_user}" --password-stdin &> /dev/null
+  if [[ "${github_user}" != 'podtato-head' ]]; then
+      image_repo=ghcr.io/${github_user}/podtato-head
+  fi
 fi
 
 TAGS=("0.1.0" "0.1.1" "0.1.2")

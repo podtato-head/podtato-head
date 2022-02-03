@@ -1,0 +1,9 @@
+fmt: ## Run go fmt against code
+	go fmt ./...
+
+vet: ## Run go vet against code
+	go vet ./...
+
+test:
+	go test -v -timeout 30s github.com/podtato-head/podtato-head/...
+	

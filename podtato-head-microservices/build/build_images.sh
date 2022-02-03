@@ -1,19 +1,18 @@
 #! /usr/bin/env bash
 
-# configurable env vars:
-# GITHUB_USER
-# GITHUB_TOKEN
-# COSIGN_KEY_PATH
-# COSIGN_PASSWORD
-# VERSION: if set, override default version. Default version is previous tag for non-main branches, incremented tag for main
-# RELEASE_BUILD: if set, push to ghcr.io/podtato-head, increment version from last tag, and possibly apply a git tag
-# INCREMENT_MAJOR: if set, increment major on release (default is to increment minor)
-# INCREMENT_PATCH: if set, increment patch (x.y.Z) on release (default is to increment minor)
-# PUSH_TO_REGISTRY: if set, push image to remote registry after building locally
+### configurable env vars:
+#
+# GITHUB_USER: required for non-release builds. for login to ghcr.io, and to set a label on images
+# GITHUB_TOKEN: required for pushing images. for login to ghcr.io
+# COSIGN_KEY_PATH: optional. path to private key for cosign
+# COSIGN_PASSWORD: optional. password for cosign private key
+# IMAGE_VERSION: optional. if set, override default image tag. Default version is calculated by incrementing the previous _published_ tag.
+# RELEASE_BUILD: optional. if set, push to ghcr.io/podtato-head rather than ghcr.io/<user>/podtato-head
+# INCREMENT_MAJOR: optional. if set, increment major on release (default is to increment patch)
+# INCREMENT_MINOR: optional. if set, increment minor on release (default is to increment patch)
+# PUSH_TO_REGISTRY: optional. if set, push image to remote registry after building locally
 
-### set up build
-
-# set common variables
+### set paths
 declare -r this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 declare -r app_dir=$(cd ${this_dir}/.. && pwd)
 declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
@@ -21,115 +20,52 @@ if [[ -e ${root_dir}/.env ]]; then
     echo "INFO: sourcing env vars from .env in repo root"
     source ${root_dir}/.env
 fi
-# /end set common variables
 
-# set up registry access
-registry=ghcr.io
-github_user=${1:-${GITHUB_USER}}
-github_token=${2:-${GITHUB_TOKEN}}
-commit_sha=$(git rev-parse HEAD)
+## import functions
+source ${root_dir}/scripts/registry-secrets.sh
+source ${root_dir}/scripts/build-image.sh
 
-# sign in if possible
-if [[ -z "${github_token}" ]]; then
-    echo "WARNING: GITHUB_TOKEN not set, push may fail"
-else
-    echo "${github_token}" | docker login --username=${github_user} --password-stdin ${registry} &> /dev/null
-fi
-# /end set up registry access
+### set registry
+registry_user=${1:-${GITHUB_USER}}
+registry_token=${2:-${GITHUB_TOKEN}}
+registry_hostname=${3:-ghcr.io}
+login_ghcr "${registry_user}" "${registry_token}"
 
-# set version/tag for this build
-source ${this_dir}/version.sh
-version=$(version_to_use)
-echo "INFO: will use version/tag: ${version}"
-# /end set version
+### determine tag
+image_tag=$(${this_dir}/image_version.sh)
+echo "INFO: will use version/tag: ${image_tag}"
 
-# set up cosign
-sign_images=$(if type -P cosign > /dev/null; then echo 1; else echo 0; fi)
-cosign_key_path=${COSIGN_KEY_PATH:-"${root_dir}/.github/workflows/cosign.key"}
-if [[ ${sign_images} == 1 && -n "${COSIGN_PASSWORD}" ]]; then
-    echo "INFO: will sign images using cosign version" \
-        $(cosign version --json | jq -r '.GitVersion')
-fi
-# /end set up cosign
+### prep cosign metadata
+export COSIGN_KEY_PATH="${COSIGN_KEY_PATH:-${root_dir}/.github/workflows/cosign.key}"
+export COSIGN_PASSWORD="${COSIGN_PASSWORD}"
 
-# set up trivy
-scan_images=$(if type -P trivy > /dev/null; then echo 1; else echo 0; fi)
-if [[ ${scan_images} == 1 ]]; then
-    echo "INFO: will scan images using trivy version" \
-        $(trivy --version | head -1 | sed -E 's/^Version: (.*)$/\1/')
-fi
-# /end set up trivy
-### /end set up build
-
-### build, push and sign entry container
+### build, push and sign entry image
 if [[ -z "${RELEASE_BUILD}" ]]; then
-    container_name=${registry}/${github_user}/podtato-head/entry
+    image_name=${registry_hostname}/${registry_user}/podtato-head/entry
 else
-    container_name=${registry}/podtato-head/entry
+    image_name=${registry_hostname}/podtato-head/entry
 fi
 
-echo ""
-echo "INFO: building container for entry as ${container_name}"
-docker build ${app_dir} \
-    --tag "${container_name}:latest" \
-    --tag "${container_name}:${version}" \
-    --build-arg "GITHUB_USER=${github_user}" \
-    --file ${app_dir}/cmd/entry/Dockerfile
-if [[ -n "${PUSH_TO_REGISTRY}" ]]; then
-    docker push "${container_name}:latest"
-    docker push "${container_name}:${version}"
-fi
-if [[ ${sign_images} == 1 && -n "${COSIGN_PASSWORD}" ]]; then
-    echo "INFO: signing ${container_name}"
-    cosign sign --key ${cosign_key_path} \
-        --annotations git_commit=${git_commit} \
-        --annotations version=${version} \
-        ${container_name}:latest
-fi
-if [[ ${scan_images} == 1 ]]; then
-    echo "INFO: scanning ${container_name}"
-    trivy image \
-        --format table \
-        --severity "HIGH,CRITICAL" \
-        --no-progress \
-            ${container_name}
-fi
-### /end build, push and sign entry container
+build_image \
+    ${app_dir} \
+    cmd/entry/Dockerfile \
+    ${image_name} \
+    ${image_tag} \
+    ${registry_user}
 
-### build et al parts containers
+### build parts images
 parts=($(find ${app_dir}/pkg/assets/images/* -type d -printf '%f\n'))
 for part in "${parts[@]}"; do
     if [[ -z "${RELEASE_BUILD}" ]]; then
-        container_name=${registry}/${github_user}/podtato-head/${part}
+        image_name=${registry_hostname}/${registry_user}/podtato-head/${part}
     else
-        container_name=${registry}/podtato-head/${part}
+        image_name=${registry_hostname}/podtato-head/${part}
     fi
-    echo ""
-    echo "INFO: building container for ${part} as ${container_name}"
-    docker build ${app_dir} \
-        --tag "${container_name}:latest" \
-        --tag "${container_name}:${version}" \
-        --build-arg "PART=${part}" \
-        --build-arg "GITHUB_USER=${github_user}" \
-        --file ${app_dir}/cmd/parts/Dockerfile
-    if [[ -n "${PUSH_TO_REGISTRY}" ]]; then
-        docker push "${container_name}:latest"
-        docker push "${container_name}:${version}"
-    fi
-    if [[ "${sign_images}" == 1 && -n "${COSIGN_PASSWORD}" ]]; then
-        echo "INFO: signing ${container_name}"
-        cosign sign --key ${cosign_key_path} \
-            --annotations git_commit=${git_commit} \
-            --annotations version=${version} \
-            ${container_name}:${version}
-    fi
-    if [[ ${scan_images} == 1 ]]; then
-        echo "INFO: scanning ${container_name}"
-        trivy image \
-            --format table \
-            --severity "HIGH,CRITICAL" \
-            --no-progress \
-                ${container_name}
-    fi
+
+    build_image \
+        ${app_dir} \
+        cmd/parts/Dockerfile \
+        ${image_name} \
+        ${image_tag} \
+        ${registry_user}
 done
-### /end build et al parts containers

@@ -4,9 +4,11 @@ set -e
 declare -r this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
 if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
+source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
 github_token=${2:-${GITHUB_TOKEN}}
+image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 
 echo "github_user: ${github_user}"
 
@@ -14,25 +16,53 @@ namespace=podtato-helm
 kubectl create namespace ${namespace} --save-config || true &> /dev/null
 kubectl config set-context --current --namespace=${namespace}
 if [[ -n "${github_token}" && -n "${github_user}" ]]; then
-    test=$(kubectl get secret ghcr -oname 2> /dev/null || true)
-    if [[ -z "${test}" ]]; then
-        kubectl create secret docker-registry ghcr \
-            --docker-server 'ghcr.io/' \
-            --docker-username "${github_user}" \
-            --docker-password "${github_token}"
-    fi
+    install_ghcr_secret ${namespace} "${github_user}" "${github_token}"
 fi
 
 if [[ -z "${RELEASE_BUILD}" ]]; then
     # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests and test changing hat part number
-    helm upgrade --install podtato-head ${this_dir} \
-        --set "images.repositoryDirname=ghcr.io/${github_user:+${github_user}/}podtato-head" \
-        --set "hat.env[0].name=PODTATO_PART_NUMBER" --set "hat.env[0].value=02" \
-        ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
+    helm upgrade --install podtato-head ${this_dir} --values - <<EOF
+        images:
+            repositoryDirname: ghcr.io/${github_user:+${github_user}/}podtato-head
+            pullSecrets:
+              - name: ghcr
+        entry:
+            tag: ${image_version}
+        hat:
+            tag: ${image_version}
+            env:
+              - name: PODTATO_PART_NUMBER
+                value: '02'
+        rightLeg:
+            tag: ${image_version}
+        rightArm:
+            tag: ${image_version}
+        leftLeg:
+            tag: ${image_version}
+        leftArm:
+            tag: ${image_version}
+EOF
 else
-    helm upgrade --install podtato-head ${this_dir} \
-        --set "hat.env[0].name=PODTATO_PART_NUMBER" --set "hat.env[0].value=02" \
-        ${github_token:+--set "images.pullSecrets[0].name=ghcr"}
+    helm upgrade --install podtato-head ${this_dir} --values - <<EOF
+        images:
+            pullSecrets:
+              - name: ghcr
+        entry:
+            tag: ${image_version}
+        hat:
+            tag: ${image_version}
+            env:
+              - name: PODTATO_PART_NUMBER
+                value: '02'
+        rightLeg:
+            tag: ${image_version}
+        rightArm:
+            tag: ${image_version}
+        leftLeg:
+            tag: ${image_version}
+        leftArm:
+            tag: ${image_version}
+EOF
 fi
 
 kubectl get deployments --namespace=${namespace}
