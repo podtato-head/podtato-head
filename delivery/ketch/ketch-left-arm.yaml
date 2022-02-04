@@ -1,0 +1,8 @@
+kubernetes:
+  processes:
+    web:
+      ports:
+        - name: http
+          protocol: TCP 
+          port: 9003
+          target_port: 9000

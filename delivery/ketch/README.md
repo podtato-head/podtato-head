@@ -9,7 +9,7 @@ management of applications on Kubernetes using a simple command line interface.
 ## Prerequisites
 
 - Install the ketch CLI ([official docs](https://learn.theketch.io/docs/getting-started#installing-ketch))
-- The target Kubernetes cluster must include [cert-manager](https://cert-manager.io/) and an ingress controller (Istio or Traefik)([official docs](https://learn.theketch.io/docs/getting-started#ingress-controller-cluster-issuer-and-cert-manager))
+- The target Kubernetes cluster must include [cert-manager](https://cert-manager.io/) and an ingress controller (nginx or Istio or Traefik)([official docs](https://learn.theketch.io/docs/getting-started#ingress-controller-cluster-issuer-and-cert-manager))
 - Install the ketch controller
 
 A script to prepare a fresh, generic cluster with these requirements is provided in [setup-cluster.sh](./setup-cluster.sh).
@@ -17,7 +17,9 @@ A script to prepare a fresh, generic cluster with these requirements is provided
 ## Deliver
 
 Ketch delivers an app by associating it with a _framework_ and a _buildpack
-builder_. The _framework_ describes the target environment where the app will be
+builder_ when deploying from source or docker image url when deploying using a docker image. 
+
+The _framework_ describes the target environment where the app will be
 deployed; the _buildpack builder_ determines how source is built into a runnable
 image.
 
@@ -33,8 +35,7 @@ ketch framework add framework1 \
     --namespace podtato-ketch \
     --app-quota-limit '-1' \
     --cluster-issuer selfsigned-cluster-issuer \
-    --ingress-class-name istio \
-    --ingress-type istio \
+    --ingress-type nginx \
     --ingress-service-endpoint '192.168.1.201'
 ```
 
@@ -51,6 +52,46 @@ buildpacks](https://buildpacks.io/) or can deploy a pre-built container image.
   docs](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)).
   Reference that secret in the `ketch` command as parameter `--registry-secret`.
 - Clone this repo and run the following command, replacing registry-secret and image repo hostname as appropriate:
+
+#### Potato Head Micro-services
+
+##### Deploy Hat part
+
+```bash
+ketch app deploy hat -k dev -i ghcr.io/podtato-head/hat:latest --ketch-yaml ./delivery/ketch/ketch-hat.yaml
+```
+
+##### Deploy Left Leg part
+
+```bash
+ketch app deploy left-leg -k dev -i ghcr.io/podtato-head/left-leg:latest --ketch-yaml ./delivery/ketch/ketch-left-leg.yaml
+```
+
+##### Deploy Left Arm part
+
+```bash
+ketch app deploy left-arm -k dev -i ghcr.io/podtato-head/left-arm:latest --ketch-yaml ./delivery/ketch/ketch-left-arm.yaml
+```
+
+##### Deploy Right Leg part
+
+```bash
+ketch app deploy right-leg -k dev -i ghcr.io/podtato-head/right-leg:latest --ketch-yaml ./delivery/ketch/ketch-right-leg.yaml
+```
+
+##### Deploy Right Arm part
+
+```bash
+ketch app deploy right-arm -k dev -i ghcr.io/podtato-head/right-arm:latest --ketch-yaml ./delivery/ketch/ketch-right-arm.yaml
+```
+
+##### Deploy Entry
+
+```bash
+ketch app deploy entry -k dev -i ghcr.io/podtato-head/entry:latest --env HAT_HOST=app-hat --env LEFT_LEG_HOST=app-left-leg --env LEFT_ARM_HOST=app-left-arm --env RIGHT_ARM_HOST=app-right-arm --env RIGHT_LEG_HOST=app-right-leg
+```
+
+#### Potato Head monolith
 
 ```bash
 ketch app deploy podtato-head ${root_dir}/podtato-services/main \
@@ -112,6 +153,6 @@ ketch app remove podtato-head
 ketch app remove podtato-head-image
 ketch framework remove framework1
 
-ketch_version=0.4.0
+ketch_version=0.6.2
 kubectl delete -f https://github.com/shipa-corp/ketch/releases/download/v${ketch_version}/ketch-controller.yaml
 ```
