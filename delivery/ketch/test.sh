@@ -114,6 +114,16 @@ else
   sleep 5
   INGRESS_HOSTNAME=$(ketch app info entry | grep '^Address' | sed -E 's/.*https?\:\/\/(.*)$/\1/')
   echo "----> testing deployment at http://${INGRESS_HOSTNAME}:${INGRESS_PORT}/"
+  httpStatus=$(curl -A "Web Check" -svL --connect-timeout 3 -w "%{http_code}\n" "http://${INGRESS_HOSTNAME}:${INGRESS_PORT}/" -o /dev/null)
+
+  # Wait until nginx is ready to route requests
+  NEXT_WAIT_TIME=0
+  until [ "$httpStatus" == "200" ] |  [ $NEXT_WAIT_TIME == 5 ] || command; do
+      printf '.'
+      sleep $(( NEXT_WAIT_TIME++ ))
+      httpStatus=$(curl -A "Web Check" -sL --connect-timeout 3 -w "%{http_code}\n" "http://${INGRESS_HOSTNAME}:${INGRESS_PORT}/" -o /dev/null)
+  done
+  [ "$NEXT_WAIT_TIME" -lt 5 ]
   response=$(curl -v http://${INGRESS_HOSTNAME}:${INGRESS_PORT}/)
   echo $response
   if echo "$response" | grep -q "Hello Podtato!"; then
