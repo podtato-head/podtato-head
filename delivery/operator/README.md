@@ -1,14 +1,15 @@
 # Deliver with an operator
 
 Here's how to deliver podtato-head using the [Operator
-Framework](https://operatorframework.io) and a Helm chart-based operator built
-with its [Operator SDK](https://sdk.operatorframework.io). [Operator Lifecycle
+Framework](https://operatorframework.io) to create and provision a Helm chart-based operator built
+with the [Operator SDK](https://sdk.operatorframework.io). [Operator Lifecycle
 Manager](https://olm.operatorframework.io) is used to deploy the operator.
 
 If you just want to run the tests and review generated artifacts:
 
 1. Put a GitHub username and token with packages:write permissions in your clone of the repo's .env file.
-1. Run `WAIT_FOR_DELETE=1 ./test.sh`.
+1. Run `WAIT_FOR_DELETE=1 ./test.sh`. Press Ctrl+C at the wait point to retain the deployment.
+1. Explore the generated operator code in `./test/work`.
 
 ## Prerequisites
 
@@ -85,11 +86,11 @@ make bundle bundle-build bundle-push
 make catalog-build catalog-push
 ```
 
-### Deploy the operator
+### Deploy the operator via catalog and subscription
 
-To deploy the operator we'll deploy the catalog source and then subscribe to our
-package, as follows. You may also want to review the test script at
-[./test/deploy-operator.sh](./test/deploy-operator.sh).
+To deploy the operator we'll bundle and deploy a catalog that includes it and
+then subscribe to our package, as follows. You may also want to review the test
+script at [./test/deploy-operator.sh](./test/deploy-operator.sh).
 
 First deploy the catalog source to the OLM namespace:
 
@@ -137,14 +138,15 @@ spec:
 EOF
 ```
 
-The subscription triggers creation of a ClusterServiceVersion (CSV) resource its
-namespace, followed by an InstallPlan that deploys Deployments, Service
-Accounts, and other resources associated with the operator.
+The `Subscription` triggers generation of an `InstallPlan` to install the
+components listed in the referenced `ClusterServiceVersion`, such as
+Deployments, Services, Service Accounts and other resources.
 
 Watch for the successful provisioning of the operator deployment:
 
 ```bash
 kubectl get deployments --namespace operators --watch
+kubectl get clusterserviceversion --namespace operators --watch
 ```
 
 ### Deploy a PodtatoHeadApp resource
@@ -171,12 +173,10 @@ spec:
 EOF
 ```
 
-### Alternative to OLM
+### Deploy without catalog and subscription
 
-Instead of using OLM, catalogs, and subscriptions, you may install the
+Instead of using catalogs and subscriptions you may install the
 operator's controller and managed CRDs directly as follows:
-
-> NOTE: This has not been tested.
 
 ```bash
 export IMAGE_TAG_BASE=ghcr.io/${github_user}/podtato-head/operator
@@ -184,16 +184,22 @@ export IMG=${IMAGE_TAG_BASE}:latest
 
 # build and push operator controller image
 make docker-build docker-push
+
 # install managed CRDs
 make install
+
 # deploy operator controller
 make deploy
+
 # install managed resources
 kustomize build config/samples | kubectl apply -f -
+
 # delete managed resources
 kustomize build config/samples | kubectl delete -f -
+
 # delete operator
 make undeploy
+
 # delete CRD
 make uninstall
 ```
@@ -217,7 +223,7 @@ If using a LoadBalancer-type service, get the IP address of the load balancer
 and use port 9000:
 
 ```
-ADDR=$(kubectl get service podtato-entry -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+ADDR=$(kubectl get service podtato-head-entry -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 PORT=9000
 ```
 
@@ -226,7 +232,7 @@ NodePort as follows:
 
 ```
 ADDR=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
-PORT=$(kubectl get services podtato-entry -ojsonpath='{.spec.ports[0].nodePort}')
+PORT=$(kubectl get services podtato-head-entry -ojsonpath='{.spec.ports[0].nodePort}')
 ```
 
 If using a ClusterIP-type service, run `kubectl port-forward` in the background
@@ -235,7 +241,7 @@ and connect through that:
 > NOTE: Find and kill the port-forward process afterwards using `ps` and `kill`.
 
 ```
-kubectl port-forward service/podtato-entry 9000:9000 &
+kubectl port-forward service/podtato-head-entry 9000:9000 &
 ADDR=127.0.0.1
 PORT=9000
 ```
