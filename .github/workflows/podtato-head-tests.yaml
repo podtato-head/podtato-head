@@ -3,10 +3,10 @@ name: podtato-head-go-tests
 on:
   push:
     paths:
-      - 'podtato-head/**'
+      - 'podtato-head-microservices/**'
   pull_request:
     paths:
-      - 'podtato-head/**'
+      - 'podtato-head-microservices/**'
   workflow_call:
 
 permissions:
