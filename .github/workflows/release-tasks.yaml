@@ -65,7 +65,7 @@ jobs:
       - name: Push image with tag
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: make push-images 
+        run: make push-microservices-images 
 
   test_services:
     if: github.event.inputs.apply_image_tag == 'true' || github.event.inputs.apply_git_tag == 'true'
@@ -89,7 +89,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test services
-        run: make test-services
+        run: make test-microservices
 
   tag_git_repo:
     if: github.event.inputs.apply_git_tag == 'true'
