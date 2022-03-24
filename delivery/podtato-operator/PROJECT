@@ -1,8 +1,0 @@
-domain: helloservice
-layout: helm.sdk.operatorframework.io/v1
-projectName: hello-operator
-resources:
-- group: helloservice-demo
-  kind: podtatoserver
-  version: v1alpha1
-version: 3-alpha

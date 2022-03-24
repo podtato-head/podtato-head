@@ -1,9 +1,12 @@
 #! /usr/bin/env bash
 
 set -e
+
 declare -r this_dir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
 if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
+source ${root_dir}/scripts/registry-secrets.sh
+
 source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
@@ -20,7 +23,7 @@ if [[ -n "${github_token}" ]]; then
 fi
 
 # install gh
-gh_version=2.3.0
+gh_version=2.4.0
 curl -sSLO https://github.com/cli/cli/releases/download/v${gh_version}/gh_${gh_version}_linux_amd64.tar.gz
 tar -xzf gh_${gh_version}_linux_amd64.tar.gz \
     gh_${gh_version}_linux_amd64/bin/gh \
@@ -40,9 +43,9 @@ flux install --version=latest
 
 secret_ref_name=podtato-head-flux-secret
 git_source_name=podtato-head-flux-repo
+helmrelease_name=podtato-head-flux-release
 git_repo_url=https://github.com/${github_user}/podtato-head
 git_source_branch=main
-helmrelease_name=podtato-head-flux-release
 
 if [[ -n "${USE_SSH_GIT_AUTH}" ]]; then
     git_repo_url=ssh://git@github.com/${github_user}/podtato-head
