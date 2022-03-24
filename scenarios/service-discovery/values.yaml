@@ -10,7 +10,7 @@ images:
 
 hat:
   repositoryBasename: hat
-  tag: "0.2.6"
+  tag: "0.2.7"
   serviceType: ClusterIP
   servicePort: 9001
   env:

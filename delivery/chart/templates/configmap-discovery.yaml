@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/component: {{ printf "%s-%s" (include "podtato-head.fullname" .) $componentName }}
 data:
     servicesConfig.yaml: |
-        hat:      "http://podtato-head-hat:{{ .Values.hat.servicePort }}"
+        hat:       "http://podtato-head-hat:{{ .Values.hat.servicePort }}"
         left-leg:  "http://podtato-head-left-leg:{{ .Values.leftLeg.servicePort }}"
         left-arm:  "http://podtato-head-left-arm:{{ .Values.leftArm.servicePort }}"
         right-leg: "http://podtato-head-right-leg:{{ .Values.rightLeg.servicePort }}"

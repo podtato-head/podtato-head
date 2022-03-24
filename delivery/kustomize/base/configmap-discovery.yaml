@@ -5,11 +5,11 @@ metadata:
   labels:
     app.kubernetes.io/name: podtato-head
     app.kubernetes.io/component: entry
-    app.kubernetes.io/version: '0.2.1'
+    app.kubernetes.io/version: '0.2.7'
     app.kubernetes.io/managed-by: kustomize
 data:
     servicesConfig.yaml: |
-        hat:      "http://podtato-head-hat:9001"
+        hat:       "http://podtato-head-hat:9001"
         left-leg:  "http://podtato-head-left-leg:9002"
         left-arm:  "http://podtato-head-left-arm:9003"
         right-leg: "http://podtato-head-right-leg:9004"
