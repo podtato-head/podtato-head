@@ -8,16 +8,18 @@ returning a different URL for the hat service.
 
 First deploy the base podtato-head services:
 
-1. Deploy podtato-head using [the Helm chart](../delivery/chart). Find its
-   resources in namespace `podtato-helm`.
+1. Deploy podtato-head using [the Helm chart](../../delivery/chart):
+   `helm install podtato-head ./delivery/chart`. Find its resources in namespace
+   `podtato-helm`.
 1. Open a web page to the entry service. Use the NodePort or LoadBalancer
-   addresses as discussed in the [Helm chart README](../delivery/chart/README.md#test).
+   addresses as discussed in the [Helm chart README](../../delivery/chart/README.md#test).
    Note the hat on podtato-head man.
 
 Now deploy an extra "hat" service and redirect "hat" requests there. This "hat"
 service will return a different hat.
 
-1. Deploy the additional "hat" service in this directory using `test.sh` here
+1. Deploy an additional "hat" service described in this directory by running
+   `helm install podtato-head-ext ./scenarios/service-discovery`
 1. Edit the configmap used for service discovery: `kubectl edit configmap -n podtato-helm
    podtato-head-service-discovery`
 1. Edit the "hat" entry in the configmap to point to the newly-deployed service
