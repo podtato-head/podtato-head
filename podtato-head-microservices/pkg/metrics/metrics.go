@@ -24,17 +24,17 @@ func init() {
 }
 
 var CallCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: "http_requests_total",
-		Help: "Count of HTTP requests by response status code.",
-	},
+	Name: "http_requests_total",
+	Help: "Count of HTTP requests by response status code.",
+},
 	[]string{"status_code"},
 )
 
 var LatencyHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
-		Name:    "http_server_request_latency_seconds",
-		Help:    "Histogram of request latency in seconds",
-		Buckets: []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10},
-	},
+	Name:    "http_server_request_latency_seconds",
+	Help:    "Histogram of request latency in seconds",
+	Buckets: []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10},
+},
 	[]string{"route", "method", "status_code"},
 )
 
@@ -60,6 +60,8 @@ func MetricsHandler(next http.Handler) http.Handler {
 func getRoutePathTemplate(r *http.Request) string {
 	pathTemplate := "[unknown]"
 	temp, _ := mux.CurrentRoute(r).GetPathTemplate()
-	if temp != "" { pathTemplate = temp }
+	if temp != "" {
+		pathTemplate = temp
+	}
 	return pathTemplate
 }

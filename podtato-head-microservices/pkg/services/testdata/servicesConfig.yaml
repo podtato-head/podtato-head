@@ -1,0 +1,5 @@
+hat:      "http://podtato-head-hat:10001"
+left-leg:  "http://podtato-head-left-leg:10002"
+left-arm:  "http://podtato-head-left-arm:10003"
+right-leg: "http://podtato-head-right-leg:10004"
+right-arm: "http://podtato-head-right-arm:10005"

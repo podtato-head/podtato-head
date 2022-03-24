@@ -1,0 +1,5 @@
+apiVersion: v2
+name: podtato-head-ext
+description: Deploys alternate versions of podtato-head services
+version: 0.1.0
+appVersion: 0.1.0

@@ -14,7 +14,13 @@ func HandleExternalService(w http.ResponseWriter, r *http.Request) {
 	imagePath := mux.Vars(r)["imagePath"]
 
 	// discover address of dependency service
-	rootURL, err := NewStaticServiceDiscoverer().DiscoverService(service)
+	serviceDiscoverer, err := ProvideServiceDiscoverer()
+	if err != nil {
+		log.Printf("failed to get service discoverer: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rootURL, err := serviceDiscoverer.GetServiceAddress(service)
 	if err != nil {
 		log.Printf("failed to discover address for service %s", service)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -45,4 +51,3 @@ func HandleExternalService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-

@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: podtato-head
     app.kubernetes.io/component: left-arm
-    app.kubernetes.io/version: '0.2.1'
+    app.kubernetes.io/version: '0.2.7'
     app.kubernetes.io/managed-by: kustomize
 spec:
   replicas: 1
@@ -24,7 +24,7 @@ spec:
       serviceAccountName: podtato-head
       containers:
         - name: podtato-head-left-arm
-          image: ghcr.io/podtato-head/left-arm:0.2.1
+          image: ghcr.io/podtato-head/left-arm:0.2.7
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

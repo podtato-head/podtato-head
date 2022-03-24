@@ -66,7 +66,12 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          env:     
+          volumeMounts:
+            - name: service-discovery-map
+              mountPath: /config
+          env:
+            - name: SERVICES_CONFIG_FILE_PATH
+              value: /config/servicesConfig.yaml
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -74,3 +79,7 @@ spec:
           {{- if $env }}
             {{- toYaml $env | nindent 12 }}
           {{- end }}
+      volumes:
+        - name: service-discovery-map
+          configMap:
+              name: {{ printf "%s-%s" (include "podtato-head.fullname" .) "service-discovery" }}
