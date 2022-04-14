@@ -39,7 +39,7 @@ If using a LoadBalancer-type service, get the IP address of the load balancer
 and use port 9000:
 
 ```
-ADDR=$(kubectl get service podtato-main --namespace podtato-kubectl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+ADDR=$(kubectl get service podtato-head-entry --namespace podtato-kubectl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 PORT=9000
 ```
 
@@ -48,7 +48,7 @@ NodePort as follows:
 
 ```
 ADDR=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
-PORT=$(kubectl get services --namespace=podtato-kubectl podtato-main -ojsonpath='{.spec.ports[0].nodePort}')
+PORT=$(kubectl get services --namespace=podtato-kubectl podtato-head-entry -ojsonpath='{.spec.ports[0].nodePort}')
 ```
 
 If using a ClusterIP-type service, run `kubectl port-forward` in the background
@@ -61,7 +61,7 @@ and connect through that:
 ADDR=127.0.0.1
 # Choose below the port of your machine you want to use to access application 
 PORT=9000
-kubectl port-forward --namespace podtato-kubectl --address ${ADDR} svc/podtato-main ${PORT}:9000 &
+kubectl port-forward --namespace podtato-kubectl --address ${ADDR} svc/podtato-head-entry ${PORT}:9000 &
 ```
 
 Now test the API itself with curl and/or a browser:
