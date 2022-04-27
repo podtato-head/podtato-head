@@ -16,7 +16,7 @@ case "$1" in
     ;;
   "first-deploy-service")
     echo "Deploying keptn service helloservice in project ${PROJECT}"
-    keptn trigger delivery --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v0.1.1
+    keptn trigger delivery --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v0.1.0
     ;;
   "deploy-service")
     echo "Deploying keptn service helloservice in project ${PROJECT}"
@@ -25,7 +25,7 @@ case "$1" in
     ;;    
   "upgrade-service")
     echo "Upgrading keptn service helloservice in project ${PROJECT}"
-    keptn trigger delivery --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v0.1.0
+    keptn trigger delivery --project="${PROJECT}" --service=helloservice --image="${IMAGE}" --tag=v0.1.1
     ;;
   "slow-build")
     echo "Deploying slow build version of helloservice in project ${PROJECT}"
