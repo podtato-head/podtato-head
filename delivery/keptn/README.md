@@ -105,7 +105,7 @@ Adding JMeter load tests:
 Deploy service to check quality-gates:
 
 ```bash
-./initProject.sh deploy-service
+./initProject.sh deploy-service 0.1.0
 ```
 
 Deploy a slow-build that should fail the quality-gates test:
