@@ -121,3 +121,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+oidc:
+  enabled: false
+  issuer: https://accounts.google.com
+  clientID: ''
+  clientSecret: ''
+  redirectURI: 'http://localhost:11111/auth/callback'
+  clientScopes: 'openid profile email'
+  sessionKey: ''

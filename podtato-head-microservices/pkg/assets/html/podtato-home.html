@@ -8,6 +8,7 @@
     <main class="container">
       <div class="text-center">
         <h1>Hello from <i>pod</i>tato head!</h1>
+        <span>Nice to meet you {{ .name }}.</span>
         <div style="width:700px; height:800px; margin:auto; position:relative;">
           <img src="./assets/images/body/body.svg" style="position:absolute;margin-top:80px;margin-left:200px;">
           <img src="./parts/hat/hat.svg" style="position:absolute;margin-left:200px;margin-top:0px;">
@@ -16,7 +17,7 @@
           <img src="./parts/left-leg/left-leg.svg" style="position:absolute;top:480px;left: -0px;" >
           <img src="./parts/right-leg/right-leg.svg" style="position:absolute;top:480px;left: 400px;">
         </div>
-        <h2> Version {{ . }} </h2>
+        <h2> Version {{ .version }} </h2>
       </div>
     </main>
   </body>

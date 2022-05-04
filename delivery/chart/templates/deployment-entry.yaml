@@ -69,6 +69,9 @@ spec:
           volumeMounts:
             - name: service-discovery-map
               mountPath: /config
+          envFrom:
+            - secretRef:
+                name: {{ printf "%s-%s" (include "podtato-head.fullname" .) "oidc-metadata" }}
           env:
             - name: SERVICES_CONFIG_FILE_PATH
               value: /config/servicesConfig.yaml

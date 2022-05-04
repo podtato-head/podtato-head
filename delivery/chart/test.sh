@@ -25,6 +25,7 @@ if [[ -z "${RELEASE_BUILD}" ]]; then
     helm upgrade --install podtato-head ${this_dir} --values - <<EOF
         images:
             repositoryDirname: ghcr.io/${github_user:+${github_user}/}podtato-head
+            pullPolicy: Always
             pullSecrets:
               - name: ghcr
         entry:
@@ -42,6 +43,14 @@ if [[ -z "${RELEASE_BUILD}" ]]; then
             tag: ${image_version}
         leftArm:
             tag: ${image_version}
+        oidc:
+            ${OIDC_CLIENT_SECRET:+enabled: true}
+            issuer: ${OIDC_ISSUER}
+            clientID: ${OIDC_CLIENT_ID}
+            clientSecret: ${OIDC_CLIENT_SECRET}
+            redirectURI: ${OIDC_REDIRECT_URI}
+            clientScopes: ${OIDC_CLIENT_SCOPES}
+            sessionKey: ${SESSION_KEY}
 EOF
 else
     helm upgrade --install podtato-head ${this_dir} --values - <<EOF
@@ -63,6 +72,14 @@ else
             tag: ${image_version}
         leftArm:
             tag: ${image_version}
+        oidc:
+            ${OIDC_CLIENT_SECRET:+enabled: true}
+            issuer: ${OIDC_ISSUER}
+            clientID: ${OIDC_CLIENT_ID}
+            clientSecret: ${OIDC_CLIENT_SECRET}
+            redirectURI: ${OIDC_REDIRECT_URI}
+            clientScopes: ${OIDC_CLIENT_SCOPES}
+            sessionKey: ${SESSION_KEY}
 EOF
 fi
 

@@ -19,6 +19,7 @@ FROM scratch
 ARG GITHUB_USER=podtato-head
 LABEL org.opencontainers.image.source = "https://github.com/${GITHUB_USER}/podtato-head"
 
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /build/entry /entry
 
 EXPOSE 9000

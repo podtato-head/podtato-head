@@ -24,5 +24,8 @@ ARG GITHUB_USER=podtato-head
 LABEL org.opencontainers.image.source = "https://github.com/${GITHUB_USER}/podtato-head"
 ARG PART
 ENV PART=${PART}
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /serve-${PART} /serve
+
 ENTRYPOINT ["/serve"]
