@@ -57,21 +57,34 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	router := mux.NewRouter()
-	auth.SetupCallbackHandler(router)
 
 	// gather and emit Prometheus metrics
 	router.Use(metrics.MetricsHandler)
 	router.Path("/metrics").Handler(promhttp.Handler())
 
-	// render home page
-	router.Path("/").Handler(auth.Authenticate(http.HandlerFunc(serveHTTP)))
+	bypassAuth := os.Getenv("OIDC_BYPASS")
+	if bypassAuth == "true" {
+		// render home page
+		router.Path("/").Handler(http.HandlerFunc(serveHTTP))
 
-	// serve CSS and images
-	router.PathPrefix(assetsPrefix).Handler(auth.Authenticate(http.StripPrefix(assetsPrefix, http.FileServer(http.FS(assets.Assets)))))
+		// serve CSS and images
+		router.PathPrefix(assetsPrefix).Handler(http.StripPrefix(assetsPrefix, http.FileServer(http.FS(assets.Assets))))
 
-	// call other services
-	router.Path(fmt.Sprintf("%s/{partName}/{imagePath}", externalServicesPrefix)).
-		Handler(auth.Authenticate(http.HandlerFunc(services.HandleExternalService)))
+		// call other services
+		router.Path(fmt.Sprintf("%s/{partName}/{imagePath}", externalServicesPrefix)).
+			Handler(http.HandlerFunc(services.HandleExternalService))
+	} else {
+		auth.SetupCallbackHandler(router)
+		// render home page
+		router.Path("/").Handler(auth.Authenticate(http.HandlerFunc(serveHTTP)))
+
+		// serve CSS and images
+		router.PathPrefix(assetsPrefix).Handler(auth.Authenticate(http.StripPrefix(assetsPrefix, http.FileServer(http.FS(assets.Assets)))))
+
+		// call other services
+		router.Path(fmt.Sprintf("%s/{partName}/{imagePath}", externalServicesPrefix)).
+			Handler(auth.Authenticate(http.HandlerFunc(services.HandleExternalService)))
+	}
 
 	port, found := os.LookupEnv("PODTATO_PORT")
 	if !found || port == "" {
