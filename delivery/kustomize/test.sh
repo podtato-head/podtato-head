@@ -67,10 +67,12 @@ if [[ -n "${WAIT_FOR_DELETE}" ]]; then
     echo ""
 fi
 
+## "&> /dev/null || true" at end of each statement so as not to error if
+## resources don't exist
 echo ""
 echo "=== delete all"
-kustomize build ${this_dir}/${dir_to_test} | kubectl delete -f -
-kubectl delete namespace ${namespace}
+kustomize build ${this_dir}/${dir_to_test} | kubectl delete -f - &> /dev/null || true
+kubectl delete namespace ${namespace} &> /dev/null || true
 
 echo ""
 echo "=== resetting kustomize files"
