@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - configmap-discovery.yaml
+- secret-oidc.yaml
 - deployment-hat.yaml
 - deployment-left-arm.yaml
 - deployment-left-leg.yaml

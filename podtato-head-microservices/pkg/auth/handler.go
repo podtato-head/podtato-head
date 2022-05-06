@@ -18,8 +18,11 @@ import (
 )
 
 var (
+	envVarSessionKey = "SESSION_KEY"
+	sessionKey       = []byte(os.Getenv(envVarSessionKey))
+
 	callbackPath = "/auth/callback"
-	key          = []byte("test1234test1234")
+	bypassAuth   = false
 
 	issuer       = os.Getenv("OIDC_ISSUER")
 	clientID     = os.Getenv("OIDC_CLIENT_ID")
@@ -27,90 +30,99 @@ var (
 	redirectURI  = os.Getenv("OIDC_REDIRECT_URI")
 	scopes       = strings.Split(os.Getenv("OIDC_CLIENT_SCOPES"), " ")
 
-	bypassAuth bool
-
 	oidcClient rp.RelyingParty
 )
 
 func init() {
-	if len(os.Getenv("OIDC_BYPASS")) == 0 {
-		bypassAuth = false
-	} else {
-		log.Printf("will bypass auth")
+	// any value other than "0" or "false" indicates to bypass
+	bypassAuthFromEnv := os.Getenv("OIDC_BYPASS")
+	if (len(bypassAuthFromEnv) > 0) && (bypassAuthFromEnv != "0") && (bypassAuthFromEnv != "false") {
+		log.Printf("INFO: will bypass auth per env var")
 		bypassAuth = true
+		return
 	}
 
-	if !bypassAuth {
-		var err error
-		oidcClient, err = rp.NewRelyingPartyOIDC(issuer, clientID, clientSecret, redirectURI, scopes,
-			rp.WithCookieHandler(httphelper.NewCookieHandler(key, key, httphelper.WithUnsecure())),
-			rp.WithVerifierOpts(rp.WithIssuedAtOffset(5*time.Second)),
-		)
-		if err != nil {
-			log.Fatalf("error creating OIDC relying party: %s", err.Error())
-		}
+	log.Printf("INFO: constructing OIDC relying party client")
+	var err error
+	oidcClient, err = rp.NewRelyingPartyOIDC(issuer, clientID, clientSecret, redirectURI, scopes,
+		rp.WithCookieHandler(httphelper.NewCookieHandler(sessionKey, nil, httphelper.WithUnsecure())),
+		rp.WithVerifierOpts(rp.WithIssuedAtOffset(5*time.Second)),
+	)
+	if err != nil {
+		log.Fatalf("ERROR: failed to create OIDC relying party client: %s", err.Error())
 	}
 }
 
 // SetupCallbackHandler sets up an endpoint to handle token callback
 func SetupCallbackHandler(router *mux.Router) {
-	if !bypassAuth {
-		marshalUserinfo := func(w http.ResponseWriter, r *http.Request, tokens *oidc.Tokens, state string, rp rp.RelyingParty, info oidc.UserInfo) {
-			session, _ := sessions.Store.Get(r, sessions.SessionName)
-			data, err := json.Marshal(info)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			log.Printf("saving userinfo in session: %v", string(data))
-			session.Values["userinfo"] = string(data)
-			session.Values["authenticated"] = true
-			err = session.Save(r, w)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			redirectToOriginalURL(w, r)
+	if bypassAuth {
+		return
+	}
+
+	saveUserinfo := func(w http.ResponseWriter, r *http.Request, tokens *oidc.Tokens, state string, rp rp.RelyingParty, info oidc.UserInfo) {
+		session, err := sessions.Store.Get(r, sessions.SessionName)
+		if err != nil {
+			log.Printf("ERROR: failed to create or restore session: %s", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(info)
+		if err != nil {
+			log.Printf("ERROR: failed to marshal userinfo: %s", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		// register callback handler
-		router.Handle(callbackPath, rp.CodeExchangeHandler(rp.UserinfoCallback(marshalUserinfo), oidcClient))
+		log.Printf("INFO: saving userinfo to session: %v", string(data))
+		session.Values["userinfo"] = string(data)
+		session.Values["authenticated"] = true
+		err = session.Save(r, w)
+		if err != nil {
+			log.Printf("ERROR: failed to save session: %s", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		redirectToOriginalURL(w, r)
+		return
 	}
+
+	// register callback handler
+	router.Handle(callbackPath, rp.CodeExchangeHandler(rp.UserinfoCallback(saveUserinfo), oidcClient))
 }
 
 func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, err := sessions.Store.Get(r, sessions.SessionName)
 		if err != nil {
+			log.Printf("ERROR: failed to create or restore session: %s", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if bypassAuth {
-			log.Printf("bypassing authentication per flag")
-			redirectToOriginalURL(w, r)
 			return
 		}
 
 		// TODO: force reauthentication after expiry
 		authenticated, found := session.Values["authenticated"].(bool)
-		if !found || !authenticated {
-			log.Printf("INFO: redirecting for authentication")
+
+		if bypassAuth {
+			log.Printf("INFO: bypassing authentication per flag")
+		} else if !found || !authenticated {
+			log.Printf("INFO: redirecting user for authentication")
 			state := func() string { return uuid.New().String() }
 
-			log.Printf("saving originalURL %s", r.URL.String())
+			log.Printf("INFO: saving originalURL %s", r.URL.String())
 			session.Values["originalURL"] = r.URL.String()
 			err = session.Save(r, w)
 
 			if err != nil {
+				log.Printf("ERROR: failed to save session state: %s", err.Error())
 				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
 			}
 			rp.AuthURLHandler(state, oidcClient).ServeHTTP(w, r)
+			return
 		} else {
-			log.Printf("INFO: user already authenticated, continuing")
-			next.ServeHTTP(w, r)
+			log.Printf("INFO: user already authenticated")
 		}
+		next.ServeHTTP(w, r)
 		return
 	})
 }
@@ -118,6 +130,7 @@ func Authenticate(next http.Handler) http.Handler {
 func redirectToOriginalURL(w http.ResponseWriter, r *http.Request) {
 	session, err := sessions.Store.Get(r, sessions.SessionName)
 	if err != nil {
+		log.Printf("ERROR: failed to create or restore session: %s", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

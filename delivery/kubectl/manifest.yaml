@@ -30,6 +30,16 @@ spec:
         env:
         - name: PODTATO_PORT
           value: "9000"
+        envFrom:
+        - secretRef:
+            name: podtato-head-oidc-metadata
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: podtato-head-oidc-metadata
+stringData:
+    OIDC_BYPASS: 'true'
 ---
 apiVersion: v1
 kind: Service

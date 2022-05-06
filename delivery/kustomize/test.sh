@@ -8,11 +8,12 @@ source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
 github_token=${2:-${GITHUB_TOKEN}}
+dir_to_test=${3:-base}
 
 image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 echo "INFO: using tag: ${image_version}"
 
-namespace=podtato-kustomize
+namespace=podtato-kustomize-${dir_to_test}
 kubectl create namespace ${namespace} --save-config || true &> /dev/null
 kubectl config set-context --current --namespace ${namespace}
 
@@ -25,20 +26,23 @@ fi
 parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
 
 echo ""
-echo "=== apply kustomize base"
+echo "=== apply kustomize ${dir_to_test}"
 if [[ -z "${RELEASE_BUILD}" ]]; then
     echo "INFO: use ghcr.io/${github_user}/podtato-head/entry${image_version:+:${image_version}}"
 
     # copy original and use a temp file for edits
     cp ${this_dir}/base/kustomization.yaml ${this_dir}/base/original_kustomization.yaml
-    trap "mv ${this_dir}/base/original_kustomization.yaml ${this_dir}/base/kustomization.yaml" EXIT
 
     for part in "${parts[@]}"; do
         (cd ${this_dir}/base && kustomize edit set image ghcr.io/podtato-head/${part}=ghcr.io/${github_user}/podtato-head/${part}${image_version:+:${image_version}})
     done
 fi
 
-kustomize build ${this_dir}/base | kubectl apply -f -
+if [[ "oidc" == "${dir_to_test}" ]]; then
+    cat ${this_dir}/oidc/secret-oidc.yaml.tpl | envsubst > ${this_dir}/oidc/secret-oidc.yaml
+fi
+
+kustomize build "${this_dir}/${dir_to_test}" | kubectl apply -f -
 
 echo ""
 echo "=== await readiness of deployments..."
@@ -65,49 +69,10 @@ fi
 
 echo ""
 echo "=== delete all"
-kustomize build ${this_dir}/base | kubectl delete -f -
+kustomize build ${this_dir}/${dir_to_test} | kubectl delete -f -
 kubectl delete namespace ${namespace}
 
-## -----------
-
 echo ""
-echo "=== apply with overlay"
-namespace=${namespace}-production
-kubectl create namespace ${namespace} --save-config || true &> /dev/null
-kubectl config set-context --current --namespace ${namespace}
-
-if [[ -n "${github_token}" && -n "${github_user}" ]]; then
-    install_ghcr_secret ${namespace} "${github_user}" "${github_token}"
-    kubectl patch serviceaccount default \
-        --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'
-fi
-
-kustomize build ${this_dir}/overlay | kubectl apply -f -
-
-echo ""
-echo "=== await readiness of deployments..."
-parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
-for part in "${parts[@]}"; do
-    kubectl wait --for=condition=Available --timeout=30s deployment --namespace ${namespace} podtato-head-${part}
-done
-
-${root_dir}/scripts/test_services.sh ${namespace}
-
-echo ""
-echo "=== kubectl logs deployment/podtato-head-entry"
-kubectl logs deployment/podtato-head-entry
-
-echo ""
-echo "=== kubectl logs deployment/podtato-head-hat"
-kubectl logs deployment/podtato-head-hat
-
-if [[ -n "${WAIT_FOR_DELETE}" ]]; then
-    echo ""
-    read -N 1 -s -p "press a key to delete resources..."
-    echo ""
-fi
-
-echo ""
-echo "=== delete all"
-kustomize build ${this_dir}/overlay | kubectl delete -f -
-kubectl delete namespace ${namespace} 2> /dev/null || true
+echo "=== resetting kustomize files"
+mv ${this_dir}/base/original_kustomization.yaml ${this_dir}/base/kustomization.yaml &> /dev/null || true
+rm ${this_dir}/oidc/secret-oidc.yaml &> /dev/null || true

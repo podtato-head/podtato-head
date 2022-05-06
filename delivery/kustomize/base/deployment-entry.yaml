@@ -25,7 +25,7 @@ spec:
       containers:
         - name: podtato-head-entry
           image: ghcr.io/podtato-head/entry:0.2.7
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 9000
@@ -39,6 +39,9 @@ spec:
               path: /
               port: http
           resources: {}
+          envFrom:
+            - secretRef:
+                name: podtato-head-oidc-metadata
           env:
           - name: POD_NAME
             valueFrom:

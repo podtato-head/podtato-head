@@ -124,9 +124,9 @@ affinity: {}
 
 oidc:
   enabled: false
-  issuer: https://accounts.google.com
+  issuer: ''
   clientID: ''
   clientSecret: ''
-  redirectURI: 'http://localhost:11111/auth/callback'
+  redirectURI: ''
   clientScopes: 'openid profile email'
   sessionKey: ''

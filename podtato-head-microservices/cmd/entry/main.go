@@ -25,33 +25,44 @@ const (
 )
 
 func serveHTTP(w http.ResponseWriter, r *http.Request) {
-	session, _ := sessions.Store.Get(r, sessions.SessionName)
+	session, err := sessions.Store.Get(r, sessions.SessionName)
+	if err != nil {
+		log.Printf("ERROR: failed to create or restore session: %s", err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	userinfo, found := session.Values["userinfo"].(string)
 	if !found {
-		log.Printf("did not find userinfo")
+		log.Printf("WARN: did not find userinfo")
 		userinfo = "{ \"name\": \"anonymous\" }"
 	} else {
 		log.Printf("got userinfo from session: %v", userinfo)
 	}
 
 	params := make(map[string]interface{})
-	err := json.Unmarshal([]byte(userinfo), &params)
+	err = json.Unmarshal([]byte(userinfo), &params)
 	if err != nil {
+		log.Printf("ERROR: failed to unmarshal userinfo JSON: %s", err.Error())
 		http.Error(w, "failed to unmarshal userinfo", http.StatusInternalServerError)
 		return
 	}
-	log.Printf("unmarshalled userinfo: %v", params)
+	log.Printf("INFO: unmarshalled userinfo: %v", params)
 
 	homeTemplate, err := template.ParseFS(assets.Assets, "html/podtato-home.html")
 	if err != nil {
-		log.Fatalf("failed to parse file: %v", err)
+		log.Printf("failed to parse file: %v", err)
+		http.Error(w, "failed to parse home page template", http.StatusInternalServerError)
+		return
 	}
 
 	params["version"] = version.ServiceVersion()
 
 	err = homeTemplate.Execute(w, params)
 	if err != nil {
-		log.Fatalf("failed to execute template: %v", err)
+		log.Printf("failed to execute template: %v", err)
+		http.Error(w, "failed to render home page template", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -62,29 +73,16 @@ func main() {
 	router.Use(metrics.MetricsHandler)
 	router.Path("/metrics").Handler(promhttp.Handler())
 
-	bypassAuth := os.Getenv("OIDC_BYPASS")
-	if bypassAuth == "true" {
-		// render home page
-		router.Path("/").Handler(http.HandlerFunc(serveHTTP))
+	auth.SetupCallbackHandler(router)
 
-		// serve CSS and images
-		router.PathPrefix(assetsPrefix).Handler(http.StripPrefix(assetsPrefix, http.FileServer(http.FS(assets.Assets))))
+	router.Path("/").Handler(auth.Authenticate(http.HandlerFunc(serveHTTP)))
 
-		// call other services
-		router.Path(fmt.Sprintf("%s/{partName}/{imagePath}", externalServicesPrefix)).
-			Handler(http.HandlerFunc(services.HandleExternalService))
-	} else {
-		auth.SetupCallbackHandler(router)
-		// render home page
-		router.Path("/").Handler(auth.Authenticate(http.HandlerFunc(serveHTTP)))
+	// assets: CSS and images
+	router.PathPrefix(assetsPrefix).Handler(auth.Authenticate(http.StripPrefix(assetsPrefix, http.FileServer(http.FS(assets.Assets)))))
 
-		// serve CSS and images
-		router.PathPrefix(assetsPrefix).Handler(auth.Authenticate(http.StripPrefix(assetsPrefix, http.FileServer(http.FS(assets.Assets)))))
-
-		// call other services
-		router.Path(fmt.Sprintf("%s/{partName}/{imagePath}", externalServicesPrefix)).
-			Handler(auth.Authenticate(http.HandlerFunc(services.HandleExternalService)))
-	}
+	// pass through to other services
+	router.Path(fmt.Sprintf("%s/{partName}/{imagePath}", externalServicesPrefix)).
+		Handler(auth.Authenticate(http.HandlerFunc(services.HandleExternalService)))
 
 	port, found := os.LookupEnv("PODTATO_PORT")
 	if !found || port == "" {
