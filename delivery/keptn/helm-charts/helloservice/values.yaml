@@ -1,2 +1,24 @@
-image: ghcr.io/podtato-head/podtatoserver:v0.1.2
+image: ghcr.io/podtato-head/podtatoserver:v0.1.0
 replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 9000
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
