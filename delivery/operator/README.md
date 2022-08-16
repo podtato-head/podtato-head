@@ -78,7 +78,7 @@ github_token=
 
 echo "${github_token}" | docker login --username=${github_user} --password-stdin ghcr.io
 
-export IMAGE_TAG_BASE=ghcr.io/${github_user}/podtato-head/operator
+export IMAGE_TAG_BASE=ghcr.io/${github_user,,}/podtato-head/operator
 export IMG=${IMAGE_TAG_BASE}:latest
 
 make docker-build docker-push
