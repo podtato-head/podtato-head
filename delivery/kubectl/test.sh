@@ -7,6 +7,7 @@ if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
 source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
+github_user_lower=${github_user,,}
 github_token=${2:-${GITHUB_TOKEN}}
 image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 
@@ -27,7 +28,7 @@ if [[ -z "${RELEASE_BUILD}" ]]; then
     # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests
     cat "${this_dir}/manifest.yaml" | \
         sed -E "s@ghcr\.io\/podtato-head/(.*)\:\S+@ghcr\.io\/podtato-head/\\1:${image_version}@g" | \
-        sed -E "s@ghcr\.io\/podtato-head@ghcr.io/${github_user}/podtato-head@g" | \
+        sed -E "s@ghcr\.io\/podtato-head@ghcr.io/${github_user_lower}/podtato-head@g" | \
             kubectl apply -f -
 else
     kubectl apply -f ${this_dir}/manifest.yaml

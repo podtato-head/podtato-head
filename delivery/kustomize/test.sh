@@ -8,6 +8,7 @@ source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
 github_token=${2:-${GITHUB_TOKEN}}
+github_token=${2:-${GITHUB_TOKEN}}
 
 image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 echo "INFO: using tag: ${image_version}"
@@ -27,14 +28,14 @@ parts=("entry" "hat" "left-leg" "left-arm" "right-leg" "right-arm")
 echo ""
 echo "=== apply kustomize base"
 if [[ -z "${RELEASE_BUILD}" ]]; then
-    echo "INFO: use ghcr.io/${github_user}/podtato-head/entry${image_version:+:${image_version}}"
+    echo "INFO: use ghcr.io/${github_user_lower}/podtato-head/entry${image_version:+:${image_version}}"
 
     # copy original and use a temp file for edits
     cp ${this_dir}/base/kustomization.yaml ${this_dir}/base/original_kustomization.yaml
     trap "mv ${this_dir}/base/original_kustomization.yaml ${this_dir}/base/kustomization.yaml" EXIT
 
     for part in "${parts[@]}"; do
-        (cd ${this_dir}/base && kustomize edit set image ghcr.io/podtato-head/${part}=ghcr.io/${github_user}/podtato-head/${part}${image_version:+:${image_version}})
+        (cd ${this_dir}/base && kustomize edit set image ghcr.io/podtato-head/${part}=ghcr.io/${github_user_lower}/podtato-head/${part}${image_version:+:${image_version}})
     done
 fi
 
