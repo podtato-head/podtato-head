@@ -9,5 +9,5 @@ kubectl create namespace ${namespace} --save-config &> /dev/null || true
 kubectl config set-context --current --namespace=${namespace}
 
 helm upgrade --install podtato-head-ext ${this_dir} \
-    --set "images.repositoryDirname=ghcr.io/${GITHUB_USER,,}/podtato-head" \
+    --set "images.repositoryDirname=ghcr.io/${GITHUB_USER}/podtato-head" \
     --set "hat.tag=test"

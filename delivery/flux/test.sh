@@ -10,7 +10,6 @@ source ${root_dir}/scripts/registry-secrets.sh
 source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
-github_user_lower=${github_user,,}
 github_token=${2:-${GITHUB_TOKEN}}
 image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 
@@ -45,16 +44,16 @@ flux install --version=latest
 secret_ref_name=podtato-head-flux-secret
 git_source_name=podtato-head-flux-repo
 helmrelease_name=podtato-head-flux-release
-git_repo_url=https://github.com/${github_user_lower}/podtato-head
+git_repo_url=https://github.com/${github_user}/podtato-head
 git_source_branch=main
 
 if [[ -n "${USE_SSH_GIT_AUTH}" ]]; then
-    git_repo_url=ssh://git@github.com/${github_user_lower}/podtato-head
+    git_repo_url=ssh://git@github.com/${github_user}/podtato-head
     flux create secret git ${secret_ref_name} --url=${git_repo_url}
     ssh_public_key=$(kubectl get secret ${secret_ref_name} -n flux-system -ojson | jq -r '.data."identity.pub"' | base64 -d)
     # delete existing keys of the same name
-    gh api repos/${github_user_lower}/podtato-head/keys | jq -r '.[].url' | sed 's/^https:\/\/api.github.com\///' | xargs -L 1 -r gh api --method DELETE
-    gh api repos/${github_user_lower}/podtato-head/keys \
+    gh api repos/${github_user}/podtato-head/keys | jq -r '.[].url' | sed 's/^https:\/\/api.github.com\///' | xargs -L 1 -r gh api --method DELETE
+    gh api repos/${github_user}/podtato-head/keys \
         -F title=${secret_ref_name} \
         -F "key=${ssh_public_key}"
     sleep 3
@@ -94,7 +93,7 @@ EOF
 if [[ -z "${RELEASE_BUILD}" ]]; then
 cat <<EOF >> ${tmp_values_file} 
 images:
-    repositoryDirname: ghcr.io/${github_user_lower:+${github_user_lower}/}podtato-head
+    repositoryDirname: ghcr.io/${github_user:+${github_user}/}podtato-head
     pullSecrets:
       - name: ghcr
 EOF

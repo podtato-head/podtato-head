@@ -8,7 +8,6 @@ if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
 source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
-github_user_lower=${github_user,,}
 github_token=${2:-${GITHUB_TOKEN}}
 image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 
@@ -25,7 +24,7 @@ if [[ -z "${RELEASE_BUILD}" ]]; then
     # replace ghcr.io/podtato-head/body with ghcr.io/podtato-head/<github_user>/body for tests and test changing hat part number
     helm upgrade --install podtato-head ${this_dir} --values - <<EOF
         images:
-            repositoryDirname: ghcr.io/${github_user_lower:+${github_user_lower}/}podtato-head
+            repositoryDirname: ghcr.io/${github_user:+${github_user}/}podtato-head
             pullSecrets:
               - name: ghcr
         entry:

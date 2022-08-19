@@ -30,7 +30,6 @@ catalog_namespace=${olm_namespace}
 
 image_registry=${IMAGE_REGISTRY:-ghcr.io}
 github_user=${1:-${GITHUB_USER}}
-github_user_lower=${github_user,,}
 github_token=${2:-${GITHUB_TOKEN}}
 
 app_name=podtato-head-app-01
@@ -40,7 +39,7 @@ app_namespace=${operator_name}-app
 # before release we want to use the official public URL
 image_base_url=
 if [[ -n "${github_user}" && -z "${RELEASE_BUILD}" ]]; then
-    export image_base_url=${image_registry}/${github_user_lower}/podtato-head/operator
+    export image_base_url=${image_registry}/${github_user}/podtato-head/operator
 else
     export image_base_url=${image_registry}/podtato-head/operator
 fi
