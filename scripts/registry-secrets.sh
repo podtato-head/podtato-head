@@ -1,6 +1,8 @@
 function install_ghcr_secret {
     namespace=${1:-default}
     registry_username=${2:-${GITHUB_USER}}
+    # altering variable using parameter expansion ",," in bash to be all lowercase since repo URLs must be all lowercase
+    registry_user=${registry_username,,}
     registry_password=${3:-${GITHUB_TOKEN}}
 
     secret_name=ghcr
@@ -25,6 +27,8 @@ function install_ghcr_secret {
 
 function login_ghcr () {
     local github_user=${1:-${GITHUB_USER}}
+    # altering variable using parameter expansion ",," in bash to be all lowercase since repo URLs must be all lowercase
+    local github_user=${github_user,,}
     local github_token=${2:-${GITHUB_TOKEN}}
 
     registry_hostname=ghcr.io
