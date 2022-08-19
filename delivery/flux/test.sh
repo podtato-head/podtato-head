@@ -23,15 +23,15 @@ if [[ -n "${github_token}" ]]; then
 fi
 
 # install gh
-gh_version=2.4.0
-curl -sSLO https://github.com/cli/cli/releases/download/v${gh_version}/gh_${gh_version}_linux_amd64.tar.gz
-tar -xzf gh_${gh_version}_linux_amd64.tar.gz \
-    gh_${gh_version}_linux_amd64/bin/gh \
-    --strip-components=2
-mv ./gh ${this_dir}/gh
-chmod +x ${this_dir}/gh
-alias gh=${this_dir}/gh
-rm -rf gh_${gh_version}_linux_amd64.tar.gz
+if ! type -p gh; then
+    gh_version=2.9.0
+    tempdir=$(mktemp -d)
+    PATH=${tempdir}:${PATH}
+    curl -o ${tempdir}/gh.tar.gz -sSL https://github.com/cli/cli/releases/download/v${gh_version}/gh_${gh_version}_linux_amd64.tar.gz
+    tar -xzf gh.tar.gz gh_${gh_version}_linux_amd64/bin/gh --strip-components=2
+    chmod +x ${tempdir}/gh
+    rm -rf ${tempdir}/gh.tar.gz
+fi
 gh version
 # /end install gh
 
@@ -45,7 +45,7 @@ secret_ref_name=podtato-head-flux-secret
 git_source_name=podtato-head-flux-repo
 helmrelease_name=podtato-head-flux-release
 git_repo_url=https://github.com/${github_user}/podtato-head
-git_source_branch=main
+git_source_branch=sessions-oidc
 
 if [[ -n "${USE_SSH_GIT_AUTH}" ]]; then
     git_repo_url=ssh://git@github.com/${github_user}/podtato-head
@@ -88,12 +88,15 @@ leftLeg:
     tag: ${image_version}
 leftArm:
     tag: ${image_version}
+oidc:
+    enabled: false
 EOF
 
 if [[ -z "${RELEASE_BUILD}" ]]; then
 cat <<EOF >> ${tmp_values_file} 
 images:
     repositoryDirname: ghcr.io/${github_user:+${github_user}/}podtato-head
+    pullPolicy: Always
     pullSecrets:
       - name: ghcr
 EOF
@@ -144,8 +147,6 @@ if [[ -n "${WAIT_FOR_DELETE}" ]]; then
     read -N 1 -s -p "press a key to delete resources..."
     echo ""
 fi
-
-rm ${this_dir}/gh
 
 echo ""
 echo "=== delete all"

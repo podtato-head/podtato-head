@@ -70,6 +70,10 @@ jobs:
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with kustomize
         run: ./delivery/kustomize/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+      - name: Test delivery with kustomize overlay
+        run: ./delivery/kustomize/test.sh "${{ github.repository_owner }}" "${{ github.token }}" "overlay"
+      - name: Test delivery with kustomize oidc overlay
+        run: ./delivery/kustomize/test.sh "${{ github.repository_owner }}" "${{ github.token }}" "oidc"
 
   test_ketch_delivery:
     name: Deliver with ketch

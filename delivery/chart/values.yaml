@@ -121,3 +121,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+oidc:
+  enabled: false
+  issuer: ''
+  clientID: ''
+  clientSecret: ''
+  redirectURI: ''
+  clientScopes: 'openid profile email'
+  sessionKey: ''
