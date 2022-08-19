@@ -45,3 +45,9 @@ if [[ $? != 22 ]]; then
 else
     echo "SUCCESS"
 fi
+
+if [[ -n "${WAIT_FOR_DELETE}" ]]; then
+    echo ""
+    read -N 1 -s -p "press a key to stop image..."
+    echo ""
+fi

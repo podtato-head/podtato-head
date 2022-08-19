@@ -24,7 +24,9 @@ install required supporting infrastructure; b) deliver podtato-head using the
 infrastructure; and c) test that podtato-head is operating as expected.
 
 Each delivery scenario also includes a test (test.sh) which automates the steps
-described in the walkthrough.
+described in the walkthrough. You can pause a test after tests run and before
+teardown by setting the env var `WAIT_FOR_DELETE=1`, as in `WAIT_FOR_DELETE=1
+./delivery/flux/test.sh`. This lets you examine what the README and scripts do.
 
 ### Delivery scenarios
 
@@ -32,18 +34,20 @@ described in the walkthrough.
 once_ at the time of invocation. "GitOps" deployments mean the action checks the
 desired state periodically and reconciles it as needed.
 
+The following scenarios deploy the [multi-service app](./podtato-head-microservices/):
+
 * [Single deployment via Kubectl](/delivery/kubectl/README.md)
 * [Single deployment via Helm](/delivery/chart/README.md)
 * [Single deployment via Kustomize](/delivery/kustomize/README.md)
 * [Single deployment via Ketch](/delivery/ketch/README.md)
 * [GitOps deployment via Flux](/delivery/flux/README.md)
+* [Helm-based operator deployment](/delivery/podtato-operator/README.md)
 
-The following scenarios have not yet been updated for the multi-service app:
+The following scenarios deploy the [single-server app](./podtato-head-server/):
 
 * [Single deployment via Kapp](/delivery/kapp/README.md)
 * [GitOps deployment via ArgoCD](/delivery/ArgoCD/README.md)
 * [Canary deployment via Argo Rollouts](/delivery/rollout/README.md)
-* [Helm-based operator deployment](/delivery/podtato-operator/README.md)
 * [Multi-Stage delivery with Keptn](/delivery/keptn/README.md)
 * [CNAB with Porter air-gapped deployment](/delivery/CNABwithPorter/README.md)
 * [GitOps deployment via KubeVela](/delivery/KubeVela/README.md)
