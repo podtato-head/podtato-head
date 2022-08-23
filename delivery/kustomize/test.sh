@@ -7,7 +7,9 @@ if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
 source ${root_dir}/scripts/registry-secrets.sh
 
 github_user=${1:-${GITHUB_USER}}
-github_token=${2:-${GITHUB_TOKEN}}
+# altering variable using parameter expansion ",," in bash to be all lowercase since repo URLs must be all lowercase
+github_user=${github_user,,}
+github_token="${2:-${GITHUB_TOKEN}}"
 
 image_version=$(${root_dir}/podtato-head-microservices/build/image_version.sh)
 echo "INFO: using tag: ${image_version}"

@@ -26,7 +26,7 @@ spec:
   entry:
     serviceType: NodePort
   images:
-    repositoryDirname: ghcr.io/${github_user}/podtato-head
+    repositoryDirname: ghcr.io/${github_user,,}/podtato-head
 EOF
 
 echo ""
