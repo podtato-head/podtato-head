@@ -1,5 +1,6 @@
 FROM docker.io/library/golang:latest AS builder
 ARG GITHUB_USER=podtato-head
+ARG BASE_RUN_IMAGE=scratch
 LABEL org.opencontainers.image.source = "https://github.com/${GITHUB_USER}/podtato-head"
 
 ARG PART
@@ -19,7 +20,8 @@ RUN go build -o /serve-${PART} ./cmd/parts
 
 EXPOSE 9000
 
-FROM scratch
+ARG BASE_RUN_IMAGE
+FROM ${BASE_RUN_IMAGE}
 ARG GITHUB_USER=podtato-head
 LABEL org.opencontainers.image.source = "https://github.com/${GITHUB_USER}/podtato-head"
 ARG PART

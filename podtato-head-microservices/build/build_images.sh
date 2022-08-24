@@ -27,14 +27,18 @@ source ${root_dir}/scripts/build-image.sh
 
 ### set registry
 registry_user=${1:-${GITHUB_USER}}
-registry_user_lowercase=${registry_user,,}
+## must be lower case for container registries
+registry_user=${registry_user,,}
 registry_token=${2:-${GITHUB_TOKEN}}
 registry_hostname=${3:-ghcr.io}
+base_run_image=${4:-scratch}
+image_tag_suffix=${5#-}
+
 login_ghcr "${registry_user}" "${registry_token}"
 
 ### determine tag
 image_tag=$(${this_dir}/image_version.sh)
-echo "INFO: will use version/tag: ${image_tag}"
+echo "INFO: will use version/tag: ${image_tag}${image_tag_suffix:+-${image_tag_suffix}}"
 
 ### prep cosign metadata
 export COSIGN_KEY_PATH="${COSIGN_KEY_PATH:-${root_dir}/.github/workflows/cosign.key}"
@@ -42,31 +46,35 @@ export COSIGN_PASSWORD="${COSIGN_PASSWORD}"
 
 ### build, push and sign entry image
 if [[ -z "${RELEASE_BUILD}" ]]; then
-    image_name=${registry_hostname}/${registry_user_lowercase}/podtato-head/entry
+    image_name=${registry_hostname}/${registry_user}/podtato-head/entry
 else
     image_name=${registry_hostname}/podtato-head/entry
 fi
 
 build_image \
-    ${app_dir} \
+    "${app_dir}" \
     cmd/entry/Dockerfile \
-    ${image_name} \
-    ${image_tag} \
-    ${registry_user}
+    "${image_name}" \
+    "${image_tag}${image_tag_suffix:+-${image_tag_suffix}}" \
+    "${base_run_image}" \
+    '' \
+    "${registry_user}"
 
 ### build parts images
 parts=($(find ${app_dir}/pkg/assets/images/* -type d -printf '%f\n'))
 for part in "${parts[@]}"; do
     if [[ -z "${RELEASE_BUILD}" ]]; then
-        image_name=${registry_hostname}/${registry_user_lowercase}/podtato-head/${part}
+        image_name=${registry_hostname}/${registry_user}/podtato-head/${part}
     else
         image_name=${registry_hostname}/podtato-head/${part}
     fi
 
     build_image \
-        ${app_dir} \
+        "${app_dir}" \
         cmd/parts/Dockerfile \
-        ${image_name} \
-        ${image_tag} \
-        ${registry_user}
+        "${image_name}" \
+        "${image_tag}${image_tag_suffix:+-${image_tag_suffix}}" \
+        "${base_run_image}" \
+        "${part}" \
+        "${registry_user}"
 done
