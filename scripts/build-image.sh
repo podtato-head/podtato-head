@@ -49,7 +49,7 @@ function build_image () {
         --file "${context_dir}/${relative_path_to_dockerfile}"
     result=$?
 
-    if [[ -n "${push_too}" ]]; then
+    if [[ -n "${push_too}" && ( "${push_too}" != "false" ) ]]; then
         echo "INFO: pushing image ${image_name}:${image_tag}"
         docker push "${image_name}:${image_tag}"
     fi

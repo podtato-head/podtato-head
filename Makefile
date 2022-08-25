@@ -41,13 +41,26 @@ test-microservices: push-microservices-images
 ### podtato-head-server
 
 build-server-images:
-	podtato-head-server/build/build_image.sh
+	podtato-head-server/build/build_image.sh '' '' '' \
+		scratch '' false
+	podtato-head-server/build/build_image.sh '' '' '' \
+		gcr.io/distroless/static:latest distroless false
+	podtato-head-server/build/build_image.sh '' '' '' \
+		registry.access.redhat.com/ubi9/ubi-micro:latest ubi false
+	podtato-head-server/build/build_image.sh '' '' '' \
+		distroless.dev/alpine-base:latest chainguard false
 
 push-server-images:
-	PUSH_TO_REGISTRY=1 podtato-head-server/build/build_image.sh
+	podtato-head-server/build/build_image.sh '' '' '' \
+		scratch '' true
+	podtato-head-server/build/build_image.sh '' '' '' \
+		gcr.io/distroless/static:latest distroless true
+	podtato-head-server/build/build_image.sh '' '' '' \
+		registry.access.redhat.com/ubi9/ubi-micro:latest ubi true
+	podtato-head-server/build/build_image.sh '' '' '' \
+		distroless.dev/alpine-base:latest chainguard true
 
-test-server:
-	PUSH_TO_REGISTRY=1 podtato-head-server/build/build_image.sh
+test-server: push-server-images
 	podtato-head-server/build/test_image.sh
 	podtato-head-server/build/test_image.sh '' '' '' distroless
 	podtato-head-server/build/test_image.sh '' '' '' ubi
