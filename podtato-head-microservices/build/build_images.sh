@@ -27,6 +27,7 @@ source ${root_dir}/scripts/build-image.sh
 
 ### set registry
 registry_user=${1:-${GITHUB_USER}}
+registry_user_lowercase=${registry_user,,}
 registry_token=${2:-${GITHUB_TOKEN}}
 registry_hostname=${3:-ghcr.io}
 login_ghcr "${registry_user}" "${registry_token}"
@@ -41,7 +42,7 @@ export COSIGN_PASSWORD="${COSIGN_PASSWORD}"
 
 ### build, push and sign entry image
 if [[ -z "${RELEASE_BUILD}" ]]; then
-    image_name=${registry_hostname}/${registry_user}/podtato-head/entry
+    image_name=${registry_hostname}/${registry_user_lowercase}/podtato-head/entry
 else
     image_name=${registry_hostname}/podtato-head/entry
 fi
@@ -57,7 +58,7 @@ build_image \
 parts=($(find ${app_dir}/pkg/assets/images/* -type d -printf '%f\n'))
 for part in "${parts[@]}"; do
     if [[ -z "${RELEASE_BUILD}" ]]; then
-        image_name=${registry_hostname}/${registry_user}/podtato-head/${part}
+        image_name=${registry_hostname}/${registry_user_lowercase}/podtato-head/${part}
     else
         image_name=${registry_hostname}/podtato-head/${part}
     fi

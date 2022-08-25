@@ -8,4 +8,4 @@ spec:
     spec:
       containers:
         - name: podtato-head-entry
-          image: ghcr.io/podtato-head/entry:0.2.7
+          image: ghcr.io/podtato-head/entry:latest
