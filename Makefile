@@ -1,4 +1,6 @@
-GITHUB_USER ?= podtato-head
+### login to registry ghcr.io using GITHUB_USER and GITHUB_TOKEN env vars in environment or .env file is expected
+###     (these are the implicit values in the empty parameters - "" - below)
+### TODO(?): genericize the registry and login and move logic to Makefile
 
 install-requirements:
 	scripts/requirements.sh /usr/local/bin
@@ -11,29 +13,30 @@ podtato-head-verify:
 	$(MAKE) -C podtato-head-microservices test
 
 build-microservices-images:
-	podtato-head-microservices/build/build_images.sh
-	podtato-head-microservices/build/build_images.sh '' '' '' \
+	podtato-head-microservices/build/build_images.sh "" "" "" \
+		scratch ''
+	podtato-head-microservices/build/build_images.sh "" "" "" \
 		gcr.io/distroless/static:latest distroless
-	podtato-head-microservices/build/build_images.sh '' '' '' \
-		registry.access.redhat.com/ubi8/ubi:latest ubi
-	podtato-head-microservices/build/build_images.sh '' '' '' \
-		distroless.dev/alpine-base chainguard
+	podtato-head-microservices/build/build_images.sh "" "" "" \
+		registry.access.redhat.com/ubi9/ubi-micro:latest ubi
+	podtato-head-microservices/build/build_images.sh "" "" "" \
+		distroless.dev/alpine-base:latest chainguard
 
 push-microservices-images:
-	PUSH_TO_REGISTRY=1 podtato-head-microservices/build/build_images.sh
-	PUSH_TO_REGISTRY=1 podtato-head-microservices/build/build_images.sh '' '' '' \
-		gcr.io/distroless/static:latest distroless
-	PUSH_TO_REGISTRY=1 podtato-head-microservices/build/build_images.sh '' '' '' \
-		registry.access.redhat.com/ubi8/ubi:latest ubi
-	PUSH_TO_REGISTRY=1 podtato-head-microservices/build/build_images.sh '' '' '' \
-		distroless.dev/alpine-base chainguard
+	podtato-head-microservices/build/build_images.sh "" "" "" \
+		scratch '' true
+	podtato-head-microservices/build/build_images.sh "" "" "" \
+		gcr.io/distroless/static:latest distroless true
+	podtato-head-microservices/build/build_images.sh "" "" "" \
+		registry.access.redhat.com/ubi9/ubi-micro:latest ubi true
+	podtato-head-microservices/build/build_images.sh "" "" "" \
+		distroless.dev/alpine-base:latest chainguard true
 
 test-microservices: push-microservices-images
-	IMAGE_VERSION=test PUSH_TO_REGISTRY=1 podtato-head-microservices/build/build_images.sh
+# special build and tag for test images
+	IMAGE_VERSION=test podtato-head-microservices/build/build_images.sh "" "" "" \
+		scratch '' true
 	IMAGE_VERSION=test scripts/test_with_kind.sh
-	IMAGE_VERSION=test-distroless scripts/test_with_kind.sh
-	IMAGE_VERSION=test-ubi scripts/test_with_kind.sh
-	IMAGE_VERSION=test-chainguard scripts/test_with_kind.sh
 
 ### podtato-head-server
 

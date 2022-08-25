@@ -20,8 +20,8 @@ function version_to_use () {
     local github_user=${1:-${GITHUB_USER}}
 
     >&2 echo "INFO: dynamically determining version"
-    last_image_tag=$(skopeo list-tags docker://ghcr.io/${github_user}/podtato-head/entry | \
-        jq -r '.Tags[]' | grep -v 'sha256-\|latest\|test' | sort | tail -1)
+    last_image_tag=$(skopeo list-tags docker://ghcr.io/${github_user:+${github_user}/}podtato-head/entry | \
+        jq -r '.Tags[]' | grep -P '^[\d\.]*$' | sort | tail -1)
     >&2 echo "INFO: last_image_tag: ${last_image_tag}"
     bare_version=$(echo "${last_image_tag}" | sed -E 's/^.*([0-9]+\.[0-9]+\.[0-9]+).*$/\1/')
     >&2 echo "INFO: bare_version: ${bare_version}"

@@ -1,28 +1,45 @@
 ## for cosign: cosign must be installed, COSIGN_PASSWORD and COSIGN_KEY_PATH must be set
 ## for trivy:  trivy must be installed
 
-# build_image \
-#     '.' \
-#     'cmd/entry/Dockerfile' \
-#     ghcr.io/podtato-head/entry \
-#     latest-distroless \
-#     gcr.io/distroless/static:latest
-#     'body'
-#     joshgav
-#     1
+# build_image
+#   1. full image name:            ghcr.io/joshgav/podtato-head/entry
+#   2. full tag:                   latest-distroless
+#   3. part name or empty string:  body
+#   4. context dir:                /home/joshgav/src/projects/podtato-head/podtato-head-microservices
+#   5. path to file:               cmd/entry/Dockerfile
+#   6. base run image:             gcr.io/distroless/static:latest
+#   7. ghcr username:              joshgav
+#   8. push too:                   true
 
 function build_image () {
-    local context_dir=${1}
-    local relative_path_to_dockerfile=${2}
-    local image_name=${3}
-    local image_tag=${4:-latest}
-    local base_run_image=${5:-scratch}
-    local part_name="${6}"
-    local registry_user=${7:-podtato-head}
-    local push_too=${8:-"${PUSH_TO_REGISTRY}"}
+    local image_name=${1}
+    local image_tag=${2:-latest}
+    # if set adds build arg PART=${part_name}
+    local part_name=${3}
+    local context_dir=${4}
+    local relative_path_to_dockerfile=${5}
+    # base for last stage of multistage build
+    local base_run_image=${6:-scratch}
+    # used to set image label setting owner; required by ghcr
+    local registry_user=${7}
+    local push_too=${8}
+
+    if [[ -n "${PUSH_TO_REGISTRY}" ]]; then
+        push_too=true
+    fi
+
+    if [[ -n "${GITHUB_USER}" && -z "${registry_user}" ]]; then
+        echo "INFO: assigning var GITHUB_USER as registry user for ghcr"
+        registry_user=${GITHUB_USER}
+    fi
+
+    if [[ -z "${registry_user}" ]]; then
+        echo "INFO: defaulting registry user for ghcr to \"podtato-head\""
+        registry_user=podtato-head
+    fi
 
     echo "INFO: building image ${image_name}:${image_tag}"
-    echo "INFO: with context dir ${context_dir} and file ${relative_path_to_dockerfile}"
+    echo "INFO: with context dir ${context_dir}; Dockerfile ${relative_path_to_dockerfile}"
 
     docker build ${context_dir} \
         --tag "${image_name}:${image_tag}" \
@@ -30,6 +47,7 @@ function build_image () {
         --build-arg "BASE_RUN_IMAGE=${base_run_image}" \
         ${part_name:+--build-arg "PART=${part_name}"} \
         --file "${context_dir}/${relative_path_to_dockerfile}"
+    result=$?
 
     if [[ -n "${push_too}" ]]; then
         echo "INFO: pushing image ${image_name}:${image_tag}"

@@ -1,7 +1,7 @@
+ARG BASE_RUN_IMAGE=scratch
 FROM library/golang:latest AS builder
 ARG GITHUB_USER=podtato-head
-ARG BASE_RUN_IMAGE=scratch
-LABEL org.opencontainers.image.source = "https://github.com/${GITHUB_USER}/podtato-head"
+LABEL org.opencontainers.image.source "https://github.com/${GITHUB_USER}/podtato-head"
 
 # Set necessary environment variables needed for our image
 ENV GO111MODULE=on \

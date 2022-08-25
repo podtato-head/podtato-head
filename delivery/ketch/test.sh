@@ -14,7 +14,7 @@ kubectl create namespace ${namespace} --save-config &> /dev/null
 kubectl config set-context --current --namespace=${namespace}
 
 if [[ -n "${github_token}" && -n "${github_user}" ]]; then
-    login_ghcr "${github_user}" "${github_token}"
+    try_login_ghcr "${github_user}" "${github_token}"
 
     kubectl patch serviceaccount default \
         --patch '{ "imagePullSecrets": [{ "name": "ghcr" }]}'

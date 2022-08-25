@@ -32,13 +32,16 @@ registry_user=${registry_user,,}
 registry_token=${2:-${GITHUB_TOKEN}}
 registry_hostname=${3:-ghcr.io}
 base_run_image=${4:-scratch}
+## remove leading dash (we'll add as appropriate)
 image_tag_suffix=${5#-}
+push_too=${6:-false}
 
-login_ghcr "${registry_user}" "${registry_token}"
+try_login_ghcr "${registry_user}" "${registry_token}"
 
 ### determine tag
-image_tag=$(${this_dir}/image_version.sh)
-echo "INFO: will use version/tag: ${image_tag}${image_tag_suffix:+-${image_tag_suffix}}"
+image_version=$(${this_dir}/image_version.sh)
+image_tag="${image_version}${image_tag_suffix:+-${image_tag_suffix}}"
+echo "INFO: will use tag: ${image_tag}"
 
 ### prep cosign metadata
 export COSIGN_KEY_PATH="${COSIGN_KEY_PATH:-${root_dir}/.github/workflows/cosign.key}"
@@ -52,13 +55,14 @@ else
 fi
 
 build_image \
+    "${image_name}" \
+    "${image_tag}" \
+    '' \
     "${app_dir}" \
     cmd/entry/Dockerfile \
-    "${image_name}" \
-    "${image_tag}${image_tag_suffix:+-${image_tag_suffix}}" \
     "${base_run_image}" \
-    '' \
-    "${registry_user}"
+    "${registry_user}" \
+    ${push_too}
 
 ### build parts images
 parts=($(find ${app_dir}/pkg/assets/images/* -type d -printf '%f\n'))
@@ -70,11 +74,12 @@ for part in "${parts[@]}"; do
     fi
 
     build_image \
+        "${image_name}" \
+        "${image_tag}" \
+        "${part}" \
         "${app_dir}" \
         cmd/parts/Dockerfile \
-        "${image_name}" \
-        "${image_tag}${image_tag_suffix:+-${image_tag_suffix}}" \
         "${base_run_image}" \
-        "${part}" \
-        "${registry_user}"
+        "${registry_user}" \
+        ${push_too}
 done

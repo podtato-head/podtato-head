@@ -40,5 +40,5 @@ function build_all_tags {
 ##      e.g. `test_image.sh '' '' '' distroless`
 build_all_tags
 build_all_tags gcr.io/distroless/static:latest distroless
-build_all_tags registry.access.redhat.com/ubi8/ubi:latest ubi
-build_all_tags distroless.dev/alpine-base chainguard
+build_all_tags registry.access.redhat.com/ubi9/ubi-micro:latest ubi
+build_all_tags distroless.dev/alpine-base:latest chainguard

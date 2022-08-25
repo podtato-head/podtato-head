@@ -25,7 +25,7 @@ function install_ghcr_secret {
     fi
 }
 
-function login_ghcr () {
+function try_login_ghcr () {
     local github_user=${1:-${GITHUB_USER}}
     # altering variable using parameter expansion ",," in bash to be all lowercase since repo URLs must be all lowercase
     local github_user=${github_user,,}
