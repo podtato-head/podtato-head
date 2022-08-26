@@ -18,7 +18,7 @@ if [[ ! -v this_dir ]]; then exit; fi
 helm_chart_path=${1:-${delivery_dir}/chart}
 
 source ${root_dir}/scripts/registry-secrets.sh
-login_ghcr "${github_user}" "${github_token}"
+try_login_ghcr "${github_user}" "${github_token}"
 
 ### init and build operator from chart
 work_dir=${this_dir}/work

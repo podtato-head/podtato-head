@@ -71,7 +71,7 @@ To run local tests on the Go code, run `make podtato-head-verify`.
 ### Build
 
 Build an image for each part - entry, hat, each arm and each leg - with `make
-build-images`.
+build-microservices-images`.
 
 > NOTE: To apply capabilities like image scans and signatures install required
   binaries first by running `[sudo] make install-requirements`.
@@ -102,14 +102,11 @@ To push to your own fork of the podtato-head repo:
 ### Test
 
 To test the built images as running services in a cluster, run `make
-test-services`. This spins up a cluster using `kind` and deploys the services
+test-microservices`. This spins up a cluster using `kind` and deploys the services
 using [the `kubectl` delivery scenario test](delivery/kubectl/test.sh).
 
 These tests also rely on your GITHUB_USER and GITHUB_TOKEN env vars if
 you're using your own fork.
-
-NOTE: The `test-services` tasks isn't bound to the `push-images` task so that
-they may be run separately. Make sure you run `make push-images` first.
 
 ## More info
 
