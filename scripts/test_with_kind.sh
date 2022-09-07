@@ -10,7 +10,7 @@ delivery_type=${3:-kustomize}
 
 echo "INFO: installing kind"
 temp_dir=$(mktemp -d)
-kind_ver=0.11.1
+kind_ver=0.14.0
 curl -sSLo ${temp_dir}/kind https://github.com/kubernetes-sigs/kind/releases/download/v${kind_ver}/kind-linux-amd64
 chmod +x ${temp_dir}/kind
 export PATH=${temp_dir}:${PATH}
