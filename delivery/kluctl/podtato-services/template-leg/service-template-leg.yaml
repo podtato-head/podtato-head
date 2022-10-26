@@ -2,19 +2,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: podtato-head-right-leg
+  name: podtato-head-{{ leg.type }}-leg
   labels:
     app.kubernetes.io/name: podtato-head
-    app.kubernetes.io/component: right-leg
+    app.kubernetes.io/component: {{ leg.type }}-leg
     app.kubernetes.io/version: {{ podtato.version }}
     app.kubernetes.io/managed-by: kustomize
 spec:
   type: ClusterIP
   ports:
-    - port: 9004
+    - port: {{ leg.port }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
     app.kubernetes.io/name: podtato-head
-    app.kubernetes.io/component: right-leg
+    app.kubernetes.io/component: {{ leg.type }}-leg

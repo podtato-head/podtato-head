@@ -1,4 +1,4 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ target.name }}-podtato-microservices
+  name: {{ target.name }}-podtato-kluctl

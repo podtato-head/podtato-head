@@ -7,9 +7,20 @@ deployments:
   - path: left-arm
   - path: right-arm
   {% if legs_enabled %}
-  - path: left-leg
-  - path: right-leg
+  # legs are implemented via a template to showcase re-use of deployment items
+  - path: template-leg
+    vars:
+      - values:
+          leg:
+            type: left
+            port: 9002
+  - path: template-leg
+    vars:
+      - values:
+          leg:
+            type: right
+            port: 9004
   {% endif %}
 
 # Sets the given namespace for all kustomizations that don't explicitly set it
-overrideNamespace: {{ target.name }}-podtato-microservices
+overrideNamespace: {{ target.name }}-podtato-kluctl
