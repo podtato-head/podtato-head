@@ -1,0 +1,13 @@
+deployments:
+  - path: namespace
+  - barrier: true # ensure namespaces are deployed before we try to deploy anything into them
+  - path: misc
+  - path: entry
+  - path: hat
+  - path: left-arm
+  - path: right-arm
+  - path: left-leg
+  - path: right-leg
+
+# Sets the given namespace for all kustomizations that don't explicitly set it
+overrideNamespace: {{ target.name }}-podtato-microservices

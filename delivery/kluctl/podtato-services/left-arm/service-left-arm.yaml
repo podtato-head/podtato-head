@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podtato-head-left-arm
+  labels:
+    app.kubernetes.io/name: podtato-head
+    app.kubernetes.io/component: left-arm
+    app.kubernetes.io/version: '0.2.7'
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9003
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: podtato-head
+    app.kubernetes.io/component: left-arm

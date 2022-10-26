@@ -40,6 +40,7 @@ The following scenarios deploy the [multi-service app](./podtato-head-microservi
 * [Single deployment via Helm](/delivery/chart/README.md)
 * [Single deployment via Kustomize](/delivery/kustomize/README.md)
 * [Single deployment via Ketch](/delivery/ketch/README.md)
+* [Single deployment via Kluctl](/delivery/kluctl/README.md)
 * [GitOps deployment via Flux](/delivery/flux/README.md)
 * [Helm-based operator deployment](/delivery/podtato-operator/README.md)
 

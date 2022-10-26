@@ -1,0 +1,10 @@
+targets:
+  - name: test
+    args:
+      env_type: non-prod
+  - name: prod
+    # You'll have to setup a kubeconfig context with the name `podtato-prod-cluster` to use this target
+    # This will ensure that you never deploy this target to another cluster by accident.
+    context: podtato-prod-cluster
+    args:
+      env_type: prod

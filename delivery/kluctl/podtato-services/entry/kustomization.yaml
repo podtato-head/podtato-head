@@ -1,0 +1,14 @@
+resources:
+  - deployment-entry.yaml
+  - service-entry.yaml
+
+patchesJson6902:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: podtato-head-entry
+    patch: |
+      - op: add
+        path: /metadata/annotations/patched-annotation
+        value: I got patched into this Deployment!
