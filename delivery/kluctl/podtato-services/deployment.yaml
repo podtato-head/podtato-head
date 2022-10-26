@@ -6,8 +6,10 @@ deployments:
   - path: hat
   - path: left-arm
   - path: right-arm
+  {% if legs_enabled %}
   - path: left-leg
   - path: right-leg
+  {% endif %}
 
 # Sets the given namespace for all kustomizations that don't explicitly set it
 overrideNamespace: {{ target.name }}-podtato-microservices

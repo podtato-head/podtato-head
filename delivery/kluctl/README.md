@@ -52,6 +52,13 @@ After the initial deployment, find something that is worth being modified and th
 above. Kluctl will then show what would be changed and ask for confirmation. If you select `y`, it will apply the
 changes and again print the diff afterwards.
 
+## Configuration
+
+You should also look into `delivery/kluctl/config` and the .yaml files in that directory. These are used to configure
+the deployment. These are loaded from the root `deployment.yaml` via the `vars` field. Each loaded
+[variable source](https://kluctl.io/docs/reference/templating/variable-sources/) (in this case it's the `file` source)
+is merged into the templating context and then available by all deployment items referenced from that `deployment.yaml`.
+
 ## Housekeeping (e.g. after a refactoring)
 
 Try to rename a deployment, e.g. `podtato-head-hat` to `podtato-head-hut` via:

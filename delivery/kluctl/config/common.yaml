@@ -1,0 +1,12 @@
+replicas:
+  entry: 1
+  hat: 1
+  left_arm: 1
+  left_leg: 1
+  right_arm: 1
+  right_leg: 1
+
+legs_enabled: true
+
+podtato:
+  version: 0.2.7

@@ -1,0 +1,6 @@
+replicas:
+  # con't have enough hats in test environments
+  hat: 2
+
+# uncomment this to disable legs on test...who needs legs anyway in test envs?
+# legs_enabled: false

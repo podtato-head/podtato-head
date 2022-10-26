@@ -1,3 +1,8 @@
+vars:
+  - file: config/common.yaml
+  # As you can see, we can also use templating here to dynamically load different files.
+  - file: config/{{ args.env_type }}.yaml
+
 deployments:
   - include: podtato-services
 
