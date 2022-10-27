@@ -3,5 +3,5 @@ replicas:
   entry: 3
 
 podtato:
-  base_image: ghcr.io/{{ args.github_user }}
+  base_image: ghcr.io/podtato-head/podtato-head
   version: latest

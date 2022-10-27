@@ -19,5 +19,7 @@ args:
     default: "podtato-head"
   - name: github_token
     default: ""
+  - name: base_image
+    default: ghcr.io/podtato-head/podtato-head
   - name: image_version
     default: ""

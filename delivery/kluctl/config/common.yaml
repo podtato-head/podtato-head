@@ -9,5 +9,5 @@ replicas:
 legs_enabled: true
 
 podtato:
-  base_image: ghcr.io/{{ args.github_user }}
+  base_image: {{ args.base_image }}
   version: {{ args.image_version or "0.2.7" }}

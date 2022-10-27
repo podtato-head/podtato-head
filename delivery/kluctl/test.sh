@@ -25,6 +25,9 @@ github_token="${2:-${GITHUB_TOKEN}}"
 # See https://kluctl.io/docs/reference/commands/environment-variables/#environment-variables-as-arguments
 if [[ -n "${github_user}" ]]; then
   export KLUCTL_ARG_1=github_user=${github_user}
+  if [[ "$github_user" != "podtato-head" ]]; then
+    export KLUCTL_ARG_3=base_image=ghcr.io/${github_user}/podtato-head
+  fi
 fi
 if [[ -n "${github_token}" ]]; then
   export KLUCTL_ARG_2=github_token=${github_token}
