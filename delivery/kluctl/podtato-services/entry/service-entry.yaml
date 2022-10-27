@@ -6,8 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/name: podtato-head
     app.kubernetes.io/component: entry
-    app.kubernetes.io/version: {{ podtato.version }}
-    app.kubernetes.io/managed-by: kustomize
 spec:
   type: LoadBalancer
   ports:

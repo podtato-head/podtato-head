@@ -5,8 +5,6 @@ metadata:
   labels:
     app.kubernetes.io/name: podtato-head
     app.kubernetes.io/component: entry
-    app.kubernetes.io/version: {{ podtato.version }}
-    app.kubernetes.io/managed-by: kustomize
 data:
     servicesConfig.yaml: |
         hat:       "http://podtato-head-hat:9001"
