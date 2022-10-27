@@ -3,6 +3,7 @@
 Here's how to deliver podtato-head using [kluctl](https://kluctl.io).
 
 See [this](https://www.youtube.com/watch?v=9LoYLjDjOdg) video for an introduction to Kluctl.
+Or read [this](https://kluctl.io/docs/guides/tutorials/microservices-demo/) tutorial.
 
 Kluctl allows you to deploy [targets](https://kluctl.io/docs/reference/kluctl-project/targets/) instead
 of just a set of manifests. In it's simplest form, a target simply defines a name and a set of arguments.
@@ -14,13 +15,13 @@ configuration management.
 - Install Kluctl ([official docs](https://kluctl.io/docs/installation/))
 - Setup a cluster for testing purposes (e.g. with [kind](https://kind.sigs.k8s.io/))
 
-For the `test` target, it doesn't really matter how the kubeconfig context is called as Kluctl will always
-deploy to the current cluster. For the `prod` cluster, you must create a context named `podtato-prod-cluster`
+For the `test` target, it doesn't really matter how the context is called as Kluctl will always
+deploy to the current context. For the `prod` cluster, you must create a context named `podtato-prod-cluster`
 due to the target being bound to that context. See `delivery/kluctl/.kluctl.yaml` for the target definitions.
 
 ## Deploy
 
-To deploy the `test` target, run `kluctl deploy -t test`. Before doing so, ensure that the correct kubeconfig
+To deploy the `test` target, run `kluctl deploy -t test`. Before doing so, ensure that the correct
 context is active. When running the deploy command, Kluctl will first perform a dry-run and ask for confirmation.
 If you select `y`, Kluctl will perform the actual deployment and then print the resulting diff of the deployment:
 
@@ -35,8 +36,9 @@ New objects:
 ...
 ```
 
-To deploy the `prod` target, run `kluctl deploy -t prod`. It doesn't matter which kubeconfig context is active at
-that point as it will enforce the use of the `podtato-prod-cluster` context.
+To deploy the `prod` target, run `kluctl deploy -t prod`. It doesn't matter which context is active at
+that point as it will enforce the use of the `podtato-prod-cluster` context (check the `.kluctl.yaml` to figure out
+why this happens).
 
 ## Test
 
