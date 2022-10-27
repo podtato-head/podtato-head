@@ -118,3 +118,17 @@ jobs:
         uses: helm/kind-action@v1.2.0
       - name: Test delivery with operator
         run: ./delivery/operator/test.sh "${{ github.repository_owner }}" "${{ github.token }}"
+
+  test_kluctl_delivery:
+    name: Deliver with kluctl
+    needs: [build_and_push_images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Test delivery with kluctl
+        run: ./delivery/kluctl/test.sh "${{ github.repository_owner }}" "${{ github.token }}"

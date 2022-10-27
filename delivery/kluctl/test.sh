@@ -6,6 +6,17 @@ declare -r root_dir=$(cd ${this_dir}/../.. && pwd)
 if [[ -f "${root_dir}/.env" ]]; then source "${root_dir}/.env"; fi
 source ${root_dir}/scripts/registry-secrets.sh
 
+cd $this_dir
+
+if [[ -z "${SKIP_INSTALL_KLUCTL}" ]]; then
+  ## install kluctl CLI
+  tmp_dir=$(mktemp -d)
+  trap "rm -rf ${tmp_dir}" EXIT
+  curl -s https://raw.githubusercontent.com/kluctl/kluctl/main/install/kluctl.sh | bash -s $tmp_dir
+  export PATH=$tmp_dir:$PATH
+  kluctl --version
+fi
+
 github_user=${1:-${GITHUB_USER}}
 # altering 'GITHUB_USER' variable to be all lowercase since repo URLs must be all lowercase
 github_user=$(echo $github_user | tr '[:upper:]' '[:lower:]')
