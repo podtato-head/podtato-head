@@ -6,6 +6,9 @@ metadata:
   labels:
     app.kubernetes.io/name: podtato-head
     app.kubernetes.io/component: entry
+  annotations:
+    # local clusters will probably never get LoadBalancer services up and running
+    kluctl.io/validate-ignore: "true"
 spec:
   type: LoadBalancer
   ports:
