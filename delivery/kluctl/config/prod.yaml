@@ -3,6 +3,5 @@ replicas:
   entry: 3
 
 podtato:
-  # For the purpose of this delivery demo, we use a version slightly below the current version.
-  # This way we kind of simulate that prod lags a little bit in its versions (we pretend it's using a "stable" version)
-  version: 0.2.6
+  base_image: ghcr.io/{{ args.github_user }}
+  version: latest

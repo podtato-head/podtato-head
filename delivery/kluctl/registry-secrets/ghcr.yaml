@@ -1,0 +1,18 @@
+{% if args.github_token != "" %}
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/dockerconfigjson
+metadata:
+  name: ghcr
+stringData:
+  .dockerconfigjson: |
+    {
+      "auths": {
+        "ghcr.io": {
+          "username": "{{ args.github_user }}",
+          "password": "{{ args.github_token }}",
+          "auth": "{{ ('%s:%s' % (args.github_user, args.github_token)) | b64encode }}"
+        }
+      }
+    }
+{% endif %}

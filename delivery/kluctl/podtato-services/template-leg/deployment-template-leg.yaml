@@ -24,7 +24,7 @@ spec:
       serviceAccountName: podtato-head
       containers:
         - name: podtato-head-{{ leg.type }}-leg
-          image: ghcr.io/podtato-head/{{ leg.type }}-leg:{{ podtato.version }}
+          image: {{ "%s/%s-leg:%s "% (podtato.base_image, leg.type, podtato.version) }}
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

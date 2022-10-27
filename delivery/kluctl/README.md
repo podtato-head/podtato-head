@@ -46,6 +46,18 @@ To access the podtato service, follow the instructions in the
 [kustomize delivery](../kustomize/README.md#test-the-api-endpoint) but for the `test-podtato-microservices`
 namespace.
 
+## Deploy args
+
+The deploy and diff command can be parametrized by passing arguments via `-a`. This for example allows to override
+the image version used internally. Example:
+
+```shell
+$ kluctl diff -t test -a image_version=0.2.6
+```
+
+Look for the `args` field inside the root deployment at `delivery/kluctl/deployment.yaml`. This field defines required
+arguments and default values.
+
 ## Modifying and re-deploying
 
 After the initial deployment, find something that is worth being modified and then re-run the deploy command from

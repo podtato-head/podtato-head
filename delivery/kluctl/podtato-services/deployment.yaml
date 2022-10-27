@@ -21,6 +21,3 @@ deployments:
             type: right
             port: 9004
   {% endif %}
-
-# Sets the given namespace for all kustomizations that don't explicitly set it
-overrideNamespace: {{ target.name }}-podtato-kluctl
