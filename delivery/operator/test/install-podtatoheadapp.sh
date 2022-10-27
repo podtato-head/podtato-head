@@ -8,6 +8,9 @@
 # github_user
 # github_token
 
+# altering 'GITHUB_USER' variable to be all lowercase since repo URLs must be all lowercase
+github_user=$(echo $github_user | tr '[:upper:]' '[:lower:]')
+
 kubectl create namespace ${app_namespace} &> /dev/null || true
 kubectl config set-context --current --namespace=${app_namespace}
 
@@ -26,7 +29,7 @@ spec:
   entry:
     serviceType: NodePort
   images:
-    repositoryDirname: ghcr.io/${github_user,,}/podtato-head
+    repositoryDirname: ghcr.io/${github_user}/podtato-head
 EOF
 
 echo ""

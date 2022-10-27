@@ -30,8 +30,8 @@ catalog_namespace=${olm_namespace}
 
 image_registry=${IMAGE_REGISTRY:-ghcr.io}
 github_user=${1:-${GITHUB_USER}}
-# altering variable using parameter expansion ",," in bash to be all lowercase since repo URLs must be all lowercase
-github_user=${github_user,,}
+# altering 'GITHUB_USER' variable to be all lowercase since repo URLs must be all lowercase
+github_user=$(echo $github_user | tr '[:upper:]' '[:lower:]')
 github_token=${2:-${GITHUB_TOKEN}}
 
 app_name=podtato-head-app-01

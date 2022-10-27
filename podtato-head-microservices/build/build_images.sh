@@ -28,7 +28,7 @@ source ${root_dir}/scripts/build-image.sh
 ### set registry
 registry_user=${1:-${GITHUB_USER}}
 ## must be lower case for container registries
-registry_user=${registry_user,,}
+github_user=$(echo $github_user | tr '[:upper:]' '[:lower:]')
 registry_token=${2:-${GITHUB_TOKEN}}
 registry_hostname=${3:-ghcr.io}
 base_run_image=${4:-scratch}
