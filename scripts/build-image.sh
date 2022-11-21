@@ -41,14 +41,16 @@ function build_image () {
     echo "INFO: building image ${image_name}:${image_tag}"
     echo "INFO: with context dir ${context_dir}; Dockerfile ${relative_path_to_dockerfile}"
 
-    docker build ${context_dir} \
+    docker buildx build \
         --tag "${image_name}:${image_tag}" \
         --build-arg "GITHUB_USER=${registry_user}" \
         --build-arg "BASE_RUN_IMAGE=${base_run_image}" \
         ${part_name:+--build-arg "PART=${part_name}"} \
-        --file "${context_dir}/${relative_path_to_dockerfile}"
+        --file "${context_dir}/${relative_path_to_dockerfile}" \
+        --platform "linux/amd64,linux/arm64" \
+        ${context_dir}
     result=$?
-
+    exit
     if [[ -n "${push_too}" && ( "${push_too}" != "false" ) ]]; then
         echo "INFO: pushing image ${image_name}:${image_tag}"
         docker push "${image_name}:${image_tag}"
