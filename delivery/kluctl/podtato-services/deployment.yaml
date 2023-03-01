@@ -6,7 +6,6 @@ deployments:
   - path: hat
   - path: left-arm
   - path: right-arm
-  {% if legs_enabled %}
   # legs are implemented via a template to showcase re-use of deployment items
   - path: template-leg
     vars:
@@ -14,10 +13,12 @@ deployments:
           leg:
             type: left
             port: 9002
+    # but legs are only deployed if the target has legs enabled
+    when: legs_enabled
   - path: template-leg
     vars:
       - values:
           leg:
             type: right
             port: 9004
-  {% endif %}
+    when: legs_enabled
