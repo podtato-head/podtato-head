@@ -8,3 +8,15 @@ targets:
     context: podtato-prod-cluster
     args:
       env_type: prod
+
+args:
+  - name: github_user
+    default: "podtato-head"
+  - name: github_token
+    default: ""
+  - name: base_image
+    default: ghcr.io/podtato-head/podtato-head
+  - name: image_version
+    default: ""
+
+discriminator: "podtato-head-{{ target.name }}"
