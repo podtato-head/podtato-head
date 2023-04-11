@@ -18,17 +18,17 @@ defaults:
 jobs:
   push_images:
     if: github.repository_owner == 'podtato-head'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Install requirements
         run: |
           ./scripts/requirements.sh "/usr/local/bin"
       - name: Login to ghcr.io/podtato-head
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.CONTAINER_REGISTRY }}
           username: ${{ github.repository_owner }}
@@ -48,10 +48,10 @@ jobs:
   test_services:
     if: github.repository_owner == 'podtato-head'
     needs: push_images
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Test services
         env:
           # for access to ghcr.io/podtato-head instead of ghcr.io/podtato-head/podtato-head
@@ -65,10 +65,10 @@ jobs:
       - test_services
     permissions:
       contents: write
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Apply new git tag
