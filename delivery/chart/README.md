@@ -29,7 +29,7 @@ The installation can be customized by changing the following parameters via
 | `replicaCount`                  | Number of replicas of the container                             | `1`                          |
 | `images.repositoryDirname`      | Prefix for image repos                                          | `ghcr.io/podtato-head`       |
 | `images.pullPolicy`             | Podtato Head Container pull policy                              | `IfNotPresent`               |
-| `images.pullSecrets`            | Podtato Head Pod pull secret                                    | ``                           |
+| `images.pullSecrets`            | Podtato Head Pod pull secret                                    | `[]`                         |
 | `<service>.repositoryBasename`  | Leaf part of name of image repo for <service>                   | `entry`, `hat`, etc.         |
 | `<service>.tag`                 | Tag of image repo for <service>                                 | `0.1.0`                      |
 | `<service>.serviceType`         | Service type for <service>                                      | `LoadBalancer` for main      |
@@ -40,6 +40,7 @@ The installation can be customized by changing the following parameters via
 | `serviceAccount.annotations`    | Annotations to add to a created service account                 | `{}`                         |
 | `podAnnotations`                | Map of annotations to add to the pods                           | `{}`                         |
 | `ingress.enabled`               | Enables Ingress                                                 | `false`                      |
+| `ingress.className`             | IngressClass that will be be used (Kubernetes 1.18+)            | `""`                         |
 | `ingress.annotations`           | Ingress annotations                                             | `{}`                         |
 | `ingress.hosts`                 | Ingress accepted hostnames                                      | `[]`                         |
 | `ingress.tls`                   | Ingress TLS configuration                                       | `[]`                         |
@@ -51,8 +52,6 @@ The installation can be customized by changing the following parameters via
 | `tolerations`                   | List of node taints to tolerate                                 | `[]`                         |
 | `resources`                     | Resource requests and limits                                    | `{}`                         |
 | `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |
-| `service.type`                  | Kubernetes Service type                                         | `ClusterIP`                  |
-| `service.port`                  | The port the service will use                                   | `9000`                       |
 
 ## Test
 
