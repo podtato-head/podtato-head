@@ -22,8 +22,37 @@ trivy --version
 ## cosign
 echo ""
 echo "installing cosign to ${install_dir}"
-cosign_version=v1.4.1
-curl -sSL -o "${install_dir}/cosign" https://storage.googleapis.com/cosign-releases/${cosign_version}/cosign-linux-amd64
+cosign_version=v2.2.0
+# give me the arch
+case "$(uname -m)" in
+    "x86_64")
+        arch="amd64"
+        ;;
+    "armv7l")
+        arch="arm"
+        ;;
+    "aarch64")
+        arch="arm64"
+        ;;
+    *)
+        echo "ERROR: unsupported architecture: $(uname -m)"
+        exit 1
+        ;;
+esac
+# give me the OS
+case "$(uname -s)" in
+    "Linux")
+        os="linux"
+        ;;
+    "Darwin")
+        os="darwin"
+        ;;
+    *)
+        echo "ERROR: unsupported OS: $(uname -s)"
+        exit 1
+        ;;
+esac
+curl -sSL -o "${install_dir}/cosign" https://github.com/sigstore/cosign/releases/download/${cosign_version}/cosign-${os}-${arch}
 chmod +x "${install_dir}/cosign"
 cosign version
 
