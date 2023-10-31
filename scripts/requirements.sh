@@ -23,7 +23,7 @@ trivy --version
 echo ""
 echo "installing cosign to ${install_dir}"
 cosign_version=v1.4.1
-curl -sSL -o "${install_dir}/cosign" https://storage.googleapis.com/cosign-releases/${cosign_version}/cosign-linux-amd64
+curl -sSL -o "${install_dir}/cosign" https://github.com/sigstore/cosign/releases/download/${cosign_version}/cosign-linux-amd64
 chmod +x "${install_dir}/cosign"
 cosign version
 
